@@ -63,10 +63,18 @@ console.log(`Channel: ${channel.snippet.title}`);
 
 // 2. All videos
 const videos = [];
-for await (const item of paginate('playlistItems', { part: 'contentDetails', playlistId: uploads, maxResults: 50 })) {
-  const published = item.contentDetails.videoPublishedAt || '';
-  if (START && published && published.slice(0, 10) < START) continue;
-  videos.push({ id: item.contentDetails.videoId, published });
+try {
+  for await (const item of paginate('playlistItems', { part: 'contentDetails', playlistId: uploads, maxResults: 50 })) {
+    const published = item.contentDetails.videoPublishedAt || '';
+    if (START && published && published.slice(0, 10) < START) continue;
+    videos.push({ id: item.contentDetails.videoId, published });
+  }
+} catch (e) {
+  // YouTube only creates the "uploads" list after the first public video.
+  if (e.reason !== 'playlistNotFound') throw e;
+  const msg = 'This channel has no public videos yet, so the city is empty. It will fill up after your first upload.';
+  if (process.env.GITHUB_ACTIONS) console.log(`::warning title=No videos yet::${msg}`);
+  console.warn(msg);
 }
 console.log(`Videos counted: ${videos.length}`);
 
