@@ -1,0 +1,18 @@
+{
+  "name": "seaty",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A 3D city built from YouTube commenters. One comment = one house, every new video commented on = one more floor.",
+  "type": "module",
+  "scripts": {
+    "demo": "node scripts/demo-data.mjs",
+    "fetch": "node scripts/fetch-comments.mjs",
+    "report": "node scripts/daily-report.mjs",
+    "lottery": "node scripts/lottery.mjs",
+    "serve": "node scripts/serve.mjs",
+    "daily": "node scripts/fetch-comments.mjs && node scripts/daily-report.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,83 @@
+# Every day: read YouTube comments -> update the city -> write the town report
+# -> commit the data -> publish web/ to GitHub Pages.
+#
+# Setup (once):
+#   1. Repo Settings -> Secrets and variables -> Actions -> New repository secret:
+#        YOUTUBE_API_KEY     your API key
+#        YOUTUBE_CHANNEL_ID  your channel ID (UC...)
+#      Optional repository *variables*: MIN_COMMENT_LENGTH, CITY_START_DATE
+#   2. Repo Settings -> Pages -> Source: "GitHub Actions"
+#   3. Actions tab -> "Daily city update" -> Run workflow (to test right away)
+#
+# Without the secrets, the site is still published (with the demo city).
+
+name: Daily city update
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # 06:00 UTC every day. Change to suit your upload time.
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths: ['web/**', 'scripts/**', '.github/workflows/**']
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: city
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Fetch comments and write report
+        if: github.event_name != 'push'
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
+          MIN_COMMENT_LENGTH: ${{ vars.MIN_COMMENT_LENGTH || '3' }}
+          CITY_START_DATE: ${{ vars.CITY_START_DATE }}
+        run: |
+          if [ -z "$YOUTUBE_API_KEY" ] || [ -z "$YOUTUBE_CHANNEL_ID" ]; then
+            echo "::warning::YOUTUBE_API_KEY / YOUTUBE_CHANNEL_ID secrets not set. Publishing the current (demo) city."
+            exit 0
+          fi
+          npm run daily
+          # Show the report on the run's summary page (easy to copy for the video).
+          cat reports/$(date -u +%F).md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit city data, report and snapshot
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "seaty-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add web/data reports data/history 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No changes."
+          else
+            git commit -m "City update $(date -u +%F)"
+            git push
+          fi
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+      - name: Site URL
+        run: echo "City is live at ${{ steps.deploy.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"

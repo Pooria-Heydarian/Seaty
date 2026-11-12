@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seaty City</title>
+  <meta name="description" content="A 3D city built by YouTube commenters. Comment to get a house, comment on new videos to add floors." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="scene"></div>
+
+  <div id="ui">
+    <header class="card brand">
+      <div class="logo">Seaty</div>
+      <div class="sub" id="channel-title">Loading city…</div>
+      <div class="stats">
+        <div><b id="stat-residents">–</b><span>residents</span></div>
+        <div><b id="stat-floors">–</b><span>floors</span></div>
+        <div><b id="stat-videos">–</b><span>videos</span></div>
+      </div>
+      <p class="how">Comment on a video to get a house.<br />Comment on each new video to add a floor.</p>
+    </header>
+
+    <div class="card search">
+      <input id="search" type="search" placeholder="Find your house…" autocomplete="off" aria-label="Search residents" />
+      <ul id="results" role="listbox"></ul>
+    </div>
+
+    <aside class="card board" id="board">
+      <button class="board-toggle" id="board-toggle" aria-expanded="true">Tallest towers</button>
+      <ol id="leaderboard"></ol>
+    </aside>
+
+    <div class="card info" id="info" hidden>
+      <button class="close" id="info-close" aria-label="Close">×</button>
+      <div class="info-head">
+        <div class="avatar" id="info-avatar"></div>
+        <div>
+          <div class="info-name" id="info-name"></div>
+          <div class="info-meta" id="info-meta"></div>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div><b id="info-floors"></b><span>floors</span></div>
+        <div><b id="info-rank"></b><span>rank</span></div>
+        <div><b id="info-plot"></b><span>plot</span></div>
+      </div>
+      <div class="info-actions">
+        <button id="info-share">Copy link to this house</button>
+        <a id="info-channel" target="_blank" rel="noopener">Channel ↗</a>
+      </div>
+    </div>
+
+    <div class="toolbar card">
+      <button id="btn-night" title="Day / night (N)">🌙 Night</button>
+      <button id="btn-rotate" title="Auto-rotate (R)">⟳ Orbit</button>
+      <button id="btn-replay" title="Replay city growth (G)">▶ Grow</button>
+      <button id="btn-hide" title="Hide interface for recording (H)">⛶ Record</button>
+    </div>
+  </div>
+
+  <div id="tooltip" hidden></div>
+  <div id="hint" hidden>Press H to show the interface</div>
+
+  <script type="module" src="city.js"></script>
+</body>
+</html>
