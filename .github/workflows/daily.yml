@@ -1,15 +1,13 @@
 # Every day: read YouTube comments -> update the city -> write the town report
-# -> commit the data -> publish web/ to GitHub Pages.
+# -> render the daily Short -> upload it to YouTube -> publish web/ to GitHub Pages.
 #
-# Setup (once):
-#   1. Repo Settings -> Secrets and variables -> Actions -> New repository secret:
-#        YOUTUBE_API_KEY     your API key
-#        YOUTUBE_CHANNEL_ID  your channel ID (UC...)
-#      Optional repository *variables*: MIN_COMMENT_LENGTH, CITY_START_DATE
-#   2. Repo Settings -> Pages -> Source: "GitHub Actions"
-#   3. Actions tab -> "Daily city update" -> Run workflow (to test right away)
+# Secrets (Settings -> Secrets and variables -> Actions):
+#   YOUTUBE_API_KEY, YOUTUBE_CHANNEL_ID        reading comments
+#   YT_CLIENT_ID, YT_CLIENT_SECRET, YT_REFRESH_TOKEN   uploading the video (see README)
+# Optional variables: MIN_COMMENT_LENGTH, CITY_START_DATE, YT_PRIVACY (public|unlisted|private)
 #
-# Without the secrets, the site is still published (with the demo city).
+# Without the upload secrets the video is still rendered: download it from the run page
+# (Artifacts -> seaty-video) and post it yourself.
 
 name: Daily city update
 
@@ -33,9 +31,13 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
+    env:
+      DAILY: ${{ github.event_name != 'push' }}
+      SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
     steps:
       - uses: actions/checkout@v4
 
@@ -44,7 +46,8 @@ jobs:
           node-version: 22
 
       - name: Fetch comments and write report
-        if: github.event_name != 'push'
+        if: env.DAILY == 'true'
+        id: fetch
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
@@ -56,15 +59,50 @@ jobs:
             exit 0
           fi
           npm run daily
-          # Show the report on the run's summary page (easy to copy for the video).
+          echo "ok=true" >> "$GITHUB_OUTPUT"
           cat reports/$(date -u +%F).md >> "$GITHUB_STEP_SUMMARY"
 
+      # ---------- Daily Short ----------
+      - name: Install video tools
+        if: steps.fetch.outputs.ok == 'true'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-color-emoji > /dev/null
+          npm install --no-audit --no-fund
+
+      - name: Render the daily Short
+        if: steps.fetch.outputs.ok == 'true'
+        run: npm run video
+
+      - name: Keep the video as a download on this run
+        if: ${{ !cancelled() && steps.fetch.outputs.ok == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: seaty-video
+          path: video/*
+          retention-days: 14
+
+      - name: Upload the Short to YouTube
+        if: steps.fetch.outputs.ok == 'true'
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_PRIVACY: ${{ vars.YT_PRIVACY || 'public' }}
+        run: |
+          if [ -z "$YT_REFRESH_TOKEN" ]; then
+            echo "::notice::Upload secrets not set yet. Download the video from this run's Artifacts and post it yourself."
+            exit 0
+          fi
+          npm run upload
+
+      # ---------- Save data + publish site ----------
       - name: Commit city data, report and snapshot
-        if: github.event_name != 'push'
+        if: ${{ !cancelled() && env.DAILY == 'true' }}
         run: |
           git config user.name "seaty-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add web/data reports data/history 2>/dev/null || true
+          git add web/data reports data 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "No changes."
           else
@@ -73,11 +111,15 @@ jobs:
           fi
 
       - uses: actions/configure-pages@v5
+        if: ${{ !cancelled() }}
       - uses: actions/upload-pages-artifact@v3
+        if: ${{ !cancelled() }}
         with:
           path: web
       - id: deploy
+        if: ${{ !cancelled() }}
         uses: actions/deploy-pages@v4
 
       - name: Site URL
+        if: ${{ !cancelled() }}
         run: echo "City is live at ${{ steps.deploy.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"

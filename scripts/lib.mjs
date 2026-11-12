@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const CITY_FILE = path.join(ROOT, 'web', 'data', 'city.json');
+export const CHANGES_FILE = path.join(ROOT, 'web', 'data', 'changes.json');
+export const VIDEO_DIR = path.join(ROOT, 'video');
 export const HISTORY_DIR = path.join(ROOT, 'data', 'history');
 export const REPORTS_DIR = path.join(ROOT, 'reports');
 export const LOTTERY_DIR = path.join(ROOT, 'lottery');
@@ -50,6 +52,7 @@ export function buildCity(people, meta) {
       floors: p.videos.size,
       joined: p.firstSeen,
       lastActive: p.lastSeen,
+      comment: p.comment || '',
     }))
     .filter((r) => r.floors > 0)
     // Earliest residents get the plots closest to the city center.

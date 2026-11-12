@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seaty Daily Video</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=block" rel="stylesheet" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --ink: #14202f;
+      --paper: #ffffff;
+      --accent: #ff7a45;
+      --gold: #f5b82e;
+      --muted: #5b6b80;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: #0d1117; overflow: hidden; font-family: Inter, system-ui, 'Noto Color Emoji', sans-serif; }
+    body.preview { display: grid; place-items: center; height: 100vh; }
+    #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #bcd8ee; transform-origin: top left; }
+    body.preview #stage { transform-origin: center; }
+    #scene { position: absolute; inset: 0; }
+    #scene canvas { display: block; }
+    .ov { position: absolute; left: 0; right: 0; opacity: 0; z-index: 2; will-change: transform, opacity; }
+
+    /* Title (intro) */
+    #title { top: 230px; text-align: center; color: var(--paper); text-shadow: 0 6px 30px rgba(0,0,0,.35); }
+    #title .day { font-weight: 900; font-size: 190px; line-height: .95; letter-spacing: -6px; }
+    #title .day span { color: var(--gold); }
+    #title .sub { font-weight: 800; font-size: 58px; line-height: 1.1; margin: 18px 90px 0; }
+    #title .delta { display: inline-block; margin-top: 34px; font-weight: 700; font-size: 40px; background: var(--accent); padding: 14px 30px; border-radius: 999px; text-shadow: none; }
+
+    /* Comment card (newcomer / grower) */
+    #card { top: 250px; margin: 0 70px; background: var(--paper); border-radius: 40px; padding: 38px 42px; box-shadow: 0 30px 80px rgba(10,20,40,.35); }
+    #card .row { display: flex; align-items: center; gap: 26px; }
+    #card .avatar { width: 104px; height: 104px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 900; font-size: 52px; flex: none; }
+    #card .name { font-weight: 900; font-size: 50px; color: var(--ink); word-break: break-word; line-height: 1.05; }
+    #card .tag { margin-top: 8px; font-weight: 700; font-size: 30px; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; }
+    #card .comment { margin-top: 28px; font-weight: 500; font-size: 44px; line-height: 1.3; color: var(--ink); }
+    #card .comment::before { content: '“'; color: var(--accent); font-weight: 900; }
+    #card .comment::after { content: '”'; color: var(--accent); font-weight: 900; }
+    #card .floors { margin-top: 24px; font-weight: 900; font-size: 78px; color: var(--ink); }
+    #card .floors b { color: var(--accent); }
+
+    /* Montage line */
+    #montage { top: 260px; text-align: center; color: #fff; font-weight: 900; font-size: 92px; line-height: 1; text-shadow: 0 6px 30px rgba(0,0,0,.4); }
+    #montage small { display: block; font-size: 46px; font-weight: 700; margin-top: 18px; }
+
+    /* Leaderboard */
+    #board { top: 230px; margin: 0 70px; background: rgba(20,32,47,.9); color: #fff; border-radius: 40px; padding: 36px 44px; }
+    #board h2 { margin: 0 0 18px; font-size: 40px; letter-spacing: 3px; color: var(--gold); font-weight: 900; }
+    #board .r { display: flex; justify-content: space-between; gap: 20px; font-size: 50px; font-weight: 800; padding: 10px 0; }
+    #board .r span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #board .r span:last-child { color: var(--gold); white-space: nowrap; }
+
+    /* Outro / empty city */
+    #cta { top: 250px; text-align: center; color: #fff; padding: 0 80px; text-shadow: 0 6px 30px rgba(0,0,0,.5); }
+    #cta .big { font-weight: 900; font-size: 92px; line-height: 1.02; letter-spacing: -2px; }
+    #cta .big span { color: var(--gold); }
+    #cta .small { margin-top: 30px; font-weight: 700; font-size: 46px; line-height: 1.25; }
+    #cta .url { display: inline-block; margin-top: 40px; font-weight: 800; font-size: 38px; background: var(--paper); color: var(--ink); padding: 16px 30px; border-radius: 999px; text-shadow: none; }
+
+    #flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; z-index: 3; }
+
+    /* 3D name tags */
+    .vlabel { font-weight: 800; font-size: 36px; color: var(--ink); background: var(--paper); padding: 10px 24px; border-radius: 999px; white-space: nowrap; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+    .vlabel.new { background: var(--accent); color: #fff; font-size: 42px; }
+    .vlabel.top { background: var(--ink); color: #fff; }
+    .vlabel.top1 { background: var(--gold); color: var(--ink); font-size: 42px; }
+
+    /* Preview controls (not rendered into the video) */
+    #controls { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; gap: 10px; align-items: center; background: #1c2430; color: #fff; padding: 8px 14px; border-radius: 999px; font: 13px system-ui; }
+    #controls input { width: 260px; }
+    #controls button { background: #ff7a45; color: #fff; border: 0; border-radius: 999px; padding: 6px 14px; font: inherit; cursor: pointer; }
+    body.render #controls { display: none; }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <div id="scene"></div>
+
+    <div class="ov" id="title">
+      <div class="day">DAY <span id="t-day">1</span></div>
+      <div class="sub">of adding every commenter to my city</div>
+      <div class="delta" id="t-delta"></div>
+    </div>
+
+    <div class="ov" id="card">
+      <div class="row">
+        <div class="avatar" id="c-avatar"></div>
+        <div>
+          <div class="name" id="c-name"></div>
+          <div class="tag" id="c-tag"></div>
+        </div>
+      </div>
+      <div class="comment" id="c-comment"></div>
+      <div class="floors" id="c-floors"></div>
+    </div>
+
+    <div class="ov" id="montage"></div>
+
+    <div class="ov" id="board">
+      <h2>TALLEST IN TOWN</h2>
+      <div id="b-rows"></div>
+    </div>
+
+    <div class="ov" id="cta">
+      <div class="big" id="cta-big"></div>
+      <div class="small" id="cta-small"></div>
+      <div class="url" id="cta-url"></div>
+    </div>
+
+    <div id="flash"></div>
+  </div>
+
+  <div id="controls">
+    <button id="play">Pause</button>
+    <input id="scrub" type="range" min="0" max="1000" value="0" />
+    <span id="time">0.0s</span>
+  </div>
+
+  <script type="module" src="video.js"></script>
+</body>
+</html>

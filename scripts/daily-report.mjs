@@ -5,7 +5,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { readJSON, writeJSON, today, CITY_FILE, HISTORY_DIR, REPORTS_DIR } from './lib.mjs';
+import { readJSON, writeJSON, today, CITY_FILE, CHANGES_FILE, HISTORY_DIR, REPORTS_DIR } from './lib.mjs';
 
 const city = readJSON(CITY_FILE);
 if (!city) {
@@ -15,9 +15,15 @@ if (!city) {
 
 const date = today();
 fs.mkdirSync(HISTORY_DIR, { recursive: true });
-const snapshots = fs.readdirSync(HISTORY_DIR).filter((f) => f.endsWith('.json') && f.slice(0, 10) < date).sort();
+// Only compare with snapshots of the same kind (never mix demo data with real data).
+const snapshots = fs
+  .readdirSync(HISTORY_DIR)
+  .filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f) && f.slice(0, 10) < date)
+  .sort()
+  .filter((f) => readJSON(path.join(HISTORY_DIR, f))?.mode === city.mode);
 const prevFile = snapshots.at(-1);
 const prev = prevFile ? readJSON(path.join(HISTORY_DIR, prevFile)) : null;
+const dayNumber = snapshots.length + 1;
 const prevById = new Map((prev?.residents || []).map((r) => [r.id, r]));
 
 const newResidents = city.residents.filter((r) => !prevById.has(r.id));
@@ -72,6 +78,21 @@ fs.mkdirSync(REPORTS_DIR, { recursive: true });
 const reportFile = path.join(REPORTS_DIR, `${date}.md`);
 fs.writeFileSync(reportFile, lines.join('\n') + '\n');
 writeJSON(path.join(HISTORY_DIR, `${date}.json`), city);
+
+// Everything the daily video needs (web/video.html reads this).
+const plotOf = new Map(city.residents.map((r, i) => [r.id, i + 1]));
+writeJSON(CHANGES_FILE, {
+  date,
+  day: dayNumber,
+  firstReport: !prev,
+  residentCount: city.residentCount,
+  totalFloors: city.totalFloors,
+  videoCount: city.videoCount,
+  floorsAdded,
+  newResidents: newResidents.map((r) => ({ id: r.id, name: r.name, comment: r.comment || '', plot: plotOf.get(r.id), floors: r.floors })),
+  grew: grew.map((r) => ({ id: r.id, name: r.name, comment: r.comment || '', from: r.floors - r.added, to: r.floors })),
+  top: ranked.slice(0, 3).map((r) => ({ id: r.id, name: r.name, floors: r.floors })),
+});
 
 console.log(lines.join('\n'));
 console.log(`\nSaved ${reportFile}`);

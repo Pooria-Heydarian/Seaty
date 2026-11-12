@@ -1,0 +1,142 @@
+{
+  "date": "2026-11-12",
+  "day": 2,
+  "firstReport": false,
+  "residentCount": 40,
+  "totalFloors": 79,
+  "videoCount": 6,
+  "floorsAdded": 16,
+  "newResidents": [
+    {
+      "id": "UCdemo00025",
+      "name": "MinaTV395",
+      "comment": "Commenting every day until I have a skyscraper",
+      "plot": 37,
+      "floors": 1
+    },
+    {
+      "id": "UCdemo00023",
+      "name": "KaiGamer",
+      "comment": "Commenting every day until I have a skyscraper",
+      "plot": 38,
+      "floors": 1
+    },
+    {
+      "id": "UCdemo00001",
+      "name": "MinaVlogs226",
+      "comment": "Add a park next to my house 🌳",
+      "plot": 39,
+      "floors": 1
+    },
+    {
+      "id": "UCdemo00021",
+      "name": "MinaGamer",
+      "comment": "Hi from Germany 👋",
+      "plot": 40,
+      "floors": 1
+    }
+  ],
+  "grew": [
+    {
+      "id": "UCdemo00036",
+      "name": "Nora_811",
+      "comment": "I want a red roof!",
+      "from": 4,
+      "to": 5
+    },
+    {
+      "id": "UCdemo00026",
+      "name": "Leo723",
+      "comment": "Best channel idea ever",
+      "from": 3,
+      "to": 4
+    },
+    {
+      "id": "UCdemo00004",
+      "name": "LeoGamer502",
+      "comment": "Can I get a house near the river please? 🏡",
+      "from": 3,
+      "to": 4
+    },
+    {
+      "id": "UCdemo00038",
+      "name": "Lina996",
+      "comment": "Add a park next to my house 🌳",
+      "from": 3,
+      "to": 4
+    },
+    {
+      "id": "UCdemo00022",
+      "name": "TaraPlays",
+      "comment": "Best channel idea ever",
+      "from": 2,
+      "to": 3
+    },
+    {
+      "id": "UCdemo00031",
+      "name": "ZaraPlays",
+      "comment": "Hi from Germany 👋",
+      "from": 2,
+      "to": 3
+    },
+    {
+      "id": "UCdemo00032",
+      "name": "Maya_",
+      "comment": "I want a red roof!",
+      "from": 2,
+      "to": 3
+    },
+    {
+      "id": "UCdemo00007",
+      "name": "Elif",
+      "comment": "Day 1 resident checking in!",
+      "from": 2,
+      "to": 3
+    },
+    {
+      "id": "UCdemo00012",
+      "name": "ElifBuilder513",
+      "comment": "I want a red roof!",
+      "from": 2,
+      "to": 3
+    },
+    {
+      "id": "UCdemo00029",
+      "name": "Ivan_285",
+      "comment": "How many floors do I have now?",
+      "from": 2,
+      "to": 3
+    },
+    {
+      "id": "UCdemo00034",
+      "name": "Noah2007898",
+      "comment": "Put me next to my best friend pls",
+      "from": 1,
+      "to": 2
+    },
+    {
+      "id": "UCdemo00028",
+      "name": "Elif_445",
+      "comment": "Mayor of Seaty reporting for duty",
+      "from": 1,
+      "to": 2
+    }
+  ],
+  "top": [
+    {
+      "id": "UCdemo00036",
+      "name": "Nora_811",
+      "floors": 5
+    },
+    {
+      "id": "UCdemo00033",
+      "name": "Yuki_99",
+      "floors": 5
+    },
+    {
+      "id": "UCdemo00026",
+      "name": "Leo723",
+      "floors": 4
+    }
+  ]
+}

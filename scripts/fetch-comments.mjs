@@ -100,10 +100,11 @@ function record(snippet, videoId) {
   }
   p.videos.add(videoId);
   if (at < p.firstSeen) p.firstSeen = at;
-  if (at > p.lastSeen) {
+  if (at >= p.lastSeen) {
     p.lastSeen = at;
     p.name = snippet.authorDisplayName; // keep the newest display name
     p.avatar = snippet.authorProfileImageUrl;
+    p.comment = text.length > 160 ? text.slice(0, 157) + '…' : text; // shown in the daily video
   }
 }
 
