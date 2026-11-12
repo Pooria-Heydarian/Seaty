@@ -8,6 +8,15 @@
 
 import { loadEnv, buildCity, writeJSON, CITY_FILE } from './lib.mjs';
 
+// Make failures readable: on GitHub Actions they show up as a red annotation on the run page.
+function fail(message) {
+  if (process.env.GITHUB_ACTIONS) console.log(`::error title=Fetch comments failed::${message.replace(/\r?\n/g, ' ')}`);
+  console.error(`\nFetch failed: ${message}`);
+  process.exit(1);
+}
+process.on('unhandledRejection', (e) => fail(e?.message || String(e)));
+process.on('uncaughtException', (e) => fail(e?.message || String(e)));
+
 loadEnv();
 const KEY = process.env.YOUTUBE_API_KEY;
 const CHANNEL = process.env.YOUTUBE_CHANNEL_ID;
@@ -29,7 +38,7 @@ async function api(endpoint, params) {
   const body = await res.json();
   if (!res.ok) {
     const reason = body?.error?.errors?.[0]?.reason || res.status;
-    const err = new Error(`${endpoint}: ${body?.error?.message || res.statusText}`);
+    const err = new Error(`YouTube API ${endpoint} [${reason}]: ${body?.error?.message || res.statusText}`);
     err.reason = reason;
     throw err;
   }
@@ -48,7 +57,7 @@ async function* paginate(endpoint, params) {
 // 1. Channel info + its "uploads" playlist
 const channelRes = await api('channels', { part: 'snippet,contentDetails', id: CHANNEL });
 const channel = channelRes.items?.[0];
-if (!channel) throw new Error(`Channel ${CHANNEL} not found`);
+if (!channel) fail(`Channel "${CHANNEL}" not found. Check YOUTUBE_CHANNEL_ID: it should start with UC and have 24 characters (got ${CHANNEL.length}).`);
 const uploads = channel.contentDetails.relatedPlaylists.uploads;
 console.log(`Channel: ${channel.snippet.title}`);
 
