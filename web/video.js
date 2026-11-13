@@ -81,7 +81,17 @@ function buildingShot(entry, floors, lt, dur) {
 function buildTimeline(city, ch) {
   const scenes = [];
   let t = 0;
-  const add = (type, dur, data = {}) => { scenes.push({ type, start: t, dur, ...data }); t += dur; };
+  // Voiceover: the renderer measures each spoken line and passes its length in
+  // window.SEATY_VO = { sceneIndex: seconds }, so scenes stretch to fit the voice.
+  const VO = window.SEATY_VO || {};
+  const add = (type, dur, data = {}, vo = null) => {
+    const i = scenes.length;
+    if (vo && VO[i]) dur = Math.max(dur, vo.at + VO[i] + 0.5);
+    scenes.push({ type, start: t, dur, vo, ...data });
+    t += dur;
+  };
+  const say = (name) => name.replace(/^@/, '');
+  const pick = (arr, i) => arr[i % arr.length];
 
   const newcomers = ch.newResidents.map((n) => ({ ...n, entry: world.entries.get(n.id) })).filter((n) => n.entry);
   // Day 1 / first report: everybody is "new"; feature the most recent ones only.
@@ -89,13 +99,26 @@ function buildTimeline(city, ch) {
   const montageNew = newcomers.filter((n) => !featuredNew.includes(n));
   const featuredGrow = ch.firstReport ? [] : ch.grew.slice(0, MAX_FEATURED_GROW).map((g) => ({ ...g, entry: world.entries.get(g.id) })).filter((g) => g.entry);
 
-  add('intro', 3.2);
-  if (!city.residents.length) add('empty', 5.5);
-  for (const n of featuredNew) add('newcomer', 3.6, { n });
-  if (montageNew.length) add('montage', 3.4, { list: montageNew });
-  for (const g of featuredGrow) add('grow', 3.2, { g });
-  if (city.residents.length) add('top', 3.6);
-  add('outro', 4.6);
+  const nNew = ch.newResidents.length;
+  const introLine = ch.firstReport
+    ? `Day ${ch.day} of adding every commenter to my city.${city.residentCount ? ` ${city.residentCount} people live here so far.` : ''}`
+    : `Day ${ch.day} of adding every commenter to my city. ${nNew ? `${nNew} new ${nNew === 1 ? 'resident' : 'residents'} moved in today!` : 'No one new moved in today, but the city keeps growing.'}`;
+  add('intro', 3.2, {}, { text: introLine, at: 0.3 });
+  if (!city.residents.length) add('empty', 5.5, {}, { text: 'The city is empty. Nobody lives here yet. Comment below, and I will build your house tomorrow!', at: 0.4 });
+  featuredNew.forEach((n, i) => add('newcomer', 3.6, { n }, {
+    text: pick([`Welcome, ${say(n.name)}!`, `Say hi to ${say(n.name)}, who just moved in.`, `${say(n.name)} joined the city!`, `And here comes ${say(n.name)}.`], i),
+    at: 1.0,
+  }));
+  if (montageNew.length) add('montage', 3.4, { list: montageNew }, { text: `Plus ${montageNew.length} more new ${montageNew.length === 1 ? 'neighbor' : 'neighbors'}!`, at: 0.4 });
+  featuredGrow.forEach((g, i) => add('grow', 3.2, { g }, {
+    text: pick([`${say(g.name)} commented again. Their building now has ${g.to} floors.`, `${say(g.name)} added ${g.to - g.from === 1 ? 'a floor' : `${g.to - g.from} floors`}, now ${g.to} in total.`, `Look at ${say(g.name)}'s building grow, to ${g.to} floors!`], i),
+    at: 0.5,
+  }));
+  if (city.residents.length) {
+    const t1 = [...world.list].sort((a, b) => a.rank - b.rank)[0];
+    add('top', 3.6, {}, { text: `The tallest building in Seaty belongs to ${say(t1.resident.name)}, with ${t1.resident.floors} floors.`, at: 0.4 });
+  }
+  add('outro', 4.6, {}, { text: 'Want your own house? Comment on this video. Every new video you comment on adds one more floor. See you tomorrow!', at: 0.5 });
 
   // When does each new building appear?
   const reveal = new Map();
@@ -268,10 +291,11 @@ function buildTimeline(city, ch) {
       boardOn = fade(lt, 0.5, s.dur - 0.35);
       top.forEach((e, r) => labels.set(e.resident.id, { cls: r === 0 ? 'vlabel top1' : 'vlabel top', text: `#${r + 1} ${e.resident.name}` }));
     } else if (s.type === 'empty') {
-      $('cta-big').innerHTML = lt < 2.6 ? 'The city is <span>empty</span>…' : 'Be resident <span>#1</span>';
-      $('cta-small').textContent = lt < 2.6 ? 'Nobody lives here yet.' : 'Comment below and I’ll build your house tomorrow.';
+      const sw = Math.max(2.6, s.dur * 0.45); // switch the text about halfway, in step with the voice
+      $('cta-big').innerHTML = lt < sw ? 'The city is <span>empty</span>…' : 'Be resident <span>#1</span>';
+      $('cta-small').textContent = lt < sw ? 'Nobody lives here yet.' : 'Comment below and I’ll build your house tomorrow.';
       $('cta-url').style.display = 'none';
-      ctaOn = fade(lt, 0.3, s.dur - 0.35) * (lt > 2.4 && lt < 2.8 ? Math.abs(lt - 2.6) / 0.2 : 1);
+      ctaOn = fade(lt, 0.3, s.dur - 0.35) * (lt > sw - 0.2 && lt < sw + 0.2 ? Math.abs(lt - sw) / 0.2 : 1);
     } else if (s.type === 'outro') {
       $('cta-big').innerHTML = 'Comment to get <span>your own house</span>';
       $('cta-small').textContent = 'Every new video you comment on adds +1 floor';
@@ -289,7 +313,7 @@ function buildTimeline(city, ch) {
     world.render();
   }
 
-  return { duration: t, fps: FPS, frame, scenes: scenes.map((s) => ({ type: s.type, start: s.start, dur: s.dur })) };
+  return { duration: t, fps: FPS, frame, scenes: scenes.map((s) => ({ type: s.type, start: s.start, dur: s.dur, vo: s.vo })) };
 }
 
 // ---------- API for the renderer ----------

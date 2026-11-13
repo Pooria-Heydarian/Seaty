@@ -77,14 +77,28 @@ const ready = (async () => {
 
   const scenes = [];
   let t = 0;
-  const add = (type, dur, text) => { scenes.push({ type, start: t, dur, text }); t += dur; };
-  add('welcome', 4.4, ['WELCOME TO', 'Seaty<span>.</span>', 'The city built by <b>your comments</b>']);
-  add('move', 5.6, ['STEP 1', 'Comment = <span>a house</span>', 'Comment on any video and you move in']);
-  add('grow', 6.6, ['STEP 2', 'Every video = <span>+1 floor</span>', 'Comment on each new video to grow']);
-  add('skyline', 5.8, ['STEP 3', 'Climb the <span>skyline</span>', 'More floors = a more valuable citizen']);
-  add('award', 8.0, ['EVERY MONTH', 'Citizen <span>Award</span>', 'When Seaty earns money, 10% goes to one lucky citizen']);
-  add('medals', 6.4, ['BE ACTIVE', 'Win <span>medals</span>', 'Join city challenges and stories']);
-  add('outro', 6.4, ['', 'Let’s build Seaty <span>together</span>', 'and grow it together']);
+  // Voiceover lengths come from the renderer (window.SEATY_VO = { sceneIndex: seconds }).
+  const VO = window.SEATY_VO || {};
+  const add = (type, dur, text, vo) => {
+    const i = scenes.length;
+    if (VO[i]) dur = Math.max(dur, vo.at + VO[i] + 0.6);
+    scenes.push({ type, start: t, dur, text, vo });
+    t += dur;
+  };
+  add('welcome', 4.4, ['WELCOME TO', 'Seaty<span>.</span>', 'The city built by <b>your comments</b>'],
+    { text: 'Welcome to Seaty: the city built by your comments.', at: 0.5 });
+  add('move', 5.6, ['STEP 1', 'Comment = <span>a house</span>', 'Comment on any video and you move in'],
+    { text: 'Step one. Comment on any video, and you move in. I will build you a house.', at: 0.5 });
+  add('grow', 6.6, ['STEP 2', 'Every video = <span>+1 floor</span>', 'Comment on each new video to grow'],
+    { text: 'Step two. Comment on every new video, and your building grows one more floor.', at: 0.5 });
+  add('skyline', 5.8, ['STEP 3', 'Climb the <span>skyline</span>', 'More floors = a more valuable citizen'],
+    { text: 'Step three. Climb the skyline. The more floors you have, the more valuable a citizen you are.', at: 0.5 });
+  add('award', 8.0, ['EVERY MONTH', 'Citizen <span>Award</span>', 'When Seaty earns money, 10% goes to one lucky citizen'],
+    { text: 'And every month, when Seaty earns money, ten percent goes to one lucky citizen. More floors means more chances to win. It is free to join, and the rules are in the description.', at: 0.6 });
+  add('medals', 6.4, ['BE ACTIVE', 'Win <span>medals</span>', 'Join city challenges and stories'],
+    { text: 'Active citizens can also win medals, by joining city challenges and stories.', at: 0.5 });
+  add('outro', 6.4, ['', 'Let’s build Seaty <span>together</span>', 'and grow it together'],
+    { text: 'So, let us build Seaty together. Subscribe, and leave your first comment below!', at: 0.6 });
   const S = Object.fromEntries(scenes.map((s) => [s.type, s]));
 
   function orbit(target, dist, az, elDeg) {
@@ -150,7 +164,7 @@ const ready = (async () => {
     const k = clamp01((time - revealAt) / 0.7);
     you.outer.visible = time >= revealAt;
     you.outer.scale.set(0.85 + 0.15 * easeOut(k), Math.max(0.001, easeOutBack(k)), 0.85 + 0.15 * easeOut(k));
-    const g = clamp01((time - S.grow.start - 0.9) / 4.6);
+    const g = clamp01((time - S.grow.start - 0.9) / Math.max(4.6, S.grow.dur - 2));
     const floors = time < S.grow.start + 0.9 ? 1 : 1 + Math.round((YOU_FLOORS - 1) * g);
     world.setFloors(you, floors);
 
@@ -187,7 +201,7 @@ const ready = (async () => {
     world.tick(time);
     world.render();
   }
-  return { duration: t, fps: FPS, frame, scenes: scenes.map(({ type, start, dur }) => ({ type, start, dur })) };
+  return { duration: t, fps: FPS, frame, scenes: scenes.map(({ type, start, dur, vo }) => ({ type, start, dur, vo })) };
 })();
 
 window.seaty = {

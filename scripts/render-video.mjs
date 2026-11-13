@@ -59,7 +59,25 @@ page.on('console', (m) => m.type() === 'error' && console.error('page console:',
 await page.setViewport({ width: 1080, height: 1920, deviceScaleFactor: 1 });
 const url = `http://127.0.0.1:${port}/${pageName}?render=1${site ? `&site=${encodeURIComponent(site)}` : ''}`;
 await page.goto(url, { waitUntil: 'networkidle0', timeout: 120000 });
-const info = await page.evaluate(() => window.seaty.ready);
+let info = await page.evaluate(() => window.seaty.ready);
+
+// ---- voiceover: speak each scene's line, then reload so scenes stretch to fit ----
+const useVoice = !('no-voice' in args) && !process.env.SEATY_NO_VOICE && info.scenes.some((s) => s.vo);
+const clips = new Map();
+if (useVoice) {
+  const { speak, VOICE } = await import('./tts.mjs');
+  console.log(`Voiceover (${VOICE})…`);
+  for (const [i, s] of info.scenes.entries()) {
+    if (!s.vo?.text) continue;
+    const clip = await speak(s.vo.text);
+    clips.set(i, clip);
+    console.log(`  ${s.type.padEnd(9)} ${(clip.samples.length / clip.rate).toFixed(1)}s  "${s.vo.text}"`);
+  }
+  const lengths = Object.fromEntries([...clips].map(([i, c]) => [i, c.samples.length / c.rate]));
+  await page.evaluateOnNewDocument((d) => { window.SEATY_VO = d; }, lengths);
+  await page.goto(url, { waitUntil: 'networkidle0', timeout: 120000 });
+  info = await page.evaluate(() => window.seaty.ready);
+}
 const duration = limitSeconds ? Math.min(limitSeconds, info.duration) : info.duration;
 const frames = Math.round(duration * info.fps);
 console.log(`Rendering ${duration.toFixed(1)}s (${frames} frames) -> ${path.relative(ROOT, outFile)}`);
@@ -70,12 +88,34 @@ const changes = readJSON(CHANGES_FILE) || { day: 1 };
 const musicFile = path.join(VIDEO_DIR, `music-${baseName}.wav`);
 writeMusic(musicFile, duration, isDaily ? changes.day : 5);
 
+// Place every spoken line at its scene's time on one voice track.
+const voiceFile = path.join(VIDEO_DIR, `voice-${baseName}.wav`);
+if (clips.size) {
+  const { writeWavMono } = await import('./tts.mjs');
+  const rate = [...clips.values()][0].rate;
+  const track = new Float32Array(Math.ceil(duration * rate));
+  for (const [i, clip] of clips) {
+    const s = info.scenes[i];
+    const at = Math.round((s.start + s.vo.at) * rate);
+    for (let k = 0; k < clip.samples.length && at + k < track.length; k++) track[at + k] += clip.samples[k];
+  }
+  writeWavMono(voiceFile, track, rate);
+}
+
 // ---- encoder ----
+// With a voice: the music ducks (gets quieter) whenever someone is speaking.
+const audioArgs = clips.size
+  ? ['-i', musicFile, '-i', voiceFile,
+     '-filter_complex',
+     '[2:a]aresample=44100,pan=stereo|c0=c0|c1=c0,volume=1.6,asplit=2[vk][vm];' +
+     '[1:a]volume=0.6[m];[m][vk]sidechaincompress=threshold=0.02:ratio=12:attack=20:release=400[duck];' +
+     '[duck][vm]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95[aout]',
+     '-map', '0:v', '-map', '[aout]']
+  : ['-i', musicFile, '-map', '0:v', '-map', '1:a'];
 const ff = spawn(ffmpegPath, [
   '-y', '-loglevel', 'error',
   '-f', 'image2pipe', '-framerate', String(info.fps), '-c:v', 'mjpeg', '-i', '-',
-  '-i', musicFile,
-  '-map', '0:v', '-map', '1:a',
+  ...audioArgs,
   '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-pix_fmt', 'yuv420p', '-r', String(info.fps),
   '-c:a', 'aac', '-b:a', '160k', '-shortest', '-movflags', '+faststart',
   outFile,
@@ -98,6 +138,7 @@ process.stdout.write('\n');
 await browser.close();
 server.close();
 fs.rmSync(musicFile, { force: true });
+fs.rmSync(voiceFile, { force: true });
 
 if (!isDaily) {
   console.log(`Done in ${Math.round((Date.now() - t0) / 1000)}s: ${outFile}`);
