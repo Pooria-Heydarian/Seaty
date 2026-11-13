@@ -13,7 +13,8 @@
     "daily": "node scripts/fetch-comments.mjs && node scripts/daily-report.mjs",
     "video": "node scripts/render-video.mjs",
     "upload": "node scripts/upload-youtube.mjs",
-    "youtube-auth": "node scripts/youtube-auth.mjs"
+    "youtube-auth": "node scripts/youtube-auth.mjs",
+    "inbox": "node scripts/comment-inbox.mjs"
   },
   "engines": {
     "node": ">=18"
