@@ -22,8 +22,12 @@ const args = Object.fromEntries(
 const limitSeconds = args.seconds ? Number(args.seconds) : null;
 const site = process.env.SITE_URL || args.site || '';
 const date = readJSON(CHANGES_FILE)?.date || today();
+// --page trailer.html --name trailer  renders another timeline page (same frame API)
+const pageName = args.page || 'video.html';
+const isDaily = pageName === 'video.html';
+const baseName = args.name || date;
 fs.mkdirSync(VIDEO_DIR, { recursive: true });
-const outFile = path.join(VIDEO_DIR, `${date}${limitSeconds ? '-test' : ''}.mp4`);
+const outFile = path.join(VIDEO_DIR, `${baseName}${limitSeconds ? '-test' : ''}.mp4`);
 
 // ---- tiny static server for web/ ----
 const WEB = path.join(ROOT, 'web');
@@ -53,7 +57,7 @@ const page = await browser.newPage();
 page.on('pageerror', (e) => console.error('page error:', e.message));
 page.on('console', (m) => m.type() === 'error' && console.error('page console:', m.text()));
 await page.setViewport({ width: 1080, height: 1920, deviceScaleFactor: 1 });
-const url = `http://127.0.0.1:${port}/video.html?render=1${site ? `&site=${encodeURIComponent(site)}` : ''}`;
+const url = `http://127.0.0.1:${port}/${pageName}?render=1${site ? `&site=${encodeURIComponent(site)}` : ''}`;
 await page.goto(url, { waitUntil: 'networkidle0', timeout: 120000 });
 const info = await page.evaluate(() => window.seaty.ready);
 const duration = limitSeconds ? Math.min(limitSeconds, info.duration) : info.duration;
@@ -63,8 +67,8 @@ console.log(`Scenes: ${info.scenes.map((s) => s.type).join(' → ')}`);
 
 // ---- music ----
 const changes = readJSON(CHANGES_FILE) || { day: 1 };
-const musicFile = path.join(VIDEO_DIR, `music-${date}.wav`);
-writeMusic(musicFile, duration, changes.day);
+const musicFile = path.join(VIDEO_DIR, `music-${baseName}.wav`);
+writeMusic(musicFile, duration, isDaily ? changes.day : 5);
 
 // ---- encoder ----
 const ff = spawn(ffmpegPath, [
@@ -94,6 +98,11 @@ process.stdout.write('\n');
 await browser.close();
 server.close();
 fs.rmSync(musicFile, { force: true });
+
+if (!isDaily) {
+  console.log(`Done in ${Math.round((Date.now() - t0) / 1000)}s: ${outFile}`);
+  process.exit(0);
+}
 
 // ---- title / description for the upload ----
 const city = readJSON(CITY_FILE);
