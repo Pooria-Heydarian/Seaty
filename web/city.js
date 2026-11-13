@@ -55,7 +55,9 @@ function select(entry, { fly = true, updateUrl = true } = {}) {
 
   const r = entry.resident;
   $('info-name').textContent = r.name;
-  $('info-meta').textContent = `Resident since ${new Date(r.joined).toLocaleDateString()}`;
+  const UPGRADE_NAMES = { pool: '🏊 Pool', 'apple-tree': '🍎 Apple tree' };
+  const ups = [...(entry.upgrades || [])].map((u) => UPGRADE_NAMES[u] || u);
+  $('info-meta').textContent = `Resident since ${new Date(r.joined).toLocaleDateString()}${ups.length ? ` · ${ups.join(' · ')}` : ''}`;
   $('info-floors').textContent = r.floors;
   $('info-rank').textContent = `#${entry.rank}`;
   $('info-plot').textContent = entry.plot;
@@ -66,10 +68,10 @@ function select(entry, { fly = true, updateUrl = true } = {}) {
     img.src = r.avatar;
     img.alt = '';
     img.referrerPolicy = 'no-referrer';
-    img.onerror = () => { avatar.textContent = r.name[0]?.toUpperCase() || '?'; };
+    img.onerror = () => { avatar.textContent = r.name.replace(/^@/, '')[0]?.toUpperCase() || '?'; };
     avatar.appendChild(img);
   } else {
-    avatar.textContent = r.name[0]?.toUpperCase() || '?';
+    avatar.textContent = r.name.replace(/^@/, '')[0]?.toUpperCase() || '?';
   }
   const link = $('info-channel');
   link.hidden = city.mode !== 'live';
@@ -265,7 +267,8 @@ async function boot() {
     return;
   }
 
-  world.build(city, { labelTop: LABEL_TOP });
+  const specials = await fetch(`data/specials.json?t=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  world.build(city, { labelTop: LABEL_TOP, specials });
   const hallLabel = document.createElement('div');
   hallLabel.className = 'label hall';
   hallLabel.textContent = `${city.channel?.title || 'Town Hall'} · ${city.videoCount} videos`;

@@ -47,6 +47,7 @@
     #card .comment { margin-top: 28px; font-weight: 500; font-size: 44px; line-height: 1.3; color: var(--ink); }
     #card .comment::before { content: '“'; color: var(--accent); font-weight: 900; }
     #card .comment::after { content: '”'; color: var(--accent); font-weight: 900; }
+    #card.plain .comment::before, #card.plain .comment::after { content: none; }
     #card .floors { margin-top: 24px; font-weight: 900; font-size: 78px; color: var(--ink); }
     #card .floors b { color: var(--accent); }
 
@@ -75,6 +76,7 @@
     .vlabel.new { background: var(--accent); color: #fff; font-size: 42px; }
     .vlabel.top { background: var(--ink); color: #fff; }
     .vlabel.top1 { background: var(--gold); color: var(--ink); font-size: 42px; }
+    .label.landmark { font-weight: 900; font-size: 34px; color: var(--ink); background: var(--gold); padding: 8px 22px; border-radius: 14px; white-space: nowrap; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
 
     /* Preview controls (not rendered into the video) */
     #controls { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; gap: 10px; align-items: center; background: #1c2430; color: #fff; padding: 8px 14px; border-radius: 999px; font: 13px system-ui; }

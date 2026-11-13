@@ -96,6 +96,28 @@ From then on, every daily run uploads the Short. `data/uploads.json` records eac
 
 Set the repository variable `YT_PRIVACY` to `unlisted` or `private` if you'd like to check each video before it goes public.
 
+## Special buildings & house upgrades
+
+Edit [`web/data/specials.json`](web/data/specials.json) and commit it. The next daily video opens with a news scene ("Big news! Seaty just opened…"), and the website shows the changes right away.
+
+```json
+{
+  "landmarks": [
+    { "id": "spaghetti-factory", "type": "spaghetti-factory", "name": "Spaghetti Factory", "requestedBy": "@theel-u7g" }
+  ],
+  "upgrades": [
+    { "resident": "@V1.bootleg", "type": "pool" },
+    { "resident": "@mdsadiq4737", "type": "apple-tree" }
+  ]
+}
+```
+
+- **Landmarks:** there are up to 8, placed on the reserved downtown blocks around the town square. Model types:
+  - `spaghetti-factory`
+  - any other type gets a generic gold-domed hall (until it has its own model)
+- **Upgrades:** `resident` is the person's YouTube handle (`@name`) or channel ID. Types are `pool` and `apple-tree`. An upgrade appears once that person lives in the city.
+- `data/specials-seen.json` remembers what has already been announced, so each one is shown in the video only once.
+
 ## Monthly lottery
 
 ```bash

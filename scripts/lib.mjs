@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const CITY_FILE = path.join(ROOT, 'web', 'data', 'city.json');
 export const CHANGES_FILE = path.join(ROOT, 'web', 'data', 'changes.json');
+export const SPECIALS_FILE = path.join(ROOT, 'web', 'data', 'specials.json');
 export const VIDEO_DIR = path.join(ROOT, 'video');
 export const HISTORY_DIR = path.join(ROOT, 'data', 'history');
 export const REPORTS_DIR = path.join(ROOT, 'reports');

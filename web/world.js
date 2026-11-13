@@ -40,11 +40,33 @@ function spiral(n) {
 }
 const LOT_OFFSETS = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([x, z]) => [(x * LOT) / 2, (z * LOT) / 2]);
 
-/** Plot index (0-based) -> world position. Block 0 is the town square. */
+// Downtown blocks kept for landmarks (special buildings), in the order they get used.
+export const LANDMARK_BLOCKS = [[1, -1], [-1, 1], [1, 1], [-1, -1], [2, -2], [-2, 2], [2, 2], [-2, -2]];
+const RESERVED = new Set(LANDMARK_BLOCKS.map(([x, z]) => `${x},${z}`));
+
+// Resident blocks: the spiral around the town square, skipping landmark blocks.
+const residentBlocks = []; // [{ bx, bz, n }] n = spiral index
+let spiralCursor = 1;
+function residentBlock(k) {
+  while (residentBlocks.length <= k) {
+    const [bx, bz] = spiral(spiralCursor);
+    if (!RESERVED.has(`${bx},${bz}`)) residentBlocks.push({ bx, bz, n: spiralCursor });
+    spiralCursor++;
+  }
+  return residentBlocks[k];
+}
+
+/** Resident plot index (0-based) -> world position. Block 0 is the town square. */
 export function plotPosition(i) {
-  const [bx, bz] = spiral(Math.floor(i / 4) + 1);
+  const { bx, bz } = residentBlock(Math.floor(i / 4));
   const [ox, oz] = LOT_OFFSETS[i % 4];
   return new THREE.Vector3(bx * PITCH + ox, 0, bz * PITCH + oz);
+}
+
+/** Landmark number k (0-based, max 8) -> centre of its downtown block. */
+export function landmarkPosition(k) {
+  const [bx, bz] = LANDMARK_BLOCKS[k];
+  return new THREE.Vector3(bx * PITCH, 0, bz * PITCH);
 }
 
 // ---------- Textures & materials ----------
@@ -205,7 +227,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     body.castShadow = body.receiveShadow = true;
     body.userData.entry = entry;
     group.add(body);
-    return { group, body, height: h };
+    return { group, body, height: h, roofTop: entry.roofTop };
   }
 
   /** Show `floors` floors on this building (used by the video to grow towers floor by floor). */
@@ -223,10 +245,165 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     entry.inner = b.group;
     entry.body = b.body;
     entry.height = b.height;
+    entry.roofTop = b.roofTop;
     entry.shownFloors = floors;
+    b.group.position.x = entry.upgrades?.has('pool') ? -0.8 : 0; // make room for the pool
     entry.outer.add(b.group);
     world.pickables.push(b.body);
     if (entry.label) entry.label.position.y = entry.roofTop + 1.6;
+  };
+
+  // ----- Special buildings & upgrades -----
+  const M = (color, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.75, ...extra });
+  const SPECIAL_MAT = {
+    cream: M('#f3e3c3'), brick: M('#b5523b'), white: M('#f7f4ee'), red: M('#d63a2f'),
+    noodle: M('#f2c94c', { roughness: 0.5 }), steel: M('#9aa5b1', { metalness: 0.4, roughness: 0.4 }),
+    glass: M('#7fa7c9', { roughness: 0.2, metalness: 0.1 }), dark: M('#3b4552'),
+    water: M('#3fb6e8', { roughness: 0.1, emissive: '#0b5c80', emissiveIntensity: 0.35 }),
+    leaf: M('#4f8f3f', { flatShading: true }), trunk: M('#7b5a3c'), apple: M('#d9302b', { roughness: 0.4 }),
+    steam: M('#ffffff', { transparent: true, opacity: 0.75 }),
+  };
+  const shadowAll = (g) => g.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+
+  /** Spaghetti Factory: sawtooth-roof hall, striped chimney with steam, giant spaghetti plate on the roof. */
+  function spaghettiFactory() {
+    const g = new THREE.Group();
+    const hall = new THREE.Mesh(new THREE.BoxGeometry(9.5, 4.2, 7).translate(0, 2.1, 0), SPECIAL_MAT.cream);
+    g.add(hall);
+    // sawtooth roof
+    const tooth = new THREE.Shape([new THREE.Vector2(0, 0), new THREE.Vector2(3.1, 0), new THREE.Vector2(0, 1.6)]);
+    const toothGeo = new THREE.ExtrudeGeometry(tooth, { depth: 7, bevelEnabled: false }).translate(-4.75, 4.2, -3.5);
+    for (let i = 0; i < 3; i++) {
+      const t = new THREE.Mesh(toothGeo, SPECIAL_MAT.brick);
+      t.position.x = i * 3.15;
+      g.add(t);
+      const win = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.3, 6.4).translate(-4.7 + i * 3.15, 4.95, 0), SPECIAL_MAT.glass);
+      g.add(win);
+    }
+    // windows along the front + big door
+    for (let i = 0; i < 4; i++) {
+      const w = new THREE.Mesh(new THREE.BoxGeometry(1.3, 1.4, 0.1).translate(-3.6 + i * 2.4, 2.6, 3.52), SPECIAL_MAT.glass);
+      g.add(w);
+    }
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(2.4, 2.6, 0.12).translate(0, 1.3, 3.54), SPECIAL_MAT.dark));
+    // striped chimney + steam
+    for (let i = 0; i < 6; i++) {
+      const c = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.6, 1.2, 16).translate(0, 0.6, 0), i % 2 ? SPECIAL_MAT.white : SPECIAL_MAT.red);
+      c.position.set(3.6, 4.2 + i * 1.2, -2.4);
+      g.add(c);
+    }
+    const puffs = [];
+    for (let i = 0; i < 4; i++) {
+      const p = new THREE.Mesh(new THREE.IcosahedronGeometry(0.7, 1), SPECIAL_MAT.steam);
+      g.add(p);
+      puffs.push(p);
+    }
+    // giant plate of spaghetti with a meatball and a fork
+    const plate = new THREE.Mesh(new THREE.CylinderGeometry(2.3, 1.9, 0.35, 32), SPECIAL_MAT.white);
+    plate.position.set(-1.2, 6.6, 0.8);
+    const noodles = new THREE.Mesh(new THREE.TorusKnotGeometry(1.15, 0.28, 160, 12, 3, 7), SPECIAL_MAT.noodle);
+    noodles.position.set(-1.2, 7.35, 0.8);
+    noodles.rotation.x = Math.PI / 2;
+    noodles.scale.set(1, 1, 0.55);
+    const ball = new THREE.Mesh(new THREE.IcosahedronGeometry(0.62, 2), SPECIAL_MAT.red);
+    ball.position.set(-1.0, 8.05, 0.9);
+    const fork = new THREE.Group();
+    fork.add(new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 3.4, 8).translate(0, 1.7, 0), SPECIAL_MAT.steel));
+    for (let k = -1; k <= 1; k++) fork.add(new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.9, 0.08).translate(k * 0.22, 3.75, 0), SPECIAL_MAT.steel));
+    fork.add(new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.12, 0.1).translate(0, 3.3, 0), SPECIAL_MAT.steel));
+    fork.position.set(-1.6, 7.2, 0.6);
+    fork.rotation.z = 0.45;
+    const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 2.4, 8).translate(0, 1.2, 0), SPECIAL_MAT.steel);
+    stand.position.set(-1.2, 4.2, 0.8);
+    g.add(plate, noodles, ball, fork, stand);
+    shadowAll(g);
+    puffs.forEach((p) => (p.castShadow = false));
+    g.userData.tick = (t) => {
+      puffs.forEach((p, i) => {
+        const k = (t * 0.35 + i / puffs.length) % 1;
+        p.position.set(3.6 + k * 1.2, 11.4 + k * 4, -2.4 - k * 0.6);
+        p.scale.setScalar(0.5 + k * 1.3);
+      });
+      noodles.rotation.z = t * 0.6;
+    };
+    return { group: g, height: 9.5 };
+  }
+
+  /** Fallback for landmark types without their own model yet. */
+  function genericLandmark(def) {
+    const g = new THREE.Group();
+    const base = new THREE.Mesh(new THREE.BoxGeometry(8, 3.5, 6).translate(0, 1.75, 0), SPECIAL_MAT.cream);
+    const dome = new THREE.Mesh(new THREE.SphereGeometry(2.4, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2).translate(0, 3.5, 0), mat.gold);
+    g.add(base, dome);
+    for (let i = 0; i < 4; i++) g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 3.5, 12).translate(-3 + i * 2, 1.75, 3.2), SPECIAL_MAT.white));
+    shadowAll(g);
+    return { group: g, height: 6 };
+  }
+  const LANDMARK_MODELS = { 'spaghetti-factory': spaghettiFactory };
+
+  function pool() {
+    const g = new THREE.Group();
+    const rim = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.22, 4.4).translate(0, 0.11, 0), SPECIAL_MAT.white);
+    const water = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.05, 4.05).translate(0, 0.23, 0), SPECIAL_MAT.water);
+    g.add(rim, water);
+    g.position.set(2.25, 0.27, 0);
+    rim.receiveShadow = true;
+    return g;
+  }
+  function appleTree() {
+    const g = new THREE.Group();
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.22, 1.3, 6).translate(0, 0.65, 0), SPECIAL_MAT.trunk));
+    g.add(new THREE.Mesh(new THREE.IcosahedronGeometry(1.0, 1).translate(0, 1.9, 0), SPECIAL_MAT.leaf));
+    const r = rng(3);
+    for (let i = 0; i < 9; i++) {
+      const a = r() * Math.PI * 2, y = 1.4 + r() * 1.0;
+      const rad = Math.sqrt(Math.max(0, 1 - ((y - 1.9) / 1.05) ** 2)) * 1.0;
+      const ap = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 8), SPECIAL_MAT.apple);
+      ap.position.set(Math.cos(a) * rad, y, Math.sin(a) * rad);
+      g.add(ap);
+    }
+    shadowAll(g);
+    g.position.set(-2.35, 0.27, -2.35);
+    g.scale.setScalar(0.85);
+    return g;
+  }
+  const UPGRADE_MODELS = { pool, 'apple-tree': appleTree };
+
+  world.landmarks = new Map();
+  /** Adds landmarks and house upgrades from data/specials.json. Call after build(). */
+  world.addSpecials = (specials) => {
+    (specials?.landmarks || []).slice(0, LANDMARK_BLOCKS.length).forEach((def, k) => {
+      const made = (LANDMARK_MODELS[def.type] || genericLandmark)(def);
+      const outer = new THREE.Group();
+      outer.position.copy(landmarkPosition(k));
+      // face the town square
+      outer.rotation.y = Math.atan2(-outer.position.x, -outer.position.z);
+      outer.add(made.group);
+      scene.add(outer);
+      const el = document.createElement('div');
+      el.className = 'label landmark';
+      el.textContent = def.name;
+      const label = new CSS2DObject(el);
+      label.position.set(0, made.height + 2.5, 0);
+      outer.add(label);
+      world.landmarks.set(def.id, { def, outer, height: made.height, label, tick: made.group.userData.tick });
+    });
+    const norm = (s) => String(s || '').trim().replace(/^@/, '').toLowerCase();
+    for (const up of specials?.upgrades || []) {
+      const who = norm(up.resident);
+      const entry = world.list.find((e) => e.resident.id === up.resident || norm(e.resident.name) === who);
+      const model = UPGRADE_MODELS[up.type];
+      if (!entry || !model) continue;
+      entry.upgrades ||= new Set();
+      if (entry.upgrades.has(up.type)) continue;
+      entry.upgrades.add(up.type);
+      const obj = model();
+      (entry.upgradeObjects ||= {})[up.type] = obj;
+      entry.outer.add(obj);
+      const shown = entry.shownFloors;
+      entry.shownFloors = null;
+      world.setFloors(entry, shown); // re-place the house (pool shifts it)
+    }
   };
 
   world.addLabel = (entry, className = 'label', text = null) => {
@@ -273,13 +450,32 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     }
     scene.add(pads);
 
-    // Lawn on every plot so houses sit in little gardens
+    // Lawn on every plot so houses sit in little gardens; work out which plots get trees.
     const lawnGeo = new THREE.BoxGeometry(LOT - 0.8, 0.05, LOT - 0.8).translate(0, 0.27, 0);
     const lawns = new THREE.InstancedMesh(lawnGeo, new THREE.MeshStandardMaterial({ color: '#a3c784', roughness: 1 }), (ringBlocks - 1) * 4);
     lawns.receiveShadow = true;
-    for (let p = 0; p < (ringBlocks - 1) * 4; p++) {
-      const pos = plotPosition(p);
-      lawns.setMatrixAt(p, m.makeTranslation(pos.x, 0, pos.z));
+    const used = world.city.residents.length;
+    const landmarkCount = Math.min(LANDMARK_BLOCKS.length, world.specials?.landmarks?.length || 0);
+    const busyLandmark = new Set(LANDMARK_BLOCKS.slice(0, landmarkCount).map(([x, z]) => `${x},${z}`));
+    const residentIndexOfN = (n) => {
+      while (!residentBlocks.length || residentBlocks.at(-1).n < n) residentBlock(residentBlocks.length);
+      return residentBlocks.findIndex((rb) => rb.n === n);
+    };
+    const treePlots = [];
+    for (let b = 1; b < ringBlocks; b++) {
+      const [bx, bz] = spiral(b);
+      const key = `${bx},${bz}`;
+      let free; // which of the 4 plots get trees
+      if (RESERVED.has(key)) free = busyLandmark.has(key) ? [] : [0, 1, 2, 3];
+      else {
+        const ri = residentIndexOfN(b);
+        free = [0, 1, 2, 3].filter((j) => ri * 4 + j >= used);
+      }
+      LOT_OFFSETS.forEach(([ox, oz], j) => {
+        const pos = new THREE.Vector3(bx * PITCH + ox, 0, bz * PITCH + oz);
+        lawns.setMatrixAt((b - 1) * 4 + j, m.makeTranslation(pos.x, 0, pos.z));
+        if (free.includes(j)) treePlots.push(pos);
+      });
     }
     scene.add(lawns);
 
@@ -300,10 +496,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     });
     scene.add(dashes);
 
-    // Trees on plots nobody lives on yet
-    const used = world.city.residents.length;
-    const treePlots = [];
-    for (let p = used; p < (ringBlocks - 1) * 4; p++) treePlots.push(plotPosition(p));
+    // Trees on plots nobody lives on yet (and on landmark blocks still waiting for a landmark)
     const trunkGeo = new THREE.CylinderGeometry(0.15, 0.2, 1, 6).translate(0, 0.5, 0);
     const crownGeo = new THREE.IcosahedronGeometry(1.1, 0).translate(0, 1.9, 0);
     const n = Math.max(1, treePlots.length * 2);
@@ -389,12 +582,16 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
   }
 
   /** Build the whole town from city.json data. */
-  world.build = (city, { labelTop = 5 } = {}) => {
+  world.build = (city, { labelTop = 5, specials = null } = {}) => {
     world.city = city;
+    world.specials = specials;
     const blocks = Math.ceil(city.residents.length / 4);
-    const ringBlocks = Math.pow(Math.ceil(Math.sqrt(blocks + 1)) + 2, 2);
-    const ring = Math.ceil(Math.sqrt(blocks + 1)) + 1;
-    world.radius = (ring * PITCH) / 2 + PITCH;
+    // Furthest spiral block in use: the last resident block, or the landmark blocks downtown.
+    const landmarkReach = (specials?.landmarks?.length || 0) > 4 ? 24 : 8;
+    const maxN = Math.max(landmarkReach, blocks ? residentBlock(blocks - 1).n : 0);
+    const side = Math.ceil(Math.sqrt(maxN + 1));
+    const ringBlocks = Math.pow(side + 2, 2);
+    world.radius = ((side + 1) * PITCH) / 2 + PITCH;
 
     buildGround(ringBlocks);
     buildCars();
@@ -414,6 +611,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       world.list.push(entry);
       if (entry.rank <= labelTop) world.addLabel(entry);
     });
+    if (specials) world.addSpecials(specials);
 
     // Light, shadows and fog sized to the city
     const R = world.radius;
@@ -447,6 +645,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
   world.tick = (seconds) => {
     if (world.townHall) world.townHall.userData.tip.rotation.y = seconds * 1.1;
     world.cars?.update(seconds);
+    for (const l of world.landmarks.values()) l.tick?.(seconds);
   };
 
   world.render = () => {

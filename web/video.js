@@ -46,9 +46,13 @@ camera.fov = 50;
 camera.updateProjectionMatrix();
 
 const ready = (async () => {
-  const [city, changes] = await Promise.all([getJSON('data/city.json'), getJSON('data/changes.json').catch(() => null)]);
+  const [city, changes, specials] = await Promise.all([
+    getJSON('data/city.json'),
+    getJSON('data/changes.json').catch(() => null),
+    getJSON('data/specials.json').catch(() => null),
+  ]);
   const ch = changes || { day: 1, newResidents: [], grew: [], top: [], residentCount: city.residentCount, totalFloors: city.totalFloors, floorsAdded: 0, firstReport: true };
-  world.build(city, { labelTop: 0 });
+  world.build(city, { labelTop: 0, specials });
   await document.fonts.ready;
   return buildTimeline(city, ch);
 })();
@@ -104,19 +108,38 @@ function buildTimeline(city, ch) {
     ? `Day ${ch.day} of adding every commenter to my city.${city.residentCount ? ` ${city.residentCount} people live here so far.` : ''}`
     : `Day ${ch.day} of adding every commenter to my city. ${nNew ? `${nNew} new ${nNew === 1 ? 'resident' : 'residents'} moved in today!` : 'No one new moved in today, but the city keeps growing.'}`;
   add('intro', 3.2, {}, { text: introLine, at: 0.3 });
+  // Special buildings first (big news), house upgrades after the new residents have moved in.
+  const newSpecials = (ch.newSpecials || []).filter((s) => (s.kind === 'landmark' ? world.landmarks.has(s.id) : world.entries.get(s.id)?.upgradeObjects?.[s.type]));
+  const UPGRADE_LINE = {
+    pool: (n) => [`${n}'s house just got a swimming pool!`, 'Got a swimming pool!'],
+    'apple-tree': (n) => [`${n} now has an apple tree in the backyard!`, 'Got an apple tree in the backyard!'],
+  };
+  for (const sp of newSpecials.filter((s) => s.kind === 'landmark')) {
+    add('landmark', 4.4, { sp }, { text: `Big news! Seaty just opened a brand new ${sp.name}${sp.requestedBy ? `, requested by ${say(sp.requestedBy)}` : ''}!`, at: 1.0 });
+  }
   if (!city.residents.length) add('empty', 5.5, {}, { text: 'The city is empty. Nobody lives here yet. Comment below, and I will build your house tomorrow!', at: 0.4 });
   featuredNew.forEach((n, i) => add('newcomer', 3.6, { n }, {
     text: pick([`Welcome, ${say(n.name)}!`, `Say hi to ${say(n.name)}, who just moved in.`, `${say(n.name)} joined the city!`, `And here comes ${say(n.name)}.`], i),
     at: 1.0,
   }));
   if (montageNew.length) add('montage', 3.4, { list: montageNew }, { text: `Plus ${montageNew.length} more new ${montageNew.length === 1 ? 'neighbor' : 'neighbors'}!`, at: 0.4 });
+  for (const sp of newSpecials.filter((s) => s.kind === 'upgrade')) {
+    const [line, caption] = (UPGRADE_LINE[sp.type] || ((n) => [`${n} got a house upgrade!`, 'Got a house upgrade!']))(say(sp.name));
+    add('upgrade', 3.8, { sp, caption, entry: world.entries.get(sp.id) }, { text: line, at: 0.9 });
+  }
   featuredGrow.forEach((g, i) => add('grow', 3.2, { g }, {
     text: pick([`${say(g.name)} commented again. Their building now has ${g.to} floors.`, `${say(g.name)} added ${g.to - g.from === 1 ? 'a floor' : `${g.to - g.from} floors`}, now ${g.to} in total.`, `Look at ${say(g.name)}'s building grow, to ${g.to} floors!`], i),
     at: 0.5,
   }));
   if (city.residents.length) {
     const t1 = [...world.list].sort((a, b) => a.rank - b.rank)[0];
-    add('top', 3.6, {}, { text: `The tallest building in Seaty belongs to ${say(t1.resident.name)}, with ${t1.resident.floors} floors.`, at: 0.4 });
+    const f = t1.resident.floors;
+    add('top', 3.6, {}, {
+      text: f > 1
+        ? `The tallest building in Seaty belongs to ${say(t1.resident.name)}, with ${f} floors.`
+        : 'Everyone has one floor so far. Who will build the first tower?',
+      at: 0.4,
+    });
   }
   add('outro', 4.6, {}, { text: 'Want your own house? Comment on this video. Every new video you comment on adds one more floor. See you tomorrow!', at: 0.5 });
 
@@ -131,6 +154,9 @@ function buildTimeline(city, ch) {
       s.center = c.divideScalar(s.list.length);
     }
   }
+  // New landmarks rise in their news scene; upgrades pop in during theirs.
+  const landmarkReveal = new Map(scenes.filter((s) => s.type === 'landmark').map((s) => [s.sp.id, s.start + 1.0]));
+  const upgradeReveal = scenes.filter((s) => s.type === 'upgrade').map((s) => ({ obj: s.entry.upgradeObjects[s.sp.type], at: s.start + 1.0 }));
   const growFrom = new Map(featuredGrow.map((g) => [g.id, g]));
   const growScene = new Map(scenes.filter((s) => s.type === 'grow').map((s) => [s.g.id, s]));
 
@@ -172,6 +198,12 @@ function buildTimeline(city, ch) {
         return buildingShot(s.g.entry, s.g.to, lt, s.dur);
       case 'montage':
         return orbit(s.center, 62, 0.9 + k * 0.4, 50);
+      case 'landmark': {
+        const l = world.landmarks.get(s.sp.id);
+        return orbit(new THREE.Vector3(l.outer.position.x, l.height * 0.45, l.outer.position.z), 27 - 3 * k, l.outer.rotation.y + 0.55 + k * 0.4, 26);
+      }
+      case 'upgrade':
+        return buildingShot(s.entry, s.entry.resident.floors, lt, s.dur);
       case 'top': {
         const e = top[0];
         const h = e.resident.floors * FLOOR_H;
@@ -222,7 +254,7 @@ function buildTimeline(city, ch) {
     const color = AVATAR_COLORS[hashId(name) % AVATAR_COLORS.length];
     $('c-avatar').style.background = color;
     $('c-avatar').textContent = (name.replace(/^@/, '')[0] || '?').toUpperCase();
-    $('c-name').textContent = `@${name}`;
+    $('c-name').textContent = `@${name.replace(/^@/, "")}`;
     $('c-tag').textContent = tag;
     $('c-comment').textContent = comment;
     $('c-comment').style.display = comment ? '' : 'none';
@@ -245,6 +277,17 @@ function buildTimeline(city, ch) {
       const y = Math.max(0.001, easeOutBack(k));
       const xz = 0.85 + 0.15 * easeOut(k);
       e.outer.scale.set(xz, y, xz);
+    }
+    for (const [id, at] of landmarkReveal) {
+      const l = world.landmarks.get(id);
+      const k = clamp01((time - at) / 0.9);
+      l.outer.visible = l.label.visible = time >= at;
+      l.outer.scale.set(0.9 + 0.1 * easeOut(k), Math.max(0.001, easeOutBack(k)), 0.9 + 0.1 * easeOut(k));
+    }
+    for (const u of upgradeReveal) {
+      const k = clamp01((time - u.at) / 0.6);
+      u.obj.visible = time >= u.at;
+      u.obj.scale.setScalar(Math.max(0.001, easeOutBack(k)) * (u.obj.userData.baseScale ??= u.obj.scale.x || 1));
     }
     for (const [id, g] of growFrom) {
       const gs = growScene.get(id);
@@ -272,7 +315,7 @@ function buildTimeline(city, ch) {
       const n = s.n;
       if (lastCard !== s) fillCard(n.name, `New resident · plot ${n.plot}`, n.comment, '');
       cardOn = fade(lt, 1.35, s.dur - 0.35);
-      if (time >= reveal.get(n.id) + 0.3) labels.set(n.id, { cls: 'vlabel new', text: `@${n.name}` });
+      if (time >= reveal.get(n.id) + 0.3) labels.set(n.id, { cls: 'vlabel new', text: `@${n.name.replace(/^@/, "")}` });
     } else if (s.type === 'grow') {
       const g = s.g;
       const shown = world.entries.get(g.id).shownFloors;
@@ -282,6 +325,18 @@ function buildTimeline(city, ch) {
         $('c-floors').dataset.n = String(shown);
       }
       cardOn = fade(lt, 0.6, s.dur - 0.35);
+    } else if (s.type === 'landmark') {
+      if (lastCard !== s) {
+        fillCard(s.sp.name, 'New in town', s.sp.requestedBy ? `Requested by ${s.sp.requestedBy}` : '', '');
+        $('c-name').textContent = s.sp.name; // a building, not a @person
+        $('c-avatar').textContent = '★';
+        $('c-avatar').style.background = '#f5b82e';
+      }
+      cardOn = fade(lt, 1.6, s.dur - 0.35);
+    } else if (s.type === 'upgrade') {
+      if (lastCard !== s) fillCard(s.sp.name, 'House upgrade', s.caption, '');
+      cardOn = fade(lt, 1.4, s.dur - 0.35);
+      labels.set(s.sp.id, { cls: 'vlabel new', text: `@${s.sp.name.replace(/^@/, '')}` });
     } else if (s.type === 'montage') {
       const k = clamp01((lt - 0.5) / 1.8);
       const shown = Math.ceil(s.list.length * k);
@@ -302,7 +357,8 @@ function buildTimeline(city, ch) {
       $('cta-url').style.display = '';
       ctaOn = fade(lt, 0.45, s.dur + 10);
     }
-    lastCard = s.type === 'newcomer' || s.type === 'grow' ? s : null;
+    lastCard = ['newcomer', 'grow', 'landmark', 'upgrade'].includes(s.type) ? s : null;
+    $('card').classList.toggle('plain', s.type === 'landmark' || s.type === 'upgrade');
     setOverlay($('card'), cardOn, 60);
     setOverlay($('montage'), montageOn, 40);
     setOverlay($('board'), boardOn, 60);

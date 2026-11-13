@@ -97,6 +97,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .label.selected { background: var(--accent); color: #fff; }
 .label.selected b { color: #fff; }
 .label.hall { background: var(--text); color: var(--bg); }
+.label.landmark { background: var(--gold); color: #16202e; border-radius: 8px; font-weight: 800; }
 
 #tooltip { position: fixed; pointer-events: none; z-index: 5; background: var(--panel); border: 1px solid var(--panel-border); border-radius: 8px; padding: 5px 9px; font-size: 13px; box-shadow: var(--shadow); white-space: nowrap; }
 #hint { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); font-size: 12px; color: var(--muted); background: var(--panel); padding: 6px 12px; border-radius: 999px; animation: fade 3s forwards; }

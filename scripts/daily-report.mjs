@@ -5,7 +5,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { readJSON, writeJSON, today, CITY_FILE, CHANGES_FILE, HISTORY_DIR, REPORTS_DIR } from './lib.mjs';
+import { readJSON, writeJSON, today, ROOT, CITY_FILE, CHANGES_FILE, SPECIALS_FILE, HISTORY_DIR, REPORTS_DIR } from './lib.mjs';
 
 const city = readJSON(CITY_FILE);
 if (!city) {
@@ -38,13 +38,46 @@ const prevRank = new Map(
 );
 const floorsAdded = city.totalFloors - (prev?.totalFloors || 0);
 
+// Special buildings & upgrades (web/data/specials.json) that are new since the last report.
+// data/specials-seen.json remembers when each one was first shown (per data mode, so demo runs don't count).
+const specials = readJSON(SPECIALS_FILE, { landmarks: [], upgrades: [] });
+const SEEN_FILE = path.join(ROOT, 'data', 'specials-seen.json');
+const seenAll = readJSON(SEEN_FILE, {});
+const seen = (seenAll[city.mode] ||= {});
+const norm = (s) => String(s || '').trim().replace(/^@/, '').toLowerCase();
+const findResident = (who) => city.residents.find((r) => r.id === who || norm(r.name) === norm(who));
+const isNew = (key) => !seen[key] || seen[key] === date; // a re-run on the same day still shows it
+const newSpecials = [];
+(specials.landmarks || []).slice(0, 8).forEach((l) => {
+  const key = `landmark:${l.id}`;
+  if (isNew(key)) { newSpecials.push({ kind: 'landmark', id: l.id, name: l.name, requestedBy: l.requestedBy || '' }); seen[key] = date; }
+});
+for (const u of specials.upgrades || []) {
+  const r = findResident(u.resident);
+  if (!r) continue; // shows up once that person lives in the city
+  const key = `upgrade:${r.id}:${u.type}`;
+  if (isNew(key)) { newSpecials.push({ kind: 'upgrade', id: r.id, name: r.name, type: u.type }); seen[key] = date; }
+}
+writeJSON(SEEN_FILE, seenAll);
+
 const lines = [];
 lines.push(`# Seaty town report: ${date}`, '');
-lines.push(`**${city.residentCount.toLocaleString()} residents · ${city.totalFloors.toLocaleString()} floors · ${city.videoCount} videos**`, '');
+lines.push(`**${city.residentCount.toLocaleString()} residents · ${city.totalFloors.toLocaleString()} floors · ${city.videoCount} video${city.videoCount === 1 ? "" : "s"}**`, '');
 if (prev) {
   lines.push(`Since ${prevFile.slice(0, 10)}: **+${newResidents.length} new residents**, **+${floorsAdded} floors** built.`, '');
 } else {
   lines.push('_First report: no earlier snapshot to compare with, so everyone counts as new._', '');
+}
+
+if (newSpecials.length) {
+  const UP = { pool: 'a swimming pool', 'apple-tree': 'an apple tree' };
+  lines.push('## ✨ New in town');
+  for (const s of newSpecials) {
+    lines.push(s.kind === 'landmark'
+      ? `- **${s.name}** opened${s.requestedBy ? ` (requested by ${s.requestedBy})` : ''}`
+      : `- **${s.name}** got ${UP[s.type] || s.type}`);
+  }
+  lines.push('');
 }
 
 lines.push('## 🏠 New residents');
@@ -92,6 +125,7 @@ writeJSON(CHANGES_FILE, {
   newResidents: newResidents.map((r) => ({ id: r.id, name: r.name, comment: r.comment || '', plot: plotOf.get(r.id), floors: r.floors })),
   grew: grew.map((r) => ({ id: r.id, name: r.name, comment: r.comment || '', from: r.floors - r.added, to: r.floors })),
   top: ranked.slice(0, 3).map((r) => ({ id: r.id, name: r.name, floors: r.floors })),
+  newSpecials,
 });
 
 console.log(lines.join('\n'));
