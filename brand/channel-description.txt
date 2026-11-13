@@ -1,0 +1,24 @@
+CHANNEL DESCRIPTION (YouTube Studio -> Customization -> Basic info -> Description)
+--------------------------------------------------------------------------------
+Welcome to Seaty: the city built by YOUR comments. 🏙️
+
+How it works:
+🏠 Comment on any video and you move in. I build you a house.
+🏗️ Comment on each new video and your building grows +1 floor.
+🌆 Every day a new Short shows who moved in, whose tower grew, and who owns the tallest building in town.
+
+Find your house in the live 3D city:
+👉 https://pooria-heydarian.github.io/Seaty/
+
+Will you own the tallest tower in Seaty? Subscribe, drop a comment and start building. 👇
+
+
+CHANNEL KEYWORDS (YouTube Studio -> Settings -> Channel -> Keywords)
+--------------------------------------------------------------------------------
+seaty, city builder, adding every commenter to my city, comment to get a house, my city, 3d city, building game, shorts, daily shorts, community city
+
+
+LINK (Customization -> Basic info -> Links)
+--------------------------------------------------------------------------------
+Title: Find your house in Seaty
+URL:   https://pooria-heydarian.github.io/Seaty/

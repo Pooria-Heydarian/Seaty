@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Seaty Avatar</title>
+  <style>
+    html, body { margin: 0; width: 800px; height: 800px; overflow: hidden; background: #fff; }
+    body.guides::after { content: ''; position: absolute; inset: 0; border-radius: 50%; box-shadow: 0 0 0 9999px rgba(0,0,0,.55); }
+  </style>
+</head>
+<body>
+  <svg width="800" height="800" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#ffa86b" />
+        <stop offset="1" stop-color="#ff5f36" />
+      </linearGradient>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#8a2a0c" flood-opacity=".35" />
+      </filter>
+    </defs>
+    <rect width="800" height="800" fill="url(#bg)" />
+    <!-- soft sun -->
+    <circle cx="590" cy="215" r="70" fill="#ffd27a" opacity=".55" />
+
+    <g filter="url(#shadow)">
+      <!-- house -->
+      <polygon points="160,452 262,362 364,452" fill="#14202f" />
+      <rect x="182" y="448" width="160" height="152" rx="6" fill="#fff" />
+      <rect x="244" y="520" width="38" height="80" rx="5" fill="#ff7a45" />
+      <rect x="200" y="472" width="34" height="34" rx="5" fill="#ff7a45" />
+      <rect x="290" y="472" width="34" height="34" rx="5" fill="#ff7a45" />
+      <!-- tower -->
+      <polygon points="352,244 422,170 492,244" fill="#f5b82e" />
+      <rect x="360" y="240" width="124" height="360" rx="6" fill="#fff" />
+      <g fill="#ff7a45">
+        <rect x="380" y="270" width="30" height="34" rx="4" /><rect x="434" y="270" width="30" height="34" rx="4" />
+        <rect x="380" y="330" width="30" height="34" rx="4" /><rect x="434" y="330" width="30" height="34" rx="4" />
+        <rect x="380" y="390" width="30" height="34" rx="4" /><rect x="434" y="390" width="30" height="34" rx="4" />
+        <rect x="380" y="450" width="30" height="34" rx="4" /><rect x="434" y="450" width="30" height="34" rx="4" />
+        <rect x="402" y="530" width="40" height="70" rx="5" />
+      </g>
+      <!-- right building -->
+      <rect x="500" y="372" width="122" height="228" rx="6" fill="#fff" />
+      <g fill="#ff7a45">
+        <rect x="518" y="398" width="30" height="34" rx="4" /><rect x="574" y="398" width="30" height="34" rx="4" />
+        <rect x="518" y="458" width="30" height="34" rx="4" /><rect x="574" y="458" width="30" height="34" rx="4" />
+        <rect x="518" y="518" width="30" height="34" rx="4" /><rect x="574" y="518" width="30" height="34" rx="4" />
+      </g>
+      <!-- ground -->
+      <rect x="140" y="596" width="520" height="30" rx="15" fill="#14202f" />
+    </g>
+  </svg>
+  <script>
+    if (location.search.includes('guides')) document.body.classList.add('guides');
+    window.brandReady = true;
+  </script>
+</body>
+</html>
