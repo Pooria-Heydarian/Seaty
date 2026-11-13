@@ -271,7 +271,7 @@ async function boot() {
   world.build(city, { labelTop: LABEL_TOP, specials });
   const hallLabel = document.createElement('div');
   hallLabel.className = 'label hall';
-  hallLabel.textContent = `${city.channel?.title || 'Town Hall'} · ${city.videoCount} videos`;
+  hallLabel.textContent = `${city.channel?.title || 'Town Hall'} · ${city.videoCount} video${city.videoCount === 1 ? "" : "s"}`;
   const hl = new CSS2DObject(hallLabel);
   hl.position.set(0, world.townHall.userData.height + 1.5, 0);
   world.scene.add(hl);

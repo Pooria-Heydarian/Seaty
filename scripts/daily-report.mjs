@@ -48,7 +48,7 @@ const norm = (s) => String(s || '').trim().replace(/^@/, '').toLowerCase();
 const findResident = (who) => city.residents.find((r) => r.id === who || norm(r.name) === norm(who));
 const isNew = (key) => !seen[key] || seen[key] === date; // a re-run on the same day still shows it
 const newSpecials = [];
-(specials.landmarks || []).slice(0, 8).forEach((l) => {
+(specials.landmarks || []).forEach((l) => {
   const key = `landmark:${l.id}`;
   if (isNew(key)) { newSpecials.push({ kind: 'landmark', id: l.id, name: l.name, requestedBy: l.requestedBy || '' }); seen[key] = date; }
 });

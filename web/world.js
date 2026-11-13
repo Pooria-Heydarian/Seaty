@@ -4,12 +4,11 @@ import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer
 
 export { THREE, CSS2DObject };
 
+import { LOT, BLOCK, PITCH, LOT_OFFSETS, LANDMARK_BLOCKS, spiral, spiralIndexOf, createLayout } from './layout.js';
+export { LOT, BLOCK, PITCH, LANDMARK_BLOCKS };
+
 // ---------- Layout constants ----------
 export const FLOOR_H = 1.2;
-export const LOT = 6;
-export const BLOCK = LOT * 2;   // 2x2 plots per block, so every plot touches a road
-export const ROAD = 4;
-export const PITCH = BLOCK + ROAD;
 export const FOOT = 4.2;
 const TEX_FLOORS = 4;
 const HOUSE_MAX_FLOORS = 3;     // 1-3 floors = cozy house, 4+ = apartment tower
@@ -24,49 +23,18 @@ export function hashId(id) {
   return [...id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
 }
 
-/** Square spiral: 0 -> (0,0), 1 -> (1,0), 2 -> (1,1), 3 -> (0,1), ... */
-function spiral(n) {
-  if (n === 0) return [0, 0];
-  const k = Math.ceil((Math.sqrt(n + 1) - 1) / 2);
-  let t = 2 * k + 1;
-  let m = t * t;
-  t -= 1;
-  if (n >= m - t) return [k - (m - n), -k];
-  m -= t;
-  if (n >= m - t) return [-k, -k + (m - n)];
-  m -= t;
-  if (n >= m - t) return [-k + (m - n), k];
-  return [k, k - (m - n - t)];
-}
-const LOT_OFFSETS = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([x, z]) => [(x * LOT) / 2, (z * LOT) / 2]);
-
-// Downtown blocks kept for landmarks (special buildings), in the order they get used.
-export const LANDMARK_BLOCKS = [[1, -1], [-1, 1], [1, 1], [-1, -1], [2, -2], [-2, 2], [2, 2], [-2, -2]];
-const RESERVED = new Set(LANDMARK_BLOCKS.map(([x, z]) => `${x},${z}`));
-
-// Resident blocks: the spiral around the town square, skipping landmark blocks.
-const residentBlocks = []; // [{ bx, bz, n }] n = spiral index
-let spiralCursor = 1;
-function residentBlock(k) {
-  while (residentBlocks.length <= k) {
-    const [bx, bz] = spiral(spiralCursor);
-    if (!RESERVED.has(`${bx},${bz}`)) residentBlocks.push({ bx, bz, n: spiralCursor });
-    spiralCursor++;
-  }
-  return residentBlocks[k];
-}
+// The active layout (rebuilt by world.build when specials add edge landmark blocks).
+let layout = createLayout();
 
 /** Resident plot index (0-based) -> world position. Block 0 is the town square. */
 export function plotPosition(i) {
-  const { bx, bz } = residentBlock(Math.floor(i / 4));
-  const [ox, oz] = LOT_OFFSETS[i % 4];
-  return new THREE.Vector3(bx * PITCH + ox, 0, bz * PITCH + oz);
+  const { x, z } = layout.plot(i);
+  return new THREE.Vector3(x, 0, z);
 }
 
-/** Landmark number k (0-based, max 8) -> centre of its downtown block. */
-export function landmarkPosition(k) {
-  const [bx, bz] = LANDMARK_BLOCKS[k];
-  return new THREE.Vector3(bx * PITCH, 0, bz * PITCH);
+/** Landmark definition number k -> centre of its block (downtown for the first 8, then its own edge block). */
+function landmarkBlock(def, k) {
+  return k < LANDMARK_BLOCKS.length ? LANDMARK_BLOCKS[k] : Array.isArray(def.block) ? def.block : null;
 }
 
 // ---------- Textures & materials ----------
@@ -412,10 +380,12 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
   world.landmarks = new Map();
   /** Adds landmarks and house upgrades from data/specials.json. Call after build(). */
   world.addSpecials = (specials) => {
-    (specials?.landmarks || []).slice(0, LANDMARK_BLOCKS.length).forEach((def, k) => {
+    (specials?.landmarks || []).forEach((def, k) => {
+      const block = landmarkBlock(def, k);
+      if (!block) return; // an edge landmark without an assigned block (should not happen)
       const made = (LANDMARK_MODELS[def.type] || genericLandmark)(def);
       const outer = new THREE.Group();
-      outer.position.copy(landmarkPosition(k));
+      outer.position.set(block[0] * PITCH, 0, block[1] * PITCH);
       // face the town square
       outer.rotation.y = Math.atan2(-outer.position.x, -outer.position.z);
       outer.add(made.group);
@@ -495,20 +465,17 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     const lawns = new THREE.InstancedMesh(lawnGeo, new THREE.MeshStandardMaterial({ color: '#a3c784', roughness: 1 }), (ringBlocks - 1) * 4);
     lawns.receiveShadow = true;
     const used = world.city.residents.length;
-    const landmarkCount = Math.min(LANDMARK_BLOCKS.length, world.specials?.landmarks?.length || 0);
-    const busyLandmark = new Set(LANDMARK_BLOCKS.slice(0, landmarkCount).map(([x, z]) => `${x},${z}`));
-    const residentIndexOfN = (n) => {
-      while (!residentBlocks.length || residentBlocks.at(-1).n < n) residentBlock(residentBlocks.length);
-      return residentBlocks.findIndex((rb) => rb.n === n);
-    };
+    const busyLandmark = new Set(
+      (world.specials?.landmarks || []).map((d, k) => landmarkBlock(d, k)).filter(Boolean).map(([x, z]) => `${x},${z}`),
+    );
     const treePlots = [];
     for (let b = 1; b < ringBlocks; b++) {
       const [bx, bz] = spiral(b);
       const key = `${bx},${bz}`;
       let free; // which of the 4 plots get trees
-      if (RESERVED.has(key)) free = busyLandmark.has(key) ? [] : [0, 1, 2, 3];
+      if (layout.isReserved(bx, bz)) free = busyLandmark.has(key) ? [] : [0, 1, 2, 3];
       else {
-        const ri = residentIndexOfN(b);
+        const ri = layout.residentIndexOfN(b);
         free = [0, 1, 2, 3].filter((j) => ri * 4 + j >= used);
       }
       LOT_OFFSETS.forEach(([ox, oz], j) => {
@@ -625,10 +592,17 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
   world.build = (city, { labelTop = 5, specials = null } = {}) => {
     world.city = city;
     world.specials = specials;
+    // Houses skip the blocks of edge landmarks (#9 and later), so rebuild the layout with them.
+    const edgeBlocks = (specials?.landmarks || []).slice(LANDMARK_BLOCKS.length).map((d) => d.block).filter(Array.isArray);
+    layout = createLayout(edgeBlocks);
     const blocks = Math.ceil(city.residents.length / 4);
-    // Furthest spiral block in use: the last resident block, or the landmark blocks downtown.
+    // Furthest spiral block in use: last house block, downtown landmark blocks, or edge landmarks.
     const landmarkReach = (specials?.landmarks?.length || 0) > 4 ? 24 : 8;
-    const maxN = Math.max(landmarkReach, blocks ? residentBlock(blocks - 1).n : 0);
+    const maxN = Math.max(
+      landmarkReach,
+      blocks ? layout.residentBlock(blocks - 1).n : 0,
+      ...edgeBlocks.map(([x, z]) => spiralIndexOf(x, z)),
+    );
     const side = Math.ceil(Math.sqrt(maxN + 1));
     const ringBlocks = Math.pow(side + 2, 2);
     world.radius = ((side + 1) * PITCH) / 2 + PITCH;

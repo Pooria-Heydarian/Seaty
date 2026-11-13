@@ -1,20 +1,23 @@
-# Every day: read YouTube comments -> update the city -> write the town report
-# -> render the daily Short -> upload it to YouTube -> publish web/ to GitHub Pages.
+# Seaty daily run (06:07 UTC):
+#   1. read every comment written before 06:00 UTC (later comments count for tomorrow)
+#   2. AI step: find special-building requests in the last day's comments, build what is possible,
+#      put the rest on the wish list, and write reply drafts
+#   3. update the city + town report
+#   4. render the daily Short (voice + music)
+#   5. save the video + reply drafts as a download on the run page (Artifacts -> seaty-video)
+#   6. commit the data and publish the website
 #
-# Secrets (Settings -> Secrets and variables -> Actions):
-#   YOUTUBE_API_KEY, YOUTUBE_CHANNEL_ID        reading comments
-#   YT_CLIENT_ID, YT_CLIENT_SECRET, YT_REFRESH_TOKEN   uploading the video (see README)
-# Optional variables: MIN_COMMENT_LENGTH, CITY_START_DATE, YT_PRIVACY (public|unlisted|private),
-#   SEATY_VOICE (voiceover voice: af_heart, af_bella, am_michael, am_fenrir, bf_emma, bm_george)
-#
-# Without the upload secrets the video is still rendered: download it from the run page
-# (Artifacts -> seaty-video) and post it yourself.
+# Secrets (Settings -> Secrets and variables -> Actions -> Secrets):
+#   YOUTUBE_API_KEY, YOUTUBE_CHANNEL_ID   reading comments
+#   ANTHROPIC_API_KEY                     the AI step (without it: no specials, no reply drafts)
+# Optional variables (same page -> Variables):
+#   MIN_COMMENT_LENGTH, CITY_START_DATE, SEATY_VOICE (af_heart, af_bella, am_michael, am_fenrir, bf_emma, bm_george)
 
 name: Daily city update
 
 on:
   schedule:
-    - cron: '0 6 * * *' # 06:00 UTC every day. Change to suit your upload time.
+    - cron: '7 6 * * *' # 06:07 UTC. Not :00, which GitHub often skips when busy.
   workflow_dispatch: {}
   push:
     branches: [main]
@@ -25,8 +28,9 @@ permissions:
   pages: write
   id-token: write
 
+# Separate queues: a website-only run (push) can never cancel the daily run.
 concurrency:
-  group: city
+  group: city-${{ github.event_name == 'push' && 'site' || 'daily' }}
   cancel-in-progress: false
 
 jobs:
@@ -46,7 +50,14 @@ jobs:
         with:
           node-version: 22
 
-      - name: Fetch comments and write report
+      - name: Install tools
+        if: env.DAILY == 'true'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-color-emoji > /dev/null
+          npm ci --no-audit --no-fund
+
+      - name: 1. Read comments (before 06:00 UTC)
         if: env.DAILY == 'true'
         id: fetch
         env:
@@ -56,20 +67,24 @@ jobs:
           CITY_START_DATE: ${{ vars.CITY_START_DATE }}
         run: |
           if [ -z "$YOUTUBE_API_KEY" ] || [ -z "$YOUTUBE_CHANNEL_ID" ]; then
-            echo "::warning::YOUTUBE_API_KEY / YOUTUBE_CHANNEL_ID secrets not set. Publishing the current (demo) city."
+            echo "::warning::YOUTUBE_API_KEY / YOUTUBE_CHANNEL_ID secrets not set. Publishing the current city only."
             exit 0
           fi
-          npm run daily
+          npm run fetch
           echo "ok=true" >> "$GITHUB_OUTPUT"
-          cat reports/$(date -u +%F).md >> "$GITHUB_STEP_SUMMARY"
 
-      # ---------- Daily Short ----------
-      - name: Install video tools
+      - name: 2. AI step (special buildings + reply drafts)
         if: steps.fetch.outputs.ok == 'true'
+        continue-on-error: true # if the AI step fails, the city and video are still made
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: npm run ai
+
+      - name: 3. Town report
+        if: ${{ !cancelled() && steps.fetch.outputs.ok == 'true' }}
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq fonts-noto-color-emoji > /dev/null
-          npm install --no-audit --no-fund
+          npm run report
+          cat reports/$(date -u +%F).md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Cache the voice model
         if: steps.fetch.outputs.ok == 'true'
@@ -78,13 +93,13 @@ jobs:
           path: node_modules/@huggingface/transformers/.cache
           key: kokoro-82m-q8-v1
 
-      - name: Render the daily Short (with voiceover)
-        if: steps.fetch.outputs.ok == 'true'
+      - name: 4. Render the daily Short (with voiceover)
+        if: ${{ !cancelled() && steps.fetch.outputs.ok == 'true' }}
         env:
           SEATY_VOICE: ${{ vars.SEATY_VOICE || 'af_heart' }}
         run: npm run video
 
-      - name: Keep the video as a download on this run
+      - name: 5. Save video + reply drafts as a download
         if: ${{ !cancelled() && steps.fetch.outputs.ok == 'true' }}
         uses: actions/upload-artifact@v4
         with:
@@ -92,22 +107,7 @@ jobs:
           path: video/*
           retention-days: 14
 
-      - name: Upload the Short to YouTube
-        if: steps.fetch.outputs.ok == 'true'
-        env:
-          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
-          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
-          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
-          YT_PRIVACY: ${{ vars.YT_PRIVACY || 'public' }}
-        run: |
-          if [ -z "$YT_REFRESH_TOKEN" ]; then
-            echo "::notice::Upload secrets not set yet. Download the video from this run's Artifacts and post it yourself."
-            exit 0
-          fi
-          npm run upload
-
-      # ---------- Save data + publish site ----------
-      - name: Commit city data, report and snapshot
+      - name: 6. Commit city data, specials, wish list, report
         if: ${{ !cancelled() && env.DAILY == 'true' }}
         run: |
           git config user.name "seaty-bot"
@@ -117,6 +117,7 @@ jobs:
             echo "No changes."
           else
             git commit -m "City update $(date -u +%F)"
+            git pull --rebase origin main
             git push
           fi
 

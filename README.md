@@ -34,19 +34,24 @@ This writes `web/data/city.json` and `reports/YYYY-MM-DD.md`.
 
 ## Hosting (free, automatic): GitHub Pages + Actions
 
-The included workflow (`.github/workflows/daily.yml`) runs every day at 06:00 UTC:
-- fetches the comments
-- writes the report (also shown on the run's summary page)
-- commits the data
-- publishes `web/` to `https://<your-username>.github.io/<repo>/`
+The included workflow (`.github/workflows/daily.yml`) runs every day at **06:07 UTC**:
+
+1. **Reads every comment written before 06:00 UTC.** Comments after 06:00 count for the next day.
+2. **AI step (Claude):** reads the last day's comments, builds every special request that is possible (house upgrades and landmarks), puts the rest on the wish list (`data/wishlist.json`), and writes a reply draft for each comment.
+3. Updates the city and the town report (shown on the run's summary page).
+4. Renders the daily Short with voice and music.
+5. **Saves the video and the reply drafts as one download:** open the run → **Artifacts → seaty-video** (`<date>.mp4`, `<date>.txt` with the title and description, and `replies-<date>.md`).
+6. Commits the data and publishes `web/` to `https://<your-username>.github.io/<repo>/`.
 
 One-time setup:
 1. Push this folder to a GitHub repository (public repos get free Pages).
-2. **Settings → Secrets and variables → Actions**: add the secrets `YOUTUBE_API_KEY` and `YOUTUBE_CHANNEL_ID`.
+2. **Settings → Secrets and variables → Actions**: add the secrets:
+   - `YOUTUBE_API_KEY` and `YOUTUBE_CHANNEL_ID`
+   - `ANTHROPIC_API_KEY` for the AI step. It's paid but cheap at this size. Without it, the city and video still work, but there are no specials and no reply drafts.
 3. **Settings → Pages → Source**: choose **GitHub Actions**.
 4. **Actions → Daily city update → Run workflow** to publish right away.
 
-To change the time, edit the `cron` line. GitHub runs scheduled jobs a few minutes late, and pauses them if the repo has had no activity for 60 days. Daily commits keep it active.
+GitHub sometimes runs scheduled jobs late or skips them. It also pauses them if the repo has had no activity for 60 days; the daily commits keep it active.
 
 ## Daily Short (made and uploaded automatically)
 
@@ -98,7 +103,15 @@ Set the repository variable `YT_PRIVACY` to `unlisted` or `private` if you'd lik
 
 ## Special buildings & house upgrades
 
-Edit [`web/data/specials.json`](web/data/specials.json) and commit it. The next daily video opens with a news scene ("Big news! Seaty just opened…"), and the website shows the changes right away.
+**Automatic:** the daily AI step adds what people ask for in the comments:
+- House upgrades from the catalog (`web/catalog.js`).
+- Landmarks. A landmark without its own 3D model is built as a generic gold-domed hall with its name sign and added to the wish list.
+- Rules: each upgrade type only once per house, and one new landmark per person per day.
+- Requests that can't be built get a reply explaining why.
+
+**By hand:** edit [`web/data/specials.json`](web/data/specials.json) and commit it.
+
+Either way, the next daily video opens with a news scene ("Big news! Seaty just opened…"), and the website shows the changes right away.
 
 ```json
 {
@@ -112,7 +125,7 @@ Edit [`web/data/specials.json`](web/data/specials.json) and commit it. The next 
 }
 ```
 
-- **Landmarks:** there are up to 8, placed on the reserved downtown blocks around the town square. Model types:
+- **Landmarks:** the first 8 go on the reserved downtown blocks around the town square. Each later landmark gets its own block at the city edge; its `"block": [x, z]` is chosen automatically, and houses never move. Model types:
   - `spaghetti-factory`
   - any other type gets a generic gold-domed hall (until it has its own model)
 - **Upgrades:** `resident` is the person's YouTube handle (`@name`) or channel ID. Types are `pool`, `apple-tree` and `capybara`. An upgrade appears once that person lives in the city.

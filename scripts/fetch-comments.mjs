@@ -6,7 +6,7 @@
 // Quota: ~1 unit per API page. A channel with 100 videos and a few thousand
 // comments uses well under the free 10,000 units/day.
 
-import { loadEnv, buildCity, writeJSON, CITY_FILE } from './lib.mjs';
+import { loadEnv, buildCity, writeJSON, CITY_FILE, NEW_COMMENTS_FILE } from './lib.mjs';
 
 // Make failures readable: on GitHub Actions they show up as a red annotation on the run page.
 function fail(message) {
@@ -22,6 +22,15 @@ const KEY = process.env.YOUTUBE_API_KEY;
 const CHANNEL = process.env.YOUTUBE_CHANNEL_ID;
 const MIN_LEN = Number(process.env.MIN_COMMENT_LENGTH || 2);
 const START = process.env.CITY_START_DATE || '';
+
+// The city day ends at 06:00 UTC: comments after the latest 06:00 UTC count for the next day.
+const CUTOFF_HOUR = Number(process.env.CITY_CUTOFF_HOUR_UTC ?? 6);
+const cutoffDate = new Date();
+cutoffDate.setUTCHours(CUTOFF_HOUR, 0, 0, 0);
+if (cutoffDate > new Date()) cutoffDate.setUTCDate(cutoffDate.getUTCDate() - 1);
+const CUTOFF = cutoffDate.toISOString();
+const WINDOW_START = new Date(cutoffDate.getTime() - 86400000).toISOString(); // "new today" = the last 24h before the cutoff
+console.log(`Counting comments before ${CUTOFF} (new since ${WINDOW_START})`);
 
 if (!KEY || !CHANNEL) {
   console.error('Missing YOUTUBE_API_KEY or YOUTUBE_CHANNEL_ID. Copy .env.example to .env and fill it in.');
@@ -64,10 +73,11 @@ console.log(`Channel: ${channel.snippet.title}`);
 // 2. All videos
 const videos = [];
 try {
-  for await (const item of paginate('playlistItems', { part: 'contentDetails', playlistId: uploads, maxResults: 50 })) {
+  for await (const item of paginate('playlistItems', { part: 'contentDetails,snippet', playlistId: uploads, maxResults: 50 })) {
     const published = item.contentDetails.videoPublishedAt || '';
     if (START && published && published.slice(0, 10) < START) continue;
-    videos.push({ id: item.contentDetails.videoId, published });
+    if (published && published >= CUTOFF) continue; // belongs to the next city day
+    videos.push({ id: item.contentDetails.videoId, published, title: item.snippet?.title || '' });
   }
 } catch (e) {
   // YouTube only creates the "uploads" list after the first public video.
@@ -80,10 +90,12 @@ console.log(`Videos counted: ${videos.length}`);
 
 // 3. All comments (top-level + replies) per video
 const people = new Map();
+const newComments = []; // comments from the last city day, for the AI step (requests + reply drafts)
 let commentCount = 0;
 let skipped = 0;
+let later = 0;
 
-function record(snippet, videoId) {
+function record(snippet, video, commentId) {
   const authorId = snippet.authorChannelId?.value;
   if (!authorId || authorId === CHANNEL) return; // ignore the channel owner
   const text = (snippet.textOriginal ?? snippet.textDisplay ?? '').trim();
@@ -91,8 +103,25 @@ function record(snippet, videoId) {
     skipped++;
     return;
   }
-  commentCount++;
   const at = snippet.publishedAt;
+  if (at >= CUTOFF) {
+    later++; // counts tomorrow
+    return;
+  }
+  commentCount++;
+  if (at >= WINDOW_START) {
+    newComments.push({
+      id: commentId,
+      videoId: video.id,
+      videoTitle: video.title,
+      authorId,
+      author: snippet.authorDisplayName,
+      text: text.slice(0, 500),
+      at,
+      link: `https://www.youtube.com/watch?v=${video.id}&lc=${commentId}`,
+    });
+  }
+  const videoId = video.id;
   let p = people.get(authorId);
   if (!p) {
     p = { name: snippet.authorDisplayName, avatar: snippet.authorProfileImageUrl, videos: new Set(), firstSeen: at, lastSeen: at };
@@ -117,7 +146,7 @@ for (const [i, video] of videos.entries()) {
       maxResults: 100,
       textFormat: 'plainText',
     })) {
-      record(thread.snippet.topLevelComment.snippet, video.id);
+      record(thread.snippet.topLevelComment.snippet, video, thread.snippet.topLevelComment.id);
       const inline = thread.replies?.comments || [];
       if (thread.snippet.totalReplyCount > inline.length) {
         // The thread only includes up to 5 replies; fetch the rest.
@@ -126,9 +155,9 @@ for (const [i, video] of videos.entries()) {
           parentId: thread.id,
           maxResults: 100,
           textFormat: 'plainText',
-        })) record(reply.snippet, video.id);
+        })) record(reply.snippet, video, reply.id);
       } else {
-        for (const reply of inline) record(reply.snippet, video.id);
+        for (const reply of inline) record(reply.snippet, video, reply.id);
       }
     }
   } catch (e) {
@@ -144,5 +173,8 @@ const city = buildCity(people, {
   videoCount: videos.length,
 });
 writeJSON(CITY_FILE, city);
-console.log(`Comments counted: ${commentCount} (ignored ${skipped} too-short)`);
+newComments.sort((a, b) => a.at.localeCompare(b.at));
+writeJSON(NEW_COMMENTS_FILE, { cutoff: CUTOFF, since: WINDOW_START, comments: newComments });
+console.log(`Comments counted: ${commentCount} (ignored ${skipped} too-short, ${later} after the cutoff count tomorrow)`);
+console.log(`New comments in the last city day: ${newComments.length} -> ${NEW_COMMENTS_FILE}`);
 console.log(`City: ${city.residentCount} residents, ${city.totalFloors} floors -> ${CITY_FILE}`);

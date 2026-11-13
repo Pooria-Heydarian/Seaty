@@ -6,6 +6,8 @@ export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 export const CITY_FILE = path.join(ROOT, 'web', 'data', 'city.json');
 export const CHANGES_FILE = path.join(ROOT, 'web', 'data', 'changes.json');
 export const SPECIALS_FILE = path.join(ROOT, 'web', 'data', 'specials.json');
+// Comments from the last city day (not committed; private working file for the AI step)
+export const NEW_COMMENTS_FILE = path.join(ROOT, 'comments', 'new-comments.json');
 export const VIDEO_DIR = path.join(ROOT, 'video');
 export const HISTORY_DIR = path.join(ROOT, 'data', 'history');
 export const REPORTS_DIR = path.join(ROOT, 'reports');
