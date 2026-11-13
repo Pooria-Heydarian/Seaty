@@ -114,5 +114,12 @@ const meta = {
   residents: city?.residentCount ?? 0,
 };
 writeJSON(outFile.replace(/\.mp4$/, '.json'), meta);
+fs.writeFileSync(outFile.replace(/\.mp4$/, '.txt'), `TITLE:\n${meta.title}\n\nDESCRIPTION:\n${meta.description}\n`);
+if (process.env.GITHUB_STEP_SUMMARY) {
+  fs.appendFileSync(
+    process.env.GITHUB_STEP_SUMMARY,
+    `\n## 🎬 Today's Short\nDownload it below under **Artifacts → seaty-video**.\n\n**Title** (copy):\n\`\`\`\n${meta.title}\n\`\`\`\n**Description** (copy):\n\`\`\`\n${meta.description}\n\`\`\`\n`,
+  );
+}
 console.log(`Done in ${Math.round((Date.now() - t0) / 1000)}s: ${outFile}`);
 console.log(`Title: ${meta.title}`);
