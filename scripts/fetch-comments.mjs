@@ -20,7 +20,7 @@ process.on('uncaughtException', (e) => fail(e?.message || String(e)));
 loadEnv();
 const KEY = process.env.YOUTUBE_API_KEY;
 const CHANNEL = process.env.YOUTUBE_CHANNEL_ID;
-const MIN_LEN = Number(process.env.MIN_COMMENT_LENGTH || 3);
+const MIN_LEN = Number(process.env.MIN_COMMENT_LENGTH || 2);
 const START = process.env.CITY_START_DATE || '';
 
 if (!KEY || !CHANNEL) {

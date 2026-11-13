@@ -52,7 +52,7 @@ jobs:
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
-          MIN_COMMENT_LENGTH: ${{ vars.MIN_COMMENT_LENGTH || '3' }}
+          MIN_COMMENT_LENGTH: ${{ vars.MIN_COMMENT_LENGTH || '2' }}
           CITY_START_DATE: ${{ vars.CITY_START_DATE }}
         run: |
           if [ -z "$YOUTUBE_API_KEY" ] || [ -z "$YOUTUBE_CHANNEL_ID" ]; then
