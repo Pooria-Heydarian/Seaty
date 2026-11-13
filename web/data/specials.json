@@ -9,6 +9,7 @@
   ],
   "upgrades": [
     { "resident": "@V1.bootleg", "type": "pool" },
-    { "resident": "@mdsadiq4737", "type": "apple-tree" }
+    { "resident": "@mdsadiq4737", "type": "apple-tree" },
+    { "resident": "@ChristinneeeXD", "type": "capybara" }
   ]
 }

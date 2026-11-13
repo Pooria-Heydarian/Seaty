@@ -367,7 +367,47 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     g.scale.setScalar(0.85);
     return g;
   }
-  const UPGRADE_MODELS = { pool, 'apple-tree': appleTree };
+  /** Capybara: a big friendly capybara relaxing in the front yard, with an orange on its head. */
+  function capybara() {
+    const fur = M('#a0703f', { flatShading: true });
+    const dark = M('#5a3b22');
+    const g = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.SphereGeometry(0.62, 16, 12), fur);
+    body.scale.set(1, 0.78, 1.45);
+    body.position.y = 0.55;
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.6, 0.78, 2, 2, 2), fur);
+    head.position.set(0, 0.92, 0.9);
+    const snout = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.44, 0.3), fur);
+    snout.position.set(0, 0.84, 1.36);
+    const nose = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.12, 0.05), dark);
+    nose.position.set(0, 0.96, 1.52);
+    g.add(body, head, snout, nose);
+    for (const s of [-1, 1]) {
+      const eye = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 6), dark);
+      eye.position.set(s * 0.25, 1.05, 1.15);
+      const ear = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 6), dark);
+      ear.scale.set(1, 1, 0.5);
+      ear.position.set(s * 0.24, 1.24, 0.72);
+      g.add(eye, ear);
+      for (const z of [-0.55, 0.45]) {
+        const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.32, 8).translate(0, 0.16, 0), fur);
+        leg.position.set(s * 0.36, 0, z);
+        g.add(leg);
+      }
+    }
+    const orange = new THREE.Mesh(new THREE.SphereGeometry(0.17, 12, 10), M('#f39a1e', { roughness: 0.5 }));
+    orange.position.set(0, 1.39, 0.85);
+    const leaf = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.03, 0.07), SPECIAL_MAT.leaf);
+    leaf.position.set(0.05, 1.57, 0.85);
+    g.add(orange, leaf);
+    shadowAll(g);
+    // lies along the front yard, left of the door, facing sideways
+    g.position.set(-1.35, 0.27, 2.62);
+    g.rotation.y = -Math.PI / 2;
+    g.scale.setScalar(0.8);
+    return g;
+  }
+  const UPGRADE_MODELS = { pool, 'apple-tree': appleTree, capybara };
 
   world.landmarks = new Map();
   /** Adds landmarks and house upgrades from data/specials.json. Call after build(). */

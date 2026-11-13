@@ -115,7 +115,7 @@ Edit [`web/data/specials.json`](web/data/specials.json) and commit it. The next 
 - **Landmarks:** there are up to 8, placed on the reserved downtown blocks around the town square. Model types:
   - `spaghetti-factory`
   - any other type gets a generic gold-domed hall (until it has its own model)
-- **Upgrades:** `resident` is the person's YouTube handle (`@name`) or channel ID. Types are `pool` and `apple-tree`. An upgrade appears once that person lives in the city.
+- **Upgrades:** `resident` is the person's YouTube handle (`@name`) or channel ID. Types are `pool`, `apple-tree` and `capybara`. An upgrade appears once that person lives in the city.
 - `data/specials-seen.json` remembers what has already been announced, so each one is shown in the video only once.
 
 ## Monthly lottery

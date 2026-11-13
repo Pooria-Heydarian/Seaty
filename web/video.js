@@ -113,6 +113,7 @@ function buildTimeline(city, ch) {
   const UPGRADE_LINE = {
     pool: (n) => [`${n}'s house just got a swimming pool!`, 'Got a swimming pool!'],
     'apple-tree': (n) => [`${n} now has an apple tree in the backyard!`, 'Got an apple tree in the backyard!'],
+    capybara: (n) => [`${n}'s house now has its very own capybara!`, 'Got a pet capybara!'],
   };
   for (const sp of newSpecials.filter((s) => s.kind === 'landmark')) {
     add('landmark', 4.4, { sp }, { text: `Big news! Seaty just opened a brand new ${sp.name}${sp.requestedBy ? `, requested by ${say(sp.requestedBy)}` : ''}!`, at: 1.0 });
