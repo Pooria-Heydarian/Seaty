@@ -4,12 +4,223 @@
       "id": "spaghetti-factory",
       "type": "spaghetti-factory",
       "name": "Spaghetti Factory",
-      "requestedBy": "@theel-u7g"
+      "requestedBy": "@theel-u7g",
+      "requestedById": "UC1YmxZwrnml20qf9NvsMsKA",
+      "requestedIn": "Ugz5Juv_nSAUNFT6opp4AaABAg",
+      "added": "2026-11-14"
+    },
+    {
+      "id": "car-show",
+      "type": "generic",
+      "name": "Car Show",
+      "requestedBy": "@AmirHosseinHeydarian-i3r",
+      "requestedById": "UC3S4mJTi784UlJ04U0zCJ_g",
+      "requestedIn": "UgzFCYNjqBmngbOJc094AaABAg",
+      "added": "2026-11-14"
     }
   ],
   "upgrades": [
-    { "resident": "@V1.bootleg", "type": "pool" },
-    { "resident": "@mdsadiq4737", "type": "apple-tree" },
-    { "resident": "@ChristinneeeXD", "type": "capybara" }
+    {
+      "resident": "UCg-MntECid99Fl2rFzUhbxA",
+      "name": "@V1.bootleg",
+      "type": "pool",
+      "requestedIn": "UgxL-d9XCeDmwC2tpVp4AaABAg",
+      "added": "2026-11-14"
+    },
+    {
+      "resident": "UCZcS07-x1ubdSIjAGrVgU-A",
+      "name": "@mdsadiq4737",
+      "type": "apple-tree",
+      "requestedIn": "Ugz_O7VKIJ2ZKYkJu9h4AaABAg",
+      "added": "2026-11-14"
+    },
+    {
+      "resident": "UCX6wVTHYXPiW7mS_UD_leoQ",
+      "name": "@ChristinneeeXD",
+      "type": "capybara",
+      "requestedIn": "Ugxh1EgzTeViHsdDWCZ4AaABAg",
+      "added": "2026-11-14"
+    },
+    {
+      "resident": "UCJKwj1uw3QlueW6K3N-U2gw",
+      "name": "@Staypositivels",
+      "type": "pool",
+      "requestedIn": "Ugw0YjL_sJIPcf5vi-V4AaABAg",
+      "added": "2026-11-14"
+    },
+    {
+      "resident": "UCZdw1S5cCSsvUnyVmc1Vigw",
+      "name": "@TheOneNOnlyAstrid",
+      "type": "cat",
+      "requestedIn": "UgxmJktSpOsltaouvsB4AaABAg",
+      "added": "2026-11-14"
+    }
+  ],
+  "houses": [
+    {
+      "resident": "UCxCetjjQEUF0aO-jMeHilSQ",
+      "name": "@EllyneMalinka",
+      "title": "Cozy Cabin",
+      "recipe": {
+        "shape": "cottage",
+        "roof": "gable",
+        "wall": "#a9744f",
+        "roofColor": "#5b4636",
+        "door": "#3e2a1e",
+        "accent": "#ffcf6e",
+        "extras": [
+          "smoke",
+          "flowers"
+        ]
+      },
+      "requestedIn": "UgzJyQnNDSXgH-VHF554AaABAg",
+      "added": "2026-11-14"
+    },
+    {
+      "resident": "UCZm0diFKnMvsNQ--CtXCsNA",
+      "name": "@Kirupa_49",
+      "title": "Modern House",
+      "recipe": {
+        "shape": "classic",
+        "roof": "flat",
+        "wall": "#f5f5f2",
+        "roofColor": "#3b4552",
+        "door": "#2b2d42",
+        "accent": "#4cc9f0",
+        "extras": []
+      },
+      "requestedIn": "Ugw8GDsjThuieYlqKjF4AaABAg",
+      "added": "2026-11-14"
+    },
+    {
+      "resident": "UCJKwj1uw3QlueW6K3N-U2gw",
+      "name": "@Staypositivels",
+      "title": "White Dome House",
+      "recipe": {
+        "shape": "classic",
+        "roof": "dome",
+        "wall": "#ffffff",
+        "roofColor": "#8fc1e3",
+        "door": "#2f6690",
+        "accent": "#8fc1e3",
+        "extras": []
+      },
+      "requestedIn": "Ugw0YjL_sJIPcf5vi-V4AaABAg",
+      "added": "2026-11-14"
+    },
+    {
+      "resident": "UCWDGjI4UHg4ITRCbq_Lkxgw",
+      "name": "@marygracecaayaacaylar4311",
+      "title": "Cottage",
+      "recipe": {
+        "shape": "cottage",
+        "roof": "gable",
+        "wall": "#f4e4c1",
+        "roofColor": "#8a5a44",
+        "door": "#6b4630",
+        "accent": "#e07a5f",
+        "extras": [
+          "flowers",
+          "fence"
+        ]
+      },
+      "requestedIn": "Ugzp6hcRWIr6NZdVBNN4AaABAg",
+      "added": "2026-11-14"
+    },
+    {
+      "resident": "UCJ8vLkrMd5einlvr_L_Bpfw",
+      "name": "@ЕленаИзюмова-у7ц",
+      "title": "Grand Mansion",
+      "recipe": {
+        "shape": "mansion",
+        "roof": "pointed",
+        "wall": "#f3e9d2",
+        "roofColor": "#5c6f8c",
+        "door": "#6b4630",
+        "accent": "#f5b82e",
+        "extras": [
+          "fountain",
+          "flowers"
+        ]
+      },
+      "requestedIn": "UgyFFw2Q6FkfKoBodqR4AaABAg",
+      "added": "2026-11-14"
+    },
+    {
+      "resident": "UCiLJso0A8qgPFgaS443eqlA",
+      "name": "@populardamian",
+      "title": "Stone Mansion",
+      "recipe": {
+        "shape": "mansion",
+        "roof": "pointed",
+        "wall": "#e8e2d6",
+        "roofColor": "#3b4552",
+        "door": "#2b2d42",
+        "accent": "#e63946",
+        "extras": [
+          "fence",
+          "flag"
+        ]
+      },
+      "requestedIn": "UgxVGD6bxRHFNXtw4PR4AaABAg",
+      "added": "2026-11-14"
+    },
+    {
+      "resident": "UCXdVvBkdBO5tbEzNk1mFGSg",
+      "name": "@FaizanM-102",
+      "title": "Golden Mansion",
+      "recipe": {
+        "shape": "mansion",
+        "roof": "pointed",
+        "wall": "#f6d7b0",
+        "roofColor": "#a8443a",
+        "door": "#6b4630",
+        "accent": "#f5b82e",
+        "extras": [
+          "statue",
+          "fountain"
+        ]
+      },
+      "requestedIn": "UgwFWFE0dVRy8MGLoVd4AaABAg",
+      "added": "2026-11-14"
+    },
+    {
+      "resident": "UCxDVjbHiL9yQ7SHXmiVYICg",
+      "name": "@eclipseeditz5-c9v",
+      "title": "Blue Mansion",
+      "recipe": {
+        "shape": "mansion",
+        "roof": "pointed",
+        "wall": "#d6dee8",
+        "roofColor": "#29335c",
+        "door": "#2b2d42",
+        "accent": "#ffd23f",
+        "extras": [
+          "fairy-lights",
+          "flowers"
+        ]
+      },
+      "requestedIn": "Ugwq5N7a_BdihqGiLdB4AaABAg",
+      "added": "2026-11-14"
+    },
+    {
+      "resident": "UCXTHzJ2pyMoWFmzMj6g-T7A",
+      "name": "@larissacosta4674",
+      "title": "White Mansion",
+      "recipe": {
+        "shape": "mansion",
+        "roof": "pointed",
+        "wall": "#ffffff",
+        "roofColor": "#6d4c9f",
+        "door": "#3b2a4f",
+        "accent": "#ffd23f",
+        "extras": [
+          "statue",
+          "fountain"
+        ]
+      },
+      "requestedIn": "Ugwx0h_vuoY7uGAkLD14AaABAg",
+      "added": "2026-11-14"
+    }
   ]
 }

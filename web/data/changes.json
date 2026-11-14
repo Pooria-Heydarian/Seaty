@@ -1,12 +1,386 @@
 {
-  "date": "2026-11-12",
-  "day": 1,
-  "firstReport": true,
-  "residentCount": 0,
-  "totalFloors": 0,
-  "videoCount": 0,
-  "floorsAdded": 0,
-  "newResidents": [],
+  "date": "2026-11-14",
+  "day": 2,
+  "firstReport": false,
+  "residentCount": 37,
+  "totalFloors": 45,
+  "videoCount": 2,
+  "floorsAdded": 45,
+  "newResidents": [
+    {
+      "id": "UC72l66Gfc4bCEQEASVG6oPQ",
+      "name": "@Fly4Ever777",
+      "comment": "Hi, can you build me a house?",
+      "plot": 1,
+      "floors": 2
+    },
+    {
+      "id": "UCpw5KuodwG5inY_mCfoKuvA",
+      "name": "@Floodescape2fan-g9z",
+      "comment": "bello",
+      "plot": 2,
+      "floors": 1
+    },
+    {
+      "id": "UC1nwHOUj7poip83gnhJ46BQ",
+      "name": "@KetchupPac",
+      "comment": "I already commented",
+      "plot": 3,
+      "floors": 2
+    },
+    {
+      "id": "UC9JUSObteFHT96kE-U5WMNg",
+      "name": "@ZariGolpayegani",
+      "comment": "Hi",
+      "plot": 4,
+      "floors": 1
+    },
+    {
+      "id": "UCg-MntECid99Fl2rFzUhbxA",
+      "name": "@V1.bootleg",
+      "comment": "i want a pool possibly IN my house",
+      "plot": 5,
+      "floors": 1
+    },
+    {
+      "id": "UCn-3PuoTEOwyWSCo-89yj0A",
+      "name": "@POUSALI2412",
+      "comment": "Hi",
+      "plot": 6,
+      "floors": 1
+    },
+    {
+      "id": "UCZcS07-x1ubdSIjAGrVgU-A",
+      "name": "@mdsadiq4737",
+      "comment": "I want a regular home with an apple tree in the backyard",
+      "plot": 7,
+      "floors": 1
+    },
+    {
+      "id": "UCJ8vLkrMd5einlvr_L_Bpfw",
+      "name": "@ЕленаИзюмова-у7ц",
+      "comment": "horray my mansion is here",
+      "plot": 8,
+      "floors": 2
+    },
+    {
+      "id": "UC1YmxZwrnml20qf9NvsMsKA",
+      "name": "@theel-u7g",
+      "comment": "Please add a spaghetti factoryyyyyy",
+      "plot": 9,
+      "floors": 1
+    },
+    {
+      "id": "UC8FemfSe1cKjQ1BfTBT5nJA",
+      "name": "@idhi-g2n",
+      "comment": "wag vro",
+      "plot": 10,
+      "floors": 1
+    },
+    {
+      "id": "UCKSOXCdg_LIfxapjpyOAVTQ",
+      "name": "@shahnaazkhan3593",
+      "comment": "Add me",
+      "plot": 11,
+      "floors": 1
+    },
+    {
+      "id": "UCX6wVTHYXPiW7mS_UD_leoQ",
+      "name": "@ChristinneeeXD",
+      "comment": "Could I have an capybara house?",
+      "plot": 12,
+      "floors": 1
+    },
+    {
+      "id": "UCZdw1S5cCSsvUnyVmc1Vigw",
+      "name": "@TheOneNOnlyAstrid",
+      "comment": "Can I have a cat outside my house?",
+      "plot": 13,
+      "floors": 1
+    },
+    {
+      "id": "UCNNLnLR0N_8YlVw_eDVQzEA",
+      "name": "@Railey_508",
+      "comment": "Hey landlord, can i move in i only have 50 cents but, meh",
+      "plot": 14,
+      "floors": 2
+    },
+    {
+      "id": "UCxCetjjQEUF0aO-jMeHilSQ",
+      "name": "@EllyneMalinka",
+      "comment": "I want a cozy cabin",
+      "plot": 15,
+      "floors": 1
+    },
+    {
+      "id": "UCZm0diFKnMvsNQ--CtXCsNA",
+      "name": "@Kirupa_49",
+      "comment": "Can I get a modern house but simple?",
+      "plot": 16,
+      "floors": 1
+    },
+    {
+      "id": "UCiLJso0A8qgPFgaS443eqlA",
+      "name": "@populardamian",
+      "comment": "i want to have a mansion",
+      "plot": 17,
+      "floors": 2
+    },
+    {
+      "id": "UCHkEsssVMIqBscQy1-pXAdQ",
+      "name": "@TheBigCityBee",
+      "comment": "​@SeatyisOurcity Omg Thank you 🥹",
+      "plot": 18,
+      "floors": 1
+    },
+    {
+      "id": "UCXdVvBkdBO5tbEzNk1mFGSg",
+      "name": "@FaizanM-102",
+      "comment": "Mansion pls",
+      "plot": 19,
+      "floors": 1
+    },
+    {
+      "id": "UCJKwj1uw3QlueW6K3N-U2gw",
+      "name": "@Staypositivels",
+      "comment": "Can you put a white house with the dome roof and the pool outside?",
+      "plot": 20,
+      "floors": 1
+    },
+    {
+      "id": "UCICnlf3KRLmhydWXl38QXUQ",
+      "name": "@markchesterajeemercado3237",
+      "comment": "Im moving in bye Greenville hello seaty",
+      "plot": 21,
+      "floors": 1
+    },
+    {
+      "id": "UCSPBwDEWtAP6dMdwOAE94uQ",
+      "name": "@AURABLOX-HQ",
+      "comment": "I'm new",
+      "plot": 22,
+      "floors": 1
+    },
+    {
+      "id": "UCVNoIdSeaoW2eEnaZ61pAEQ",
+      "name": "@Get_jin_in_use",
+      "comment": "also here",
+      "plot": 23,
+      "floors": 2
+    },
+    {
+      "id": "UCWkYCJOI-n0B8BB8XAE66Hg",
+      "name": "@PolerGG",
+      "comment": "me pls",
+      "plot": 24,
+      "floors": 1
+    },
+    {
+      "id": "UC3S4mJTi784UlJ04U0zCJ_g",
+      "name": "@AmirHosseinHeydarian-i3r",
+      "comment": "A carshow for me please😋",
+      "plot": 25,
+      "floors": 2
+    },
+    {
+      "id": "UCUh2iTRVNp77G29R_R6sM4A",
+      "name": "@TwoToThePowerOf999ImSmart",
+      "comment": "Please build me up; it's been a whole day.",
+      "plot": 26,
+      "floors": 1
+    },
+    {
+      "id": "UCxDVjbHiL9yQ7SHXmiVYICg",
+      "name": "@eclipseeditz5-c9v",
+      "comment": "Hi seaty can iget a mansuon",
+      "plot": 27,
+      "floors": 1
+    },
+    {
+      "id": "UC4VisFgkafzF9F-VwreH8bA",
+      "name": "@Emberthedino",
+      "comment": "Ok",
+      "plot": 28,
+      "floors": 1
+    },
+    {
+      "id": "UCw-XTBd2D4HtHVOrsO_xZ0A",
+      "name": "@Lethalguyy",
+      "comment": "Hi",
+      "plot": 29,
+      "floors": 1
+    },
+    {
+      "id": "UCQMGoJ1ocMTjuVtyI0RayUA",
+      "name": "@TeteaLalu",
+      "comment": "Can i also get one btw is there anyway to cuztomize my house?",
+      "plot": 30,
+      "floors": 1
+    },
+    {
+      "id": "UCMaNEr5Lw8OoO7jq49_6vmw",
+      "name": "@bijelalasica108",
+      "comment": "remind me do comment again ill move in",
+      "plot": 31,
+      "floors": 1
+    },
+    {
+      "id": "UCXTHzJ2pyMoWFmzMj6g-T7A",
+      "name": "@larissacosta4674",
+      "comment": "Can you build me a white mansion with some cool Stands from JOJO's Bizzare Adventure?",
+      "plot": 32,
+      "floors": 1
+    },
+    {
+      "id": "UC-RwtfxfONhoSYvAFXO12LQ",
+      "name": "@matheusmoscardo",
+      "comment": "Hey nice video",
+      "plot": 33,
+      "floors": 1
+    },
+    {
+      "id": "UC-Kcqoiyqx-UnJiJgjtCWbg",
+      "name": "@Owen_B13",
+      "comment": "Hi",
+      "plot": 34,
+      "floors": 1
+    },
+    {
+      "id": "UCWDGjI4UHg4ITRCbq_Lkxgw",
+      "name": "@marygracecaayaacaylar4311",
+      "comment": "Make my house like a cottage style, pls?",
+      "plot": 35,
+      "floors": 2
+    },
+    {
+      "id": "UCKgB0kce7yRwStaUsMl_nZQ",
+      "name": "@AverageHuman67",
+      "comment": "lemme join",
+      "plot": 36,
+      "floors": 1
+    },
+    {
+      "id": "UCDPNgreqySTvHnrf5I97QXg",
+      "name": "@zawirammar",
+      "comment": "I wanna join",
+      "plot": 37,
+      "floors": 1
+    }
+  ],
   "grew": [],
-  "top": []
+  "top": [
+    {
+      "id": "UC72l66Gfc4bCEQEASVG6oPQ",
+      "name": "@Fly4Ever777",
+      "floors": 2
+    },
+    {
+      "id": "UC1nwHOUj7poip83gnhJ46BQ",
+      "name": "@KetchupPac",
+      "floors": 2
+    },
+    {
+      "id": "UCJ8vLkrMd5einlvr_L_Bpfw",
+      "name": "@ЕленаИзюмова-у7ц",
+      "floors": 2
+    }
+  ],
+  "newSpecials": [
+    {
+      "kind": "landmark",
+      "id": "spaghetti-factory",
+      "name": "Spaghetti Factory",
+      "requestedBy": "@theel-u7g"
+    },
+    {
+      "kind": "landmark",
+      "id": "car-show",
+      "name": "Car Show",
+      "requestedBy": "@AmirHosseinHeydarian-i3r"
+    },
+    {
+      "kind": "upgrade",
+      "id": "UCg-MntECid99Fl2rFzUhbxA",
+      "name": "@V1.bootleg",
+      "type": "pool"
+    },
+    {
+      "kind": "upgrade",
+      "id": "UCZcS07-x1ubdSIjAGrVgU-A",
+      "name": "@mdsadiq4737",
+      "type": "apple-tree"
+    },
+    {
+      "kind": "upgrade",
+      "id": "UCX6wVTHYXPiW7mS_UD_leoQ",
+      "name": "@ChristinneeeXD",
+      "type": "capybara"
+    },
+    {
+      "kind": "upgrade",
+      "id": "UCJKwj1uw3QlueW6K3N-U2gw",
+      "name": "@Staypositivels",
+      "type": "pool"
+    },
+    {
+      "kind": "upgrade",
+      "id": "UCZdw1S5cCSsvUnyVmc1Vigw",
+      "name": "@TheOneNOnlyAstrid",
+      "type": "cat"
+    },
+    {
+      "kind": "house",
+      "id": "UCxCetjjQEUF0aO-jMeHilSQ",
+      "name": "@EllyneMalinka",
+      "title": "Cozy Cabin"
+    },
+    {
+      "kind": "house",
+      "id": "UCZm0diFKnMvsNQ--CtXCsNA",
+      "name": "@Kirupa_49",
+      "title": "Modern House"
+    },
+    {
+      "kind": "house",
+      "id": "UCJKwj1uw3QlueW6K3N-U2gw",
+      "name": "@Staypositivels",
+      "title": "White Dome House"
+    },
+    {
+      "kind": "house",
+      "id": "UCWDGjI4UHg4ITRCbq_Lkxgw",
+      "name": "@marygracecaayaacaylar4311",
+      "title": "Cottage"
+    },
+    {
+      "kind": "house",
+      "id": "UCJ8vLkrMd5einlvr_L_Bpfw",
+      "name": "@ЕленаИзюмова-у7ц",
+      "title": "Grand Mansion"
+    },
+    {
+      "kind": "house",
+      "id": "UCiLJso0A8qgPFgaS443eqlA",
+      "name": "@populardamian",
+      "title": "Stone Mansion"
+    },
+    {
+      "kind": "house",
+      "id": "UCXdVvBkdBO5tbEzNk1mFGSg",
+      "name": "@FaizanM-102",
+      "title": "Golden Mansion"
+    },
+    {
+      "kind": "house",
+      "id": "UCxDVjbHiL9yQ7SHXmiVYICg",
+      "name": "@eclipseeditz5-c9v",
+      "title": "Blue Mansion"
+    },
+    {
+      "kind": "house",
+      "id": "UCXTHzJ2pyMoWFmzMj6g-T7A",
+      "name": "@larissacosta4674",
+      "title": "White Mansion"
+    }
+  ]
 }

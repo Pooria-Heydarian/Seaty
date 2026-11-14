@@ -1,12 +1,346 @@
 {
-  "generatedAt": "2026-11-12T22:02:18.328Z",
+  "generatedAt": "2026-11-14T09:07:31.721Z",
   "mode": "live",
   "channel": {
     "id": "UCC6y5lmQvQq-o6rreu1QybA",
     "title": "Seaty"
   },
-  "videoCount": 0,
-  "residentCount": 0,
-  "totalFloors": 0,
-  "residents": []
+  "videoCount": 2,
+  "residentCount": 37,
+  "totalFloors": 45,
+  "residents": [
+    {
+      "id": "UC72l66Gfc4bCEQEASVG6oPQ",
+      "name": "@Fly4Ever777",
+      "avatar": "https://yt3.ggpht.com/GXrIFi3FCAb7sOUwP7aQFiPkQkdmhuH2X8nRVoQpYthyyT2U9MXkY-x5EGhKc9sUoYaFLdEis24=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 2,
+      "joined": "2026-11-13T10:07:16Z",
+      "lastActive": "2026-11-13T16:00:54Z",
+      "comment": "Hi, can you build me a house?"
+    },
+    {
+      "id": "UCpw5KuodwG5inY_mCfoKuvA",
+      "name": "@Floodescape2fan-g9z",
+      "avatar": "https://yt3.ggpht.com/8L7Bz_5QV-YvoNdRKvanmraMfSkgi-L_mWNjc0er-Fl-zfMbV22l6LMEk5K4ICU2ZamyWhd3m54=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T10:10:55Z",
+      "lastActive": "2026-11-13T10:10:55Z",
+      "comment": "bello"
+    },
+    {
+      "id": "UC1nwHOUj7poip83gnhJ46BQ",
+      "name": "@KetchupPac",
+      "avatar": "https://yt3.ggpht.com/L4_E_iNI-lYFOKl7bAWJa8MjLRpNf5gsjcQHruC09qRD6_MnsQ5dXAVy1Niy9Jw_TWvVnyIJ=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 2,
+      "joined": "2026-11-13T10:14:46Z",
+      "lastActive": "2026-11-13T17:01:33Z",
+      "comment": "I already commented"
+    },
+    {
+      "id": "UC9JUSObteFHT96kE-U5WMNg",
+      "name": "@ZariGolpayegani",
+      "avatar": "https://yt3.ggpht.com/ytc/AIdro_nDXFRPiAuihIvWuQRBKFf5IK5R8M40AQlAZZiolggMwp8ohjxFqxs0Mrk9ANKus05UJg=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T10:18:30Z",
+      "lastActive": "2026-11-13T10:18:30Z",
+      "comment": "Hi"
+    },
+    {
+      "id": "UCg-MntECid99Fl2rFzUhbxA",
+      "name": "@V1.bootleg",
+      "avatar": "https://yt3.ggpht.com/-XL0pmQsENDaZAXuT4fVcq8c5myfTNm93I5Kv3_R4vU7dbYBU0oO1QUT1GBJ9eZ2imldMiG0=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T10:20:32Z",
+      "lastActive": "2026-11-13T10:20:32Z",
+      "comment": "i want a pool possibly IN my house"
+    },
+    {
+      "id": "UCn-3PuoTEOwyWSCo-89yj0A",
+      "name": "@POUSALI2412",
+      "avatar": "https://yt3.ggpht.com/ytc/AIdro_kp11l9KW39CiHY7CdlTnw72-rcBbzrUg5PiuDrZ2j9v8U=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T10:20:41Z",
+      "lastActive": "2026-11-13T10:20:41Z",
+      "comment": "Hi"
+    },
+    {
+      "id": "UCZcS07-x1ubdSIjAGrVgU-A",
+      "name": "@mdsadiq4737",
+      "avatar": "https://yt3.ggpht.com/ytc/AIdro_nZNDfwxGHigJup6VyenH37qjIzPY3qdunkiTViuAOmQ4Q=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T10:21:50Z",
+      "lastActive": "2026-11-13T10:21:50Z",
+      "comment": "I want a regular home with an apple tree in the backyard"
+    },
+    {
+      "id": "UCJ8vLkrMd5einlvr_L_Bpfw",
+      "name": "@ЕленаИзюмова-у7ц",
+      "avatar": "https://yt3.ggpht.com/ytc/AIdro_n5josI7Defd7zDKMckENBMdijw8wa4ScGPLY6M-U4=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 2,
+      "joined": "2026-11-13T10:24:41Z",
+      "lastActive": "2026-11-13T13:55:31Z",
+      "comment": "horray my mansion is here"
+    },
+    {
+      "id": "UC1YmxZwrnml20qf9NvsMsKA",
+      "name": "@theel-u7g",
+      "avatar": "https://yt3.ggpht.com/MoDwYGmIIQ8fqNenLTARsGh0vjf1TaLESBAMG_ZKGkRwUCjeVhPpe2q-4XZftcK58NrNDrpYCw=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T10:26:06Z",
+      "lastActive": "2026-11-13T10:26:06Z",
+      "comment": "Please add a spaghetti factoryyyyyy"
+    },
+    {
+      "id": "UC8FemfSe1cKjQ1BfTBT5nJA",
+      "name": "@idhi-g2n",
+      "avatar": "https://yt3.ggpht.com/9RoIBWCl2mafW9ML48uR1oquUNRvPQxUQRi9wq7j8Iolo1e3guQ6pb9eXJ3Q78P2QQOgJDQA=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T10:26:32Z",
+      "lastActive": "2026-11-13T10:26:32Z",
+      "comment": "wag vro"
+    },
+    {
+      "id": "UCKSOXCdg_LIfxapjpyOAVTQ",
+      "name": "@shahnaazkhan3593",
+      "avatar": "https://yt3.ggpht.com/JecPAtBE_mDre6aAIL7SBAYB-dD6Qa-gTGmkEGg6Y9HnfuYHyXoUM6YNlwpisxSeNz3G3cCb=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T10:29:03Z",
+      "lastActive": "2026-11-13T10:29:03Z",
+      "comment": "Add me"
+    },
+    {
+      "id": "UCX6wVTHYXPiW7mS_UD_leoQ",
+      "name": "@ChristinneeeXD",
+      "avatar": "https://yt3.ggpht.com/bnhcbcNn4EFE54pYCzlPCbWlb9NH669oHjCdZzfWoQZhc-2J55MvAi54SX4GVKTa2xgoIezByCU=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T11:32:16Z",
+      "lastActive": "2026-11-13T11:32:16Z",
+      "comment": "Could I have an capybara house?"
+    },
+    {
+      "id": "UCZdw1S5cCSsvUnyVmc1Vigw",
+      "name": "@TheOneNOnlyAstrid",
+      "avatar": "https://yt3.ggpht.com/OGh6MT2nzBxSqgejShz8860_XX5ZjgBvJ5oDxm03d80FM9SxNrNu28vtAGQmCKkyI29yF2Qo0w=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T12:10:25Z",
+      "lastActive": "2026-11-13T12:10:25Z",
+      "comment": "Can I have a cat outside my house?"
+    },
+    {
+      "id": "UCNNLnLR0N_8YlVw_eDVQzEA",
+      "name": "@Railey_508",
+      "avatar": "https://yt3.ggpht.com/WzVKhIhx4mHbq_bMjzVe4YRtnBe-T-rPwhpLwENIKHB7MykwNu15lh4wzMIkJwfnA34ZoCkh6w=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 2,
+      "joined": "2026-11-13T12:21:40Z",
+      "lastActive": "2026-11-13T12:23:19Z",
+      "comment": "Hey landlord, can i move in i only have 50 cents but, meh"
+    },
+    {
+      "id": "UCxCetjjQEUF0aO-jMeHilSQ",
+      "name": "@EllyneMalinka",
+      "avatar": "https://yt3.ggpht.com/ytc/AIdro_k171yMDtn8o398C3lxd39OcZg4d7MFhNvJGfTuGHa2Zi2ow4EOwQv8jolERX9FY3-O3w=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T12:22:22Z",
+      "lastActive": "2026-11-13T12:22:22Z",
+      "comment": "I want a cozy cabin"
+    },
+    {
+      "id": "UCZm0diFKnMvsNQ--CtXCsNA",
+      "name": "@Kirupa_49",
+      "avatar": "https://yt3.ggpht.com/Xk1U-61nz87K32U2JTruuBgPeH-xGivQBql-aFmhydnGCmArKpU25_aMZeqKLrprxL_wxHRW=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T12:25:55Z",
+      "lastActive": "2026-11-13T12:25:55Z",
+      "comment": "Can I get a modern house but simple?"
+    },
+    {
+      "id": "UCiLJso0A8qgPFgaS443eqlA",
+      "name": "@populardamian",
+      "avatar": "https://yt3.ggpht.com/M5qL96NuGiZnbwEby1ryA81SvcWSVTCVHPdDF2hO3WvClUeOt3o55yO26vOzhKA01UFJmunxQRw=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 2,
+      "joined": "2026-11-13T12:43:48Z",
+      "lastActive": "2026-11-13T12:45:56Z",
+      "comment": "i want to have a mansion"
+    },
+    {
+      "id": "UCHkEsssVMIqBscQy1-pXAdQ",
+      "name": "@TheBigCityBee",
+      "avatar": "https://yt3.ggpht.com/TifSNcNK2IQpsEWtiGdgyLlaoFIi4PYksYeG_hM6naFj5FxOLHEQnH_ZAcIy8WFRM3AKYqXmpag=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T12:50:01Z",
+      "lastActive": "2026-11-13T14:12:50Z",
+      "comment": "​@SeatyisOurcity Omg Thank you 🥹"
+    },
+    {
+      "id": "UCXdVvBkdBO5tbEzNk1mFGSg",
+      "name": "@FaizanM-102",
+      "avatar": "https://yt3.ggpht.com/KZCPHtfGvGAH3v82bFZaE-DPINmPEdes3qEhZGysJn8PNV4MZtQogTVjfm7RKsn1LTOVMQ-RzQ=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T12:50:14Z",
+      "lastActive": "2026-11-13T12:50:14Z",
+      "comment": "Mansion pls"
+    },
+    {
+      "id": "UCJKwj1uw3QlueW6K3N-U2gw",
+      "name": "@Staypositivels",
+      "avatar": "https://yt3.ggpht.com/_isgFLdWKEYP_rxjhLPXqw_d2_jQSC79ECcmYINvnJFY7yg-YB_GzQL12j6sHAYwdxXaQl7pXSk=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T13:03:03Z",
+      "lastActive": "2026-11-13T13:03:03Z",
+      "comment": "Can you put a white house with the dome roof and the pool outside?"
+    },
+    {
+      "id": "UCICnlf3KRLmhydWXl38QXUQ",
+      "name": "@markchesterajeemercado3237",
+      "avatar": "https://yt3.ggpht.com/_YVb_GaFZ2J-flYuOXwYRj8A-rhzLduK8eYIJc1sZ98CIGyjBMPtVWCDs1QTM9mc5fPn_zIvZA=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T13:40:48Z",
+      "lastActive": "2026-11-13T13:40:48Z",
+      "comment": "Im moving in bye Greenville hello seaty"
+    },
+    {
+      "id": "UCSPBwDEWtAP6dMdwOAE94uQ",
+      "name": "@AURABLOX-HQ",
+      "avatar": "https://yt3.ggpht.com/zlTrW85tgO95z_8ZJ5JHNnWFHsy8sqXhkXxg4J839NkoIIcWCT_ZLMnVj-ILJTh2UeIoh-1nJw=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T14:07:59Z",
+      "lastActive": "2026-11-13T14:08:25Z",
+      "comment": "I'm new"
+    },
+    {
+      "id": "UCVNoIdSeaoW2eEnaZ61pAEQ",
+      "name": "@Get_jin_in_use",
+      "avatar": "https://yt3.ggpht.com/l_t93bcXss1hHSUKn0uGUK125uW4f87R01pYFkZJUL_kKPjwsjYS7F6u2wHNgbGM9cD9dfB3IQ=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 2,
+      "joined": "2026-11-13T14:13:26Z",
+      "lastActive": "2026-11-13T14:13:42Z",
+      "comment": "also here"
+    },
+    {
+      "id": "UCWkYCJOI-n0B8BB8XAE66Hg",
+      "name": "@PolerGG",
+      "avatar": "https://yt3.ggpht.com/5SlzzP-hvxcXgSNaAPcXoQ-sDNaf6wv-I_yCfQ8Es0h_AxF9_OrpisieAbaU27KmZKiw5nZRyg=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T14:17:41Z",
+      "lastActive": "2026-11-13T14:17:41Z",
+      "comment": "me pls"
+    },
+    {
+      "id": "UC3S4mJTi784UlJ04U0zCJ_g",
+      "name": "@AmirHosseinHeydarian-i3r",
+      "avatar": "https://yt3.ggpht.com/aT-f_EUpYyem2ceAqv8q4ME7ya-fpUCvUWHmirbGjXPJ8ikbFZ2kBwB-yTTnMWxzPSCVndko_g=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 2,
+      "joined": "2026-11-13T15:04:10Z",
+      "lastActive": "2026-11-13T15:08:36Z",
+      "comment": "A carshow for me please😋"
+    },
+    {
+      "id": "UCUh2iTRVNp77G29R_R6sM4A",
+      "name": "@TwoToThePowerOf999ImSmart",
+      "avatar": "https://yt3.ggpht.com/1kAYqRlLjyZYMIepWlDbF3QX0ZrN1DA42omcw-dOGg7z5GWxSaNM9O_h2qphRazmxUElnL96=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T15:11:40Z",
+      "lastActive": "2026-11-14T02:05:43Z",
+      "comment": "Please build me up; it's been a whole day."
+    },
+    {
+      "id": "UCxDVjbHiL9yQ7SHXmiVYICg",
+      "name": "@eclipseeditz5-c9v",
+      "avatar": "https://yt3.ggpht.com/WLFTP5FBEnqAWACRz9rjSWMN-2ychS8djGXMx_xMdxVXHBdqenhZDwoZ8QSDrG2M6ooGdau2NQ=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T15:51:56Z",
+      "lastActive": "2026-11-13T15:51:56Z",
+      "comment": "Hi seaty can iget a mansuon"
+    },
+    {
+      "id": "UC4VisFgkafzF9F-VwreH8bA",
+      "name": "@Emberthedino",
+      "avatar": "https://yt3.ggpht.com/na_mO4tgX9_qjC4Tk5kYP0vJcQYo3qamO119iVBdCnjz3TMZZPjvfFUPhbHjJqWAC33IY74Nr98=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T15:56:27Z",
+      "lastActive": "2026-11-13T15:56:27Z",
+      "comment": "Ok"
+    },
+    {
+      "id": "UCw-XTBd2D4HtHVOrsO_xZ0A",
+      "name": "@Lethalguyy",
+      "avatar": "https://yt3.ggpht.com/d7EvqVF75b5hBm2BGhRYf5rY8SDP4xUkrJsiPi4O31rhCvDIVGNEyXfH3jHU_f1aUDTDTRJwGg=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T16:08:25Z",
+      "lastActive": "2026-11-13T16:08:25Z",
+      "comment": "Hi"
+    },
+    {
+      "id": "UCQMGoJ1ocMTjuVtyI0RayUA",
+      "name": "@TeteaLalu",
+      "avatar": "https://yt3.ggpht.com/ytc/AIdro_ntgPrUcHyzZ9-vVtMugfOvEyfrYUXSF9CNTYHBl3ld87eoFostv-kIwHbSagae3U3GEw=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T16:47:58Z",
+      "lastActive": "2026-11-13T16:47:58Z",
+      "comment": "Can i also get one btw is there anyway to cuztomize my house?"
+    },
+    {
+      "id": "UCMaNEr5Lw8OoO7jq49_6vmw",
+      "name": "@bijelalasica108",
+      "avatar": "https://yt3.ggpht.com/v1GStFUTP2Lu6tqMZGJmXcPiqVh7YsKyOhJXaaZ77CJmndBer4lN30uUGXZYYXd7O5b81DI7=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T17:01:26Z",
+      "lastActive": "2026-11-13T17:01:26Z",
+      "comment": "remind me do comment again ill move in"
+    },
+    {
+      "id": "UCXTHzJ2pyMoWFmzMj6g-T7A",
+      "name": "@larissacosta4674",
+      "avatar": "https://yt3.ggpht.com/ytc/AIdro_mo_fi3b_85zVLJGWcWbCErfRGWQI1iUJUCyYo7LbmUTeqcGU-m2XcMob4QvoGSrt1zTA=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T18:56:54Z",
+      "lastActive": "2026-11-13T18:56:54Z",
+      "comment": "Can you build me a white mansion with some cool Stands from JOJO's Bizzare Adventure?"
+    },
+    {
+      "id": "UC-RwtfxfONhoSYvAFXO12LQ",
+      "name": "@matheusmoscardo",
+      "avatar": "https://yt3.ggpht.com/ytc/AIdro_nO5_AnrR5wC3yikrkeRVMEqqK2JYLnvMQub5cKxd-mCQNDacSpJv5wGRkTMh4pgO6TqQ=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-13T19:58:55Z",
+      "lastActive": "2026-11-13T19:58:55Z",
+      "comment": "Hey nice video"
+    },
+    {
+      "id": "UC-Kcqoiyqx-UnJiJgjtCWbg",
+      "name": "@Owen_B13",
+      "avatar": "https://yt3.ggpht.com/bfw5Vi5k5-2v6z6Up13LBD1d7zry9bepaQkhvh4BuFXJycyz_QJM-mDpwrzQOFfg56mtOux1mVA=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-14T00:33:04Z",
+      "lastActive": "2026-11-14T00:33:04Z",
+      "comment": "Hi"
+    },
+    {
+      "id": "UCWDGjI4UHg4ITRCbq_Lkxgw",
+      "name": "@marygracecaayaacaylar4311",
+      "avatar": "https://yt3.ggpht.com/ytc/AIdro_lLCgmgigk3uISvbszgP5hQtTh7XRqLcx6znfLMQos=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 2,
+      "joined": "2026-11-14T02:01:16Z",
+      "lastActive": "2026-11-14T02:02:36Z",
+      "comment": "Make my house like a cottage style, pls?"
+    },
+    {
+      "id": "UCKgB0kce7yRwStaUsMl_nZQ",
+      "name": "@AverageHuman67",
+      "avatar": "https://yt3.ggpht.com/_dPSeVvHA3T0KR_nOItYS7f6F4VRE9D2UBeIkm5tBsJLnhgiV0mDFigvDrj58snoYiqpsafdTw=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-14T04:43:45Z",
+      "lastActive": "2026-11-14T04:43:45Z",
+      "comment": "lemme join"
+    },
+    {
+      "id": "UCDPNgreqySTvHnrf5I97QXg",
+      "name": "@zawirammar",
+      "avatar": "https://yt3.ggpht.com/1bPZWKHhYuaP-s14nngwyNS1XvVzC5w0bb5xnz3XZw9GW7oFXNNIrzs6FNUUdh7uLJW5I_Lcy3U=s48-c-k-c0x00ffffff-no-rj",
+      "floors": 1,
+      "joined": "2026-11-14T06:17:42Z",
+      "lastActive": "2026-11-14T06:17:42Z",
+      "comment": "I wanna join"
+    }
+  ]
 }

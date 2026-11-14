@@ -1,0 +1,20 @@
+{
+  "live": {
+    "landmark:spaghetti-factory": "2026-11-14",
+    "landmark:car-show": "2026-11-14",
+    "upgrade:UCg-MntECid99Fl2rFzUhbxA:pool": "2026-11-14",
+    "upgrade:UCZcS07-x1ubdSIjAGrVgU-A:apple-tree": "2026-11-14",
+    "upgrade:UCX6wVTHYXPiW7mS_UD_leoQ:capybara": "2026-11-14",
+    "upgrade:UCJKwj1uw3QlueW6K3N-U2gw:pool": "2026-11-14",
+    "upgrade:UCZdw1S5cCSsvUnyVmc1Vigw:cat": "2026-11-14",
+    "house:UCxCetjjQEUF0aO-jMeHilSQ:2026-11-14:{\"shape\":\"cottage\",\"roof\":\"gable\",\"wall\":\"#a9744f\",\"roofColor\":\"#5b4636\",\"door\":\"#3e2a1e\",\"accent\":\"#ffcf6e\",\"extras\":[\"smoke\",\"flowers\"]}": "2026-11-14",
+    "house:UCZm0diFKnMvsNQ--CtXCsNA:2026-11-14:{\"shape\":\"classic\",\"roof\":\"flat\",\"wall\":\"#f5f5f2\",\"roofColor\":\"#3b4552\",\"door\":\"#2b2d42\",\"accent\":\"#4cc9f0\",\"extras\":[]}": "2026-11-14",
+    "house:UCJKwj1uw3QlueW6K3N-U2gw:2026-11-14:{\"shape\":\"classic\",\"roof\":\"dome\",\"wall\":\"#ffffff\",\"roofColor\":\"#8fc1e3\",\"door\":\"#2f6690\",\"accent\":\"#8fc1e3\",\"extras\":[]}": "2026-11-14",
+    "house:UCWDGjI4UHg4ITRCbq_Lkxgw:2026-11-14:{\"shape\":\"cottage\",\"roof\":\"gable\",\"wall\":\"#f4e4c1\",\"roofColor\":\"#8a5a44\",\"door\":\"#6b4630\",\"accent\":\"#e07a5f\",\"extras\":[\"flowers\",\"fence\"]}": "2026-11-14",
+    "house:UCJ8vLkrMd5einlvr_L_Bpfw:2026-11-14:{\"shape\":\"mansion\",\"roof\":\"pointed\",\"wall\":\"#f3e9d2\",\"roofColor\":\"#5c6f8c\",\"door\":\"#6b4630\",\"accent\":\"#f5b82e\",\"extras\":[\"fountain\",\"flowers\"]}": "2026-11-14",
+    "house:UCiLJso0A8qgPFgaS443eqlA:2026-11-14:{\"shape\":\"mansion\",\"roof\":\"pointed\",\"wall\":\"#e8e2d6\",\"roofColor\":\"#3b4552\",\"door\":\"#2b2d42\",\"accent\":\"#e63946\",\"extras\":[\"fence\",\"flag\"]}": "2026-11-14",
+    "house:UCXdVvBkdBO5tbEzNk1mFGSg:2026-11-14:{\"shape\":\"mansion\",\"roof\":\"pointed\",\"wall\":\"#f6d7b0\",\"roofColor\":\"#a8443a\",\"door\":\"#6b4630\",\"accent\":\"#f5b82e\",\"extras\":[\"statue\",\"fountain\"]}": "2026-11-14",
+    "house:UCxDVjbHiL9yQ7SHXmiVYICg:2026-11-14:{\"shape\":\"mansion\",\"roof\":\"pointed\",\"wall\":\"#d6dee8\",\"roofColor\":\"#29335c\",\"door\":\"#2b2d42\",\"accent\":\"#ffd23f\",\"extras\":[\"fairy-lights\",\"flowers\"]}": "2026-11-14",
+    "house:UCXTHzJ2pyMoWFmzMj6g-T7A:2026-11-14:{\"shape\":\"mansion\",\"roof\":\"pointed\",\"wall\":\"#ffffff\",\"roofColor\":\"#6d4c9f\",\"door\":\"#3b2a4f\",\"accent\":\"#ffd23f\",\"extras\":[\"statue\",\"fountain\"]}": "2026-11-14"
+  }
+}
