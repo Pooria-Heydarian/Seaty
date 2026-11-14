@@ -16,6 +16,7 @@ document.body.classList.add(RENDER ? 'render' : 'preview');
 
 const MAX_FEATURED_NEW = 4;
 const MAX_FEATURED_GROW = 3;
+const MAX_FEATURED_HOUSES = 4; // more dream houses than this share one "+N more" shot
 const AVATAR_COLORS = ['#ff7a45', '#2e86ab', '#7a5cff', '#2a9d8f', '#e76f51', '#d62f6f', '#3a86ff'];
 
 // ---------- Easing ----------
@@ -81,6 +82,32 @@ function buildingShot(entry, floors, lt, dur) {
   return orbit(target, dist, az, h > 12 ? 22 : 32);
 }
 
+/**
+ * Of 4 camera directions around a building, the one whose line of sight is least blocked by
+ * neighbouring buildings (counts how much of the view ray runs below neighbours' roofs).
+ */
+function clearestAzimuth(entry, targetY, dist, elevationDeg) {
+  const p = entry.outer.position;
+  const near = world.list.filter((o) => o !== entry && o.outer.position.distanceTo(p) < dist + 6);
+  const el = (elevationDeg * Math.PI) / 180;
+  let best = null;
+  for (let q = 0; q < 4; q++) {
+    const az = entry.outer.rotation.y + 0.5 + (q * Math.PI) / 2;
+    let blocked = 0;
+    for (let d = 2; d < dist; d += 1) {
+      const x = p.x + Math.sin(az) * Math.cos(el) * d;
+      const z = p.z + Math.cos(az) * Math.cos(el) * d;
+      const y = targetY + Math.sin(el) * d;
+      for (const o of near) {
+        const op = o.outer.position;
+        if (Math.abs(op.x - x) < 2.6 && Math.abs(op.z - z) < 2.6 && (o.roofTop || 0) > y) blocked += (o.roofTop - y);
+      }
+    }
+    if (!best || blocked < best.blocked - 0.01) best = { az, blocked };
+  }
+  return best.az;
+}
+
 // ---------- Timeline ----------
 function buildTimeline(city, ch) {
   const scenes = [];
@@ -109,7 +136,10 @@ function buildTimeline(city, ch) {
     : `Day ${ch.day} of adding every commenter to my city. ${nNew ? `${nNew} new ${nNew === 1 ? 'resident' : 'residents'} moved in today!` : 'No one new moved in today, but the city keeps growing.'}`;
   add('intro', 3.2, {}, { text: introLine, at: 0.3 });
   // Special buildings first (big news), house upgrades after the new residents have moved in.
-  const newSpecials = (ch.newSpecials || []).filter((s) => (s.kind === 'landmark' ? world.landmarks.has(s.id) : world.entries.get(s.id)?.upgradeObjects?.[s.type]));
+  const newSpecials = (ch.newSpecials || []).filter((s) =>
+    s.kind === 'landmark' ? world.landmarks.has(s.id)
+      : s.kind === 'house' ? world.entries.get(s.id)?.recipe
+        : world.entries.get(s.id)?.upgradeObjects?.[s.type]);
   const UPGRADE_LINE = {
     pool: (n) => [`${n}'s house just got a swimming pool!`, 'Got a swimming pool!'],
     'apple-tree': (n) => [`${n} now has an apple tree in the backyard!`, 'Got an apple tree in the backyard!'],
@@ -127,6 +157,22 @@ function buildTimeline(city, ch) {
   for (const sp of newSpecials.filter((s) => s.kind === 'upgrade')) {
     const [line, caption] = (UPGRADE_LINE[sp.type] || ((n) => [`${n} got a house upgrade!`, 'Got a house upgrade!']))(say(sp.name));
     add('upgrade', 3.8, { sp, caption, entry: world.entries.get(sp.id) }, { text: line, at: 0.9 });
+  }
+  const newHouses = newSpecials.filter((s) => s.kind === 'house');
+  newHouses.slice(0, MAX_FEATURED_HOUSES).forEach((sp, i) => {
+    const article = /^[aeiou]/i.test(sp.title) ? 'an' : 'a';
+    add('house', 4.4, { sp, entry: world.entries.get(sp.id) }, {
+      text: pick([
+        `${say(sp.name)} asked for a dream house. Here it is: ${article} ${sp.title}!`,
+        `Makeover time! ${say(sp.name)} now lives in ${article} ${sp.title}.`,
+        `Request granted! ${say(sp.name)}'s new home is ${article} ${sp.title}.`,
+      ], i),
+      at: 0.6,
+    });
+  });
+  const moreHouses = newHouses.slice(MAX_FEATURED_HOUSES).map((sp) => ({ ...sp, entry: world.entries.get(sp.id) }));
+  if (moreHouses.length) {
+    add('moreHouses', 3.6, { list: moreHouses }, { text: `Plus ${moreHouses.length} more dream ${moreHouses.length === 1 ? 'house' : 'houses'}!`, at: 0.4 });
   }
   featuredGrow.forEach((g, i) => add('grow', 3.2, { g }, {
     text: pick([`${say(g.name)} commented again. Their building now has ${g.to} floors.`, `${say(g.name)} added ${g.to - g.from === 1 ? 'a floor' : `${g.to - g.from} floors`}, now ${g.to} in total.`, `Look at ${say(g.name)}'s building grow, to ${g.to} floors!`], i),
@@ -148,8 +194,8 @@ function buildTimeline(city, ch) {
   const reveal = new Map();
   for (const s of scenes) {
     if (s.type === 'newcomer') reveal.set(s.n.id, s.start + 1.15);
-    if (s.type === 'montage') {
-      s.list.forEach((n, i) => reveal.set(n.id, s.start + 0.5 + (i / Math.max(1, s.list.length)) * 1.8));
+    if (s.type === 'montage' || s.type === 'moreHouses') {
+      if (s.type === 'montage') s.list.forEach((n, i) => reveal.set(n.id, s.start + 0.5 + (i / Math.max(1, s.list.length)) * 1.8));
       const c = new THREE.Vector3();
       s.list.forEach((n) => c.add(n.entry.outer.position));
       s.center = c.divideScalar(s.list.length);
@@ -158,6 +204,11 @@ function buildTimeline(city, ch) {
   // New landmarks rise in their news scene; upgrades pop in during theirs.
   const landmarkReveal = new Map(scenes.filter((s) => s.type === 'landmark').map((s) => [s.sp.id, s.start + 1.0]));
   const upgradeReveal = scenes.filter((s) => s.type === 'upgrade').map((s) => ({ obj: s.entry.upgradeObjects[s.sp.type], at: s.start + 1.0 }));
+  // Custom houses: the old house is shown until its makeover scene, then the new one pops up.
+  const houseReveal = [
+    ...scenes.filter((s) => s.type === 'house').map((s) => ({ entry: s.entry, at: s.start + 1.3 })),
+    ...scenes.filter((s) => s.type === 'moreHouses').flatMap((s) => s.list.map((h, i) => ({ entry: h.entry, at: s.start + 0.7 + (i / s.list.length) * 1.6 }))),
+  ];
   const growFrom = new Map(featuredGrow.map((g) => [g.id, g]));
   const growScene = new Map(scenes.filter((s) => s.type === 'grow').map((s) => [s.g.id, s]));
 
@@ -198,6 +249,7 @@ function buildTimeline(city, ch) {
       case 'grow':
         return buildingShot(s.g.entry, s.g.to, lt, s.dur);
       case 'montage':
+      case 'moreHouses':
         return orbit(s.center, 62, 0.9 + k * 0.4, 50);
       case 'landmark': {
         const l = world.landmarks.get(s.sp.id);
@@ -205,6 +257,15 @@ function buildTimeline(city, ch) {
       }
       case 'upgrade':
         return buildingShot(s.entry, s.entry.resident.floors, lt, s.dur);
+      case 'house': {
+        // From higher up and from the side with the clearest view, framed on the house's full height.
+        const e = s.entry;
+        const top = Math.max(6, e.roofTop || 0);
+        const p = e.outer.position;
+        const dist = Math.max(18, top * 1.35 + 9);
+        s.az ??= clearestAzimuth(e, top * 0.42, dist, 44);
+        return orbit(new THREE.Vector3(p.x, top * 0.42, p.z), dist, s.az + k * 0.45, 44);
+      }
       case 'top': {
         const e = top[0];
         const h = e.resident.floors * FLOOR_H;
@@ -290,6 +351,19 @@ function buildTimeline(city, ch) {
       u.obj.visible = time >= u.at;
       u.obj.scale.setScalar(Math.max(0.001, easeOutBack(k)) * (u.obj.userData.baseScale ??= u.obj.scale.x || 1));
     }
+    for (const h of houseReveal) {
+      world.setCustom(h.entry, time >= h.at);
+      const k = clamp01((time - h.at) / 0.7);
+      if (time >= h.at && k < 1) {
+        const y = Math.max(0.001, easeOutBack(k));
+        h.entry.outer.scale.set(0.85 + 0.15 * easeOut(k), y, 0.85 + 0.15 * easeOut(k));
+      } else if (time >= h.at - 0.25 && time < h.at) {
+        const q = 1 - (time - (h.at - 0.25)) / 0.25; // the old house shrinks away
+        h.entry.outer.scale.set(1, Math.max(0.001, q), 1);
+      } else if (!reveal.has(h.entry.resident.id) || time >= reveal.get(h.entry.resident.id) + 0.7) {
+        h.entry.outer.scale.set(1, 1, 1);
+      }
+    }
     for (const [id, g] of growFrom) {
       const gs = growScene.get(id);
       const k = clamp01((time - gs.start - 0.9) / 1.3);
@@ -338,10 +412,17 @@ function buildTimeline(city, ch) {
       if (lastCard !== s) fillCard(s.sp.name, 'House upgrade', s.caption, '');
       cardOn = fade(lt, 1.4, s.dur - 0.35);
       labels.set(s.sp.id, { cls: 'vlabel new', text: `@${s.sp.name.replace(/^@/, '')}` });
+    } else if (s.type === 'house') {
+      if (lastCard !== s) fillCard(s.sp.name, 'Dream house', `Now living in: ${s.sp.title}`, '');
+      cardOn = fade(lt, 1.7, s.dur - 0.35);
+      if (lt > 1.6) labels.set(s.sp.id, { cls: 'vlabel new', text: `@${s.sp.name.replace(/^@/, '')}` });
     } else if (s.type === 'montage') {
       const k = clamp01((lt - 0.5) / 1.8);
       const shown = Math.ceil(s.list.length * k);
       $('montage').innerHTML = `+${shown}<small>more new residents</small>`;
+      montageOn = fade(lt, 0.3, s.dur - 0.35);
+    } else if (s.type === 'moreHouses') {
+      $('montage').innerHTML = `+${s.list.length}<small>more dream houses</small>`;
       montageOn = fade(lt, 0.3, s.dur - 0.35);
     } else if (s.type === 'top') {
       boardOn = fade(lt, 0.5, s.dur - 0.35);
@@ -358,8 +439,8 @@ function buildTimeline(city, ch) {
       $('cta-url').style.display = '';
       ctaOn = fade(lt, 0.45, s.dur + 10);
     }
-    lastCard = ['newcomer', 'grow', 'landmark', 'upgrade'].includes(s.type) ? s : null;
-    $('card').classList.toggle('plain', s.type === 'landmark' || s.type === 'upgrade');
+    lastCard = ['newcomer', 'grow', 'landmark', 'upgrade', 'house'].includes(s.type) ? s : null;
+    $('card').classList.toggle('plain', ['landmark', 'upgrade', 'house'].includes(s.type));
     setOverlay($('card'), cardOn, 60);
     setOverlay($('montage'), montageOn, 40);
     setOverlay($('board'), boardOn, 60);

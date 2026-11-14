@@ -5,6 +5,8 @@ import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer
 export { THREE, CSS2DObject };
 
 import { LOT, BLOCK, PITCH, LOT_OFFSETS, LANDMARK_BLOCKS, spiral, spiralIndexOf, createLayout } from './layout.js';
+import { createHouseKit } from './houses.js';
+import { cleanHouseRecipe } from './catalog.js';
 export { LOT, BLOCK, PITCH, LANDMARK_BLOCKS };
 
 // ---------- Layout constants ----------
@@ -143,11 +145,26 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
   const world = {
     THREE, scene, camera, renderer, labelRenderer, sun, hemi, mat,
     city: null, entries: new Map(), list: [], pickables: [], radius: 60,
-    townHall: null, cars: null, night: false,
+    townHall: null, cars: null, night: false, customEntries: [],
   };
+  // Materials that glow differently by day and night (custom houses register theirs here).
+  const nightMats = [];
+  const houseKit = createHouseKit({
+    windows: { map: mat.side[0].map, emissiveMap: mat.side[0].emissiveMap },
+    FOOT, FLOOR_H, TEX_FLOORS,
+    nightMat: (m, day, night) => {
+      nightMats.push({ m, day, night });
+      m.emissiveIntensity = world.night ? night : day;
+    },
+  });
 
   // ----- Buildings -----
   function makeBuilding(entry, floors) {
+    if (entry.recipe && entry.useCustom) {
+      const b = houseKit.build(entry.recipe, floors);
+      b.body.userData.entry = entry;
+      return b;
+    }
     const { hash, rank } = entry;
     const h = floors * FLOOR_H;
     const side = mat.side[hash % WALLS.length];
@@ -201,24 +218,35 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
   /** Show `floors` floors on this building (used by the video to grow towers floor by floor). */
   world.setFloors = (entry, floors) => {
     floors = Math.max(1, Math.round(floors));
-    if (entry.shownFloors === floors) return;
+    const custom = Boolean(entry.recipe && entry.useCustom);
+    const key = `${custom ? 'c' : 'n'}${floors}`;
+    if (entry.shownKey === key) return;
     if (entry.inner) {
       entry.outer.remove(entry.inner);
       const i = world.pickables.indexOf(entry.body);
       if (i >= 0) world.pickables.splice(i, 1);
     }
     entry.cache ||= new Map();
-    if (!entry.cache.has(floors)) entry.cache.set(floors, makeBuilding(entry, floors));
-    const b = entry.cache.get(floors);
+    if (!entry.cache.has(key)) entry.cache.set(key, makeBuilding(entry, floors));
+    const b = entry.cache.get(key);
     entry.inner = b.group;
     entry.body = b.body;
     entry.height = b.height;
     entry.roofTop = b.roofTop;
+    entry.tick = b.tick || null;
     entry.shownFloors = floors;
+    entry.shownKey = key;
     b.group.position.x = entry.upgrades?.has('pool') ? -0.8 : 0; // make room for the pool
     entry.outer.add(b.group);
     world.pickables.push(b.body);
     if (entry.label) entry.label.position.y = entry.roofTop + 1.6;
+  };
+
+  /** Switch a resident between their custom house and the normal one (the video uses this for the reveal). */
+  world.setCustom = (entry, on) => {
+    if (!entry.recipe || entry.useCustom === on) return;
+    entry.useCustom = on;
+    world.setFloors(entry, entry.shownFloors);
   };
 
   // ----- Special buildings & upgrades -----
@@ -411,8 +439,22 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       (entry.upgradeObjects ||= {})[up.type] = obj;
       entry.outer.add(obj);
       const shown = entry.shownFloors;
-      entry.shownFloors = null;
+      entry.shownKey = null;
       world.setFloors(entry, shown); // re-place the house (pool shifts it)
+    }
+    // Custom houses: the latest design per resident wins.
+    for (const h of specials?.houses || []) {
+      const who = norm(h.resident);
+      const entry = world.list.find((e) => e.resident.id === h.resident || norm(e.resident.name) === who);
+      const recipe = cleanHouseRecipe(h.recipe);
+      if (!entry || !recipe) continue;
+      if (!entry.recipe) world.customEntries.push(entry);
+      entry.recipe = recipe;
+      entry.houseTitle = h.title || '';
+      entry.useCustom = true;
+      entry.cache?.clear();
+      entry.shownKey = null;
+      world.setFloors(entry, entry.shownFloors);
     }
   };
 
@@ -653,6 +695,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     hemi.color.set(on ? '#8aa0ff' : '#ffffff');
     sun.intensity = on ? 0.15 : 2.4;
     for (const m of mat.side) m.emissiveIntensity = on ? 1.3 : 0;
+    for (const n of nightMats) n.m.emissiveIntensity = on ? n.night : n.day;
     mat.gold.emissiveIntensity = on ? 0.8 : 0.2;
   };
 
@@ -660,6 +703,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     if (world.townHall) world.townHall.userData.tip.rotation.y = seconds * 1.1;
     world.cars?.update(seconds);
     for (const l of world.landmarks.values()) l.tick?.(seconds);
+    for (const e of world.customEntries) e.tick?.(seconds);
   };
 
   world.render = () => {

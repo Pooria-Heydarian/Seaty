@@ -2,10 +2,23 @@
 
 - **Comment on a video** and you get a house.
 - **Comment on each new video** and your building gets one more floor (floors = number of different videos you commented on).
-- **Every day:** a town report plus an automatically made vertical Short ("Day N of adding every commenter to my city"), uploaded to YouTube for you.
+- **Ask for a special house** in a comment (a castle, a rocket, a pink mushroom house…) and it gets built, if it's possible.
+- **Every day:** a town report plus a vertical Short with voiceover ("Day N of adding every commenter to my city"), ready to post.
 - **Every month:** a lottery that anyone can verify.
 
-You need Node.js 18 or newer. The website needs no packages. The video maker needs `npm install` (Puppeteer + ffmpeg).
+You need Node.js 18 or newer. The website needs no packages. The video maker needs `npm install` (Puppeteer, ffmpeg and the Kokoro voice).
+
+## Your daily routine (about 10 minutes)
+
+Open this folder in Claude Code and say **"daily update"** (or type `/daily`). Claude then:
+
+1. Reads every comment since the last update (`npm run daily` → `comments/today.md`).
+2. Builds every special request that's possible: custom houses from the house kit, upgrades and landmarks (`npm run special`). It shows you a table of what was built, and which requests are impossible and why.
+3. Writes reply drafts for every comment (`comments/replies-<date>.md`).
+4. Updates the city and renders the Short (`npm run finish` → `video/<date>.mp4` + `video/<date>.txt` with the title and description).
+5. Commits and pushes, so GitHub publishes the website.
+
+You post the video and paste the replies. The full procedure is in [`.claude/skills/daily/SKILL.md`](.claude/skills/daily/SKILL.md).
 
 ## Try it now (fake data)
 
@@ -24,44 +37,35 @@ Link to one house: `http://localhost:5173/?u=<channelId>`. Add `&night=1` to ope
 
 1. Get a YouTube Data API v3 key: Google Cloud Console → enable *YouTube Data API v3* → Credentials → API key.
 2. Copy `.env.example` to `.env`, then fill in `YOUTUBE_API_KEY` and `YOUTUBE_CHANNEL_ID`.
-3. Fetch the comments and write the daily report:
+3. Read the new comments: `npm run daily` writes `web/data/city.json` and `comments/today.md`.
+4. Finish the day: `npm run finish` writes the report `reports/YYYY-MM-DD.md` and renders the Short.
 
-```bash
-npm run daily
-```
+"New" comments are the ones written since the last finished day (`data/last-update.json`).
 
-This writes `web/data/city.json` and `reports/YYYY-MM-DD.md`.
+## Hosting (free): GitHub Pages + Actions
 
-## Hosting (free, automatic): GitHub Pages + Actions
+The workflow (`.github/workflows/daily.yml`) publishes `web/` to `https://<your-username>.github.io/<repo>/` every time you push to `main`, which the daily routine does for you.
 
-The included workflow (`.github/workflows/daily.yml`) runs every day at **06:07 UTC**:
-
-1. **Reads every comment written before 06:00 UTC.** Comments after 06:00 count for the next day.
-2. **AI step (Claude):** reads the last day's comments, builds every special request that is possible (house upgrades and landmarks), puts the rest on the wish list (`data/wishlist.json`), and writes a reply draft for each comment.
-3. Updates the city and the town report (shown on the run's summary page).
-4. Renders the daily Short with voice and music.
-5. **Saves the video and the reply drafts as one download:** open the run → **Artifacts → seaty-video** (`<date>.mp4`, `<date>.txt` with the title and description, and `replies-<date>.md`).
-6. Commits the data and publishes `web/` to `https://<your-username>.github.io/<repo>/`.
+**Skipping a day?** Go to **Actions → Daily city update → Run workflow**. It reads the comments, writes the report, renders the Short and publishes the site. The Short is under **Artifacts → seaty-video** on the run page. It can't build special requests; those wait for your next daily routine.
 
 One-time setup:
 1. Push this folder to a GitHub repository (public repos get free Pages).
-2. **Settings → Secrets and variables → Actions**: add the secrets:
-   - `YOUTUBE_API_KEY` and `YOUTUBE_CHANNEL_ID`
-   - `ANTHROPIC_API_KEY` for the AI step. It's paid but cheap at this size. Without it, the city and video still work, but there are no specials and no reply drafts.
+2. **Settings → Secrets and variables → Actions**: add the secrets `YOUTUBE_API_KEY` and `YOUTUBE_CHANNEL_ID` (for the "Run workflow" fallback).
 3. **Settings → Pages → Source**: choose **GitHub Actions**.
-4. **Actions → Daily city update → Run workflow** to publish right away.
 
-GitHub sometimes runs scheduled jobs late or skips them. It also pauses them if the repo has had no activity for 60 days; the daily commits keep it active.
+If you push while a fallback run is working, the run puts its data commit on top of yours. If you both changed the same file, it stops with a red "Could not save the city data" message; run it again.
 
-## Daily Short (made and uploaded automatically)
+## Daily Short
 
-Every daily run renders a 1080×1920 Short of about 30–40 seconds:
+`npm run finish` renders a 1080×1920 Short of about 30–60 seconds with voiceover and music:
 
 1. **Intro:** "DAY N of adding every commenter to my city" with today's numbers.
-2. **New residents:** the camera flies to each new house as it rises, then shows the person's name and comment.
-3. **Growing towers:** buildings gain floors live ("5 floors +1").
-4. **Tallest in town:** the top 3.
-5. **Night outro:** "Comment to get your own house" and your site link.
+2. **Big news:** new landmarks rise.
+3. **New residents:** the camera flies to each new house as it rises, then shows the person's name and comment.
+4. **Upgrades and dream houses:** the old house shrinks away and the new design pops up ("Makeover time!").
+5. **Growing towers:** buildings gain floors live ("5 floors +1").
+6. **Tallest in town:** the top 3.
+7. **Night outro:** "Comment to get your own house" and your site link (`homepage` in `package.json`).
 
 The music is generated by the script (no copyright claims), and the key and tempo change every day.
 
@@ -76,9 +80,11 @@ npm run video
 
 This writes `video/<date>.mp4`, plus `video/<date>.json` with the title and description.
 
-In GitHub Actions the video is always rendered. You can download it from the run page under **Artifacts → seaty-video**.
+A "Run workflow" fallback on GitHub also renders it: download it from the run page under **Artifacts → seaty-video**.
 
-### Let it upload to your channel (one-time setup)
+### Let it upload to your channel (optional, one-time setup)
+
+By default nothing is uploaded: you post the Short yourself. To let the GitHub fallback run upload it, or to upload from your computer with `npm run upload`:
 
 1. In Google Cloud Console (same project as your API key), set up the consent screen:
    - Open **APIs & Services → OAuth consent screen**. Choose **External** and fill in the app name and your email.
@@ -92,8 +98,9 @@ In GitHub Actions the video is always rendered. You can download it from the run
 
    Sign in with the account that owns the channel. Google warns that the app isn't verified: click **Advanced → Go to …**. It's your own app.
 4. Add three GitHub secrets: `YT_CLIENT_ID`, `YT_CLIENT_SECRET`, and `YT_REFRESH_TOKEN` (the script saved it in `.env`).
+5. Turn it on: **Settings → Secrets and variables → Actions → Variables**, add `YT_AUTO_UPLOAD` = `true`.
 
-From then on, every daily run uploads the Short. `data/uploads.json` records each upload, so a day never goes up twice.
+From then on, every daily run uploads the Short. If an upload fails, the rest of the run (city, download, website) still works. To upload one by hand from your computer: `npm run upload`. `data/uploads.json` records each upload, so a day never goes up twice.
 
 ⚠️ **Google's audit:** videos uploaded through the API by a project that hasn't been audited are **locked to private**. To post them publicly automatically, submit the free [YouTube API audit form](https://support.google.com/youtube/contact/yt_api_form) and describe the project honestly ("uploads one daily Short of my own channel's city"). It can take a few weeks. Until it's approved, either:
 - make each day's video public yourself in YouTube Studio (one click), or
@@ -101,35 +108,23 @@ From then on, every daily run uploads the Short. `data/uploads.json` records eac
 
 Set the repository variable `YT_PRIVACY` to `unlisted` or `private` if you'd like to check each video before it goes public.
 
-## Special buildings & house upgrades
+## Special buildings, dream houses & upgrades
 
-**Automatic:** the daily AI step adds what people ask for in the comments:
-- House upgrades from the catalog (`web/catalog.js`).
-- Landmarks. A landmark without its own 3D model is built as a generic gold-domed hall with its name sign and added to the wish list.
-- Rules: each upgrade type only once per house, and one new landmark per person per day.
-- Requests that can't be built get a reply explaining why.
+The daily routine adds what people ask for. You can also do it yourself with `npm run special` (it checks the rules and writes [`web/data/specials.json`](web/data/specials.json)):
 
-**By hand:** edit [`web/data/specials.json`](web/data/specials.json) and commit it.
-
-Either way, the next daily video opens with a news scene ("Big news! Seaty just opened…"), and the website shows the changes right away.
-
-```json
-{
-  "landmarks": [
-    { "id": "spaghetti-factory", "type": "spaghetti-factory", "name": "Spaghetti Factory", "requestedBy": "@theel-u7g" }
-  ],
-  "upgrades": [
-    { "resident": "@V1.bootleg", "type": "pool" },
-    { "resident": "@mdsadiq4737", "type": "apple-tree" }
-  ]
-}
+```bash
+npm run special -- kit                     # everything that can be built
+npm run special -- house @name '{"shape":"castle","roof":"spire","wall":"#b49ad8","roofColor":"#5b3e96","extras":["flag"]}' --title "Purple Castle"
+npm run special -- upgrade @name capybara
+npm run special -- landmark "Pizza Shop" --by @name
+npm run special -- wish "dragon statue" --by @name --note "needs its own 3D model"
 ```
 
-- **Landmarks:** the first 8 go on the reserved downtown blocks around the town square. Each later landmark gets its own block at the city edge; its `"block": [x, z]` is chosen automatically, and houses never move. Model types:
-  - `spaghetti-factory`
-  - any other type gets a generic gold-domed hall (until it has its own model)
-- **Upgrades:** `resident` is the person's YouTube handle (`@name`) or channel ID. Types are `pool`, `apple-tree` and `capybara`. An upgrade appears once that person lives in the city.
-- `data/specials-seen.json` remembers what has already been announced, so each one is shown in the video only once.
+- **Dream houses** (the house kit, `web/houses.js`): 12 shapes (classic, cottage, castle, tower, dome, pyramid, mushroom, treehouse, lighthouse, rocket, igloo, glass), 5 roofs, any colours for walls, roof, door and accent, and up to 4 extras: flag, flowers, fence, solar panels, chimney smoke, fairy lights, statue, fountain, satellite dish, windmill, hearts, star. The house still grows one floor per video. A new design replaces the old one.
+- **Upgrades:** `pool`, `apple-tree`, `capybara`. Each type once per house.
+- **Landmarks:** the first 8 go on the reserved downtown blocks around the town square. Each later landmark gets its own block at the city edge, chosen automatically, and houses never move. Model types: `spaghetti-factory`; anything else gets a generic gold-domed hall with its name sign. One new landmark per person per day.
+- **Impossible requests** (a bigger house, moving the house, prizes…) get a kind reply explaining why. Nice ideas the kit can't do go on the wish list (`data/wishlist.json`) and can become new shapes or models later.
+- The next Short announces each new one once (`data/specials-seen.json` remembers), and the website shows it as soon as it's pushed.
 
 ## Monthly lottery
 
@@ -148,6 +143,9 @@ npm run lottery -- --seed "<public value>" --tickets equal
 | Path | What it does |
 |---|---|
 | `scripts/fetch-comments.mjs` | YouTube API → `web/data/city.json` (includes replies, skips your own comments and too-short spam) |
+| `scripts/requests.mjs` | New comments with each person's house info → `comments/today.md` |
+| `scripts/add-special.mjs` | `npm run special`: add dream houses, upgrades, landmarks, wishes |
+| `web/houses.js`, `web/catalog.js` | The dream house kit / everything that can be built |
 | `scripts/demo-data.mjs` | Fake city (`npm run demo -- 1000 120` = 1000 residents, 120 videos) |
 | `scripts/daily-report.mjs` | Compares with yesterday's snapshot → markdown report |
 | `scripts/lottery.mjs` | Verifiable monthly draw |

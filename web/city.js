@@ -47,7 +47,7 @@ function select(entry, { fly = true, updateUrl = true } = {}) {
     if (updateUrl) history.replaceState(null, '', location.pathname);
     return;
   }
-  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(entry.body.geometry), new THREE.LineBasicMaterial({ color: '#ff7a45' }));
+  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(entry.body.geometry, 25), new THREE.LineBasicMaterial({ color: '#ff7a45' }));
   edges.scale.setScalar(1.03);
   entry.inner.add(edges);
   selectionOutline = edges;
@@ -56,7 +56,7 @@ function select(entry, { fly = true, updateUrl = true } = {}) {
   const r = entry.resident;
   $('info-name').textContent = r.name;
   const UPGRADE_NAMES = { pool: '🏊 Pool', 'apple-tree': '🍎 Apple tree', capybara: '🦫 Capybara' };
-  const ups = [...(entry.upgrades || [])].map((u) => UPGRADE_NAMES[u] || u);
+  const ups = [...(entry.recipe ? [`🏰 ${entry.houseTitle || 'Dream house'}`] : []), ...[...(entry.upgrades || [])].map((u) => UPGRADE_NAMES[u] || u)];
   $('info-meta').textContent = `Resident since ${new Date(r.joined).toLocaleDateString()}${ups.length ? ` · ${ups.join(' · ')}` : ''}`;
   $('info-floors').textContent = r.floors;
   $('info-rank').textContent = `#${entry.rank}`;

@@ -5,7 +5,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { readJSON, writeJSON, today, ROOT, CITY_FILE, CHANGES_FILE, SPECIALS_FILE, HISTORY_DIR, REPORTS_DIR } from './lib.mjs';
+import { readJSON, writeJSON, today, ROOT, CITY_FILE, CHANGES_FILE, SPECIALS_FILE, HISTORY_DIR, REPORTS_DIR, NEW_COMMENTS_FILE, LAST_UPDATE_FILE } from './lib.mjs';
 
 const city = readJSON(CITY_FILE);
 if (!city) {
@@ -58,6 +58,12 @@ for (const u of specials.upgrades || []) {
   const key = `upgrade:${r.id}:${u.type}`;
   if (isNew(key)) { newSpecials.push({ kind: 'upgrade', id: r.id, name: r.name, type: u.type }); seen[key] = date; }
 }
+for (const h of specials.houses || []) {
+  const r = findResident(h.resident);
+  if (!r) continue;
+  const key = `house:${r.id}:${h.added || ''}:${JSON.stringify(h.recipe)}`; // a redesign is news again
+  if (isNew(key)) { newSpecials.push({ kind: 'house', id: r.id, name: r.name, title: h.title || 'Dream House' }); seen[key] = date; }
+}
 writeJSON(SEEN_FILE, seenAll);
 
 const lines = [];
@@ -75,7 +81,9 @@ if (newSpecials.length) {
   for (const s of newSpecials) {
     lines.push(s.kind === 'landmark'
       ? `- **${s.name}** opened${s.requestedBy ? ` (requested by ${s.requestedBy})` : ''}`
-      : `- **${s.name}** got ${UP[s.type] || s.type}`);
+      : s.kind === 'house'
+        ? `- **${s.name}** moved into a brand-new **${s.title}**`
+        : `- **${s.name}** got ${UP[s.type] || s.type}`);
   }
   lines.push('');
 }
@@ -111,6 +119,9 @@ fs.mkdirSync(REPORTS_DIR, { recursive: true });
 const reportFile = path.join(REPORTS_DIR, `${date}.md`);
 fs.writeFileSync(reportFile, lines.join('\n') + '\n');
 writeJSON(path.join(HISTORY_DIR, `${date}.json`), city);
+// Tomorrow's "new comments" start where today's update stopped.
+const fetched = readJSON(NEW_COMMENTS_FILE);
+if (city.mode === 'live' && fetched?.cutoff) writeJSON(LAST_UPDATE_FILE, { cutoff: fetched.cutoff, date });
 
 // Everything the daily video needs (web/video.html reads this).
 const plotOf = new Map(city.residents.map((r, i) => [r.id, i + 1]));

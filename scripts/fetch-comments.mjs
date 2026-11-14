@@ -6,7 +6,7 @@
 // Quota: ~1 unit per API page. A channel with 100 videos and a few thousand
 // comments uses well under the free 10,000 units/day.
 
-import { loadEnv, buildCity, writeJSON, CITY_FILE, NEW_COMMENTS_FILE } from './lib.mjs';
+import { loadEnv, buildCity, writeJSON, readJSON, CITY_FILE, NEW_COMMENTS_FILE, LAST_UPDATE_FILE } from './lib.mjs';
 
 // Make failures readable: on GitHub Actions they show up as a red annotation on the run page.
 function fail(message) {
@@ -23,13 +23,16 @@ const CHANNEL = process.env.YOUTUBE_CHANNEL_ID;
 const MIN_LEN = Number(process.env.MIN_COMMENT_LENGTH || 2);
 const START = process.env.CITY_START_DATE || '';
 
-// The city day ends at 06:00 UTC: comments after the latest 06:00 UTC count for the next day.
-const CUTOFF_HOUR = Number(process.env.CITY_CUTOFF_HOUR_UTC ?? 6);
+// The city counts every comment up to now. "New" = written since the last daily update
+// (data/last-update.json, written by daily-report.mjs), or the last 24 hours on the first run.
+// Optional: CITY_CUTOFF_HOUR_UTC=6 counts only comments before the latest 06:00 UTC instead.
 const cutoffDate = new Date();
-cutoffDate.setUTCHours(CUTOFF_HOUR, 0, 0, 0);
-if (cutoffDate > new Date()) cutoffDate.setUTCDate(cutoffDate.getUTCDate() - 1);
+if (process.env.CITY_CUTOFF_HOUR_UTC) {
+  cutoffDate.setUTCHours(Number(process.env.CITY_CUTOFF_HOUR_UTC), 0, 0, 0);
+  if (cutoffDate > new Date()) cutoffDate.setUTCDate(cutoffDate.getUTCDate() - 1);
+}
 const CUTOFF = cutoffDate.toISOString();
-const WINDOW_START = new Date(cutoffDate.getTime() - 86400000).toISOString(); // "new today" = the last 24h before the cutoff
+const WINDOW_START = readJSON(LAST_UPDATE_FILE)?.cutoff || new Date(cutoffDate.getTime() - 86400000).toISOString();
 console.log(`Counting comments before ${CUTOFF} (new since ${WINDOW_START})`);
 
 if (!KEY || !CHANNEL) {

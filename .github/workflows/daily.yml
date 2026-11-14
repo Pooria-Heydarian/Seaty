@@ -1,23 +1,21 @@
-# Seaty daily run (06:07 UTC):
-#   1. read every comment written before 06:00 UTC (later comments count for tomorrow)
-#   2. AI step: find special-building requests in the last day's comments, build what is possible,
-#      put the rest on the wish list, and write reply drafts
-#   3. update the city + town report
-#   4. render the daily Short (voice + music)
-#   5. save the video + reply drafts as a download on the run page (Artifacts -> seaty-video)
-#   6. commit the data and publish the website
+# Seaty on GitHub:
+#
+#   push to main (from the daily session)  -> publish web/ to GitHub Pages
+#   Actions -> Daily city update -> Run workflow  (fallback for a day you skip the daily session):
+#      read comments -> town report -> render the Short (voice + music) -> save it as a download
+#      -> commit the data -> publish the site. No special buildings: those are added in the daily session.
 #
 # Secrets (Settings -> Secrets and variables -> Actions -> Secrets):
-#   YOUTUBE_API_KEY, YOUTUBE_CHANNEL_ID   reading comments
-#   ANTHROPIC_API_KEY                     the AI step (without it: no specials, no reply drafts)
+#   YOUTUBE_API_KEY, YOUTUBE_CHANNEL_ID   reading comments (fallback run only)
+#   YT_CLIENT_ID, YT_CLIENT_SECRET, YT_REFRESH_TOKEN   only for the optional auto-upload
 # Optional variables (same page -> Variables):
 #   MIN_COMMENT_LENGTH, CITY_START_DATE, SEATY_VOICE (af_heart, af_bella, am_michael, am_fenrir, bf_emma, bm_george)
+#   YT_AUTO_UPLOAD=true   upload the Short to YouTube automatically (default: off, download it instead)
+#   YT_PRIVACY            public | unlisted | private (for the auto-upload)
 
 name: Daily city update
 
 on:
-  schedule:
-    - cron: '7 6 * * *' # 06:07 UTC. Not :00, which GitHub often skips when busy.
   workflow_dispatch: {}
   push:
     branches: [main]
@@ -28,7 +26,7 @@ permissions:
   pages: write
   id-token: write
 
-# Separate queues: a website-only run (push) can never cancel the daily run.
+# Separate queues: a website-only run (push) can never cancel a fallback daily run.
 concurrency:
   group: city-${{ github.event_name == 'push' && 'site' || 'daily' }}
   cancel-in-progress: false
@@ -41,10 +39,13 @@ jobs:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     env:
-      DAILY: ${{ github.event_name != 'push' }}
+      DAILY: ${{ github.event_name == 'workflow_dispatch' }}
       SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Always start from the newest main (a push run must not publish an older city).
+          ref: main
 
       - uses: actions/setup-node@v4
         with:
@@ -57,7 +58,7 @@ jobs:
           sudo apt-get install -y -qq fonts-noto-color-emoji > /dev/null
           npm ci --no-audit --no-fund
 
-      - name: 1. Read comments (before 06:00 UTC)
+      - name: 1. Read comments
         if: env.DAILY == 'true'
         id: fetch
         env:
@@ -73,18 +74,17 @@ jobs:
           npm run fetch
           echo "ok=true" >> "$GITHUB_OUTPUT"
 
-      - name: 2. AI step (special buildings + reply drafts)
-        if: steps.fetch.outputs.ok == 'true'
-        continue-on-error: true # if the AI step fails, the city and video are still made
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: npm run ai
-
-      - name: 3. Town report
+      - name: 2. Town report
         if: ${{ !cancelled() && steps.fetch.outputs.ok == 'true' }}
         run: |
           npm run report
           cat reports/$(date -u +%F).md >> "$GITHUB_STEP_SUMMARY"
+
+      # Save the data right away, before the long video render, so a push made
+      # during the render can't block it.
+      - name: Commit city data and report
+        if: ${{ !cancelled() && steps.fetch.outputs.ok == 'true' }}
+        run: bash .github/scripts/commit-data.sh "City update $(date -u +%F)"
 
       - name: Cache the voice model
         if: steps.fetch.outputs.ok == 'true'
@@ -93,13 +93,13 @@ jobs:
           path: node_modules/@huggingface/transformers/.cache
           key: kokoro-82m-q8-v1
 
-      - name: 4. Render the daily Short (with voiceover)
+      - name: 3. Render the daily Short (with voiceover)
         if: ${{ !cancelled() && steps.fetch.outputs.ok == 'true' }}
         env:
           SEATY_VOICE: ${{ vars.SEATY_VOICE || 'af_heart' }}
         run: npm run video
 
-      - name: 5. Save video + reply drafts as a download
+      - name: 4. Save the video as a download
         if: ${{ !cancelled() && steps.fetch.outputs.ok == 'true' }}
         uses: actions/upload-artifact@v4
         with:
@@ -107,22 +107,21 @@ jobs:
           path: video/*
           retention-days: 14
 
-      - name: 6. Commit city data, specials, wish list, report
-        if: ${{ !cancelled() && env.DAILY == 'true' }}
+      - name: 5. Upload the Short to YouTube (only if YT_AUTO_UPLOAD is true)
+        if: ${{ !cancelled() && steps.fetch.outputs.ok == 'true' && vars.YT_AUTO_UPLOAD == 'true' }}
+        continue-on-error: true # a failed upload must not stop the website from publishing
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_PRIVACY: ${{ vars.YT_PRIVACY || 'public' }}
         run: |
-          git config user.name "seaty-bot"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add web/data reports data 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "No changes."
-          else
-            git commit -m "City update $(date -u +%F)"
-            git pull --rebase origin main
-            git push
-          fi
+          npm run upload
+          bash .github/scripts/commit-data.sh "Upload log $(date -u +%F)"
 
-      - uses: actions/configure-pages@v5
+      - name: 6. Publish the website
         if: ${{ !cancelled() }}
+        uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         if: ${{ !cancelled() }}
         with:

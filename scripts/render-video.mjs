@@ -20,7 +20,8 @@ const args = Object.fromEntries(
   process.argv.slice(2).reduce((acc, a, i, all) => (a.startsWith('--') ? [...acc, [a.slice(2), all[i + 1]]] : acc), []),
 );
 const limitSeconds = args.seconds ? Number(args.seconds) : null;
-const site = process.env.SITE_URL || args.site || '';
+// The link shown at the end of the video and in the description (default: "homepage" in package.json).
+const site = process.env.SITE_URL || args.site || readJSON(path.join(ROOT, 'package.json'))?.homepage || '';
 const date = readJSON(CHANGES_FILE)?.date || today();
 // --page trailer.html --name trailer  renders another timeline page (same frame API)
 const pageName = args.page || 'video.html';
@@ -65,13 +66,14 @@ let info = await page.evaluate(() => window.seaty.ready);
 const useVoice = !('no-voice' in args) && !process.env.SEATY_NO_VOICE && info.scenes.some((s) => s.vo);
 const clips = new Map();
 if (useVoice) {
-  const { speak, VOICE } = await import('./tts.mjs');
+  const { speakAll, VOICE } = await import('./tts.mjs');
   console.log(`Voiceover (${VOICE})…`);
+  const spoken = await speakAll(info.scenes.map((s) => s.vo?.text || ''), path.join(VIDEO_DIR, `voice-${baseName}`));
   for (const [i, s] of info.scenes.entries()) {
-    if (!s.vo?.text) continue;
-    const clip = await speak(s.vo.text);
+    const clip = spoken[i];
+    if (!clip) continue;
     clips.set(i, clip);
-    console.log(`  ${s.type.padEnd(9)} ${(clip.samples.length / clip.rate).toFixed(1)}s  "${s.vo.text}"`);
+    console.log(`  ${s.type.padEnd(10)} ${(clip.samples.length / clip.rate).toFixed(1)}s  "${s.vo.text}"`);
   }
   const lengths = Object.fromEntries([...clips].map(([i, c]) => [i, c.samples.length / c.rate]));
   await page.evaluateOnNewDocument((d) => { window.SEATY_VO = d; }, lengths);
