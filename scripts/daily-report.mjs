@@ -76,7 +76,7 @@ if (prev) {
 }
 
 if (newSpecials.length) {
-  const UP = { pool: 'a swimming pool', 'apple-tree': 'an apple tree', capybara: 'a capybara' };
+  const UP = { pool: 'a swimming pool', 'apple-tree': 'an apple tree', capybara: 'a capybara', cat: 'a pet cat' };
   lines.push('## ✨ New in town');
   for (const s of newSpecials) {
     lines.push(s.kind === 'landmark'

@@ -55,7 +55,7 @@ function select(entry, { fly = true, updateUrl = true } = {}) {
 
   const r = entry.resident;
   $('info-name').textContent = r.name;
-  const UPGRADE_NAMES = { pool: '🏊 Pool', 'apple-tree': '🍎 Apple tree', capybara: '🦫 Capybara' };
+  const UPGRADE_NAMES = { pool: '🏊 Pool', 'apple-tree': '🍎 Apple tree', capybara: '🦫 Capybara', cat: '🐈 Cat' };
   const ups = [...(entry.recipe ? [`🏰 ${entry.houseTitle || 'Dream house'}`] : []), ...[...(entry.upgrades || [])].map((u) => UPGRADE_NAMES[u] || u)];
   $('info-meta').textContent = `Resident since ${new Date(r.joined).toLocaleDateString()}${ups.length ? ` · ${ups.join(' · ')}` : ''}`;
   $('info-floors').textContent = r.floors;

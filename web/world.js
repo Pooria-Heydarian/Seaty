@@ -145,7 +145,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
   const world = {
     THREE, scene, camera, renderer, labelRenderer, sun, hemi, mat,
     city: null, entries: new Map(), list: [], pickables: [], radius: 60,
-    townHall: null, cars: null, night: false, customEntries: [],
+    townHall: null, cars: null, night: false, customEntries: [], upgradeTicks: [],
   };
   // Materials that glow differently by day and night (custom houses register theirs here).
   const nightMats = [];
@@ -403,7 +403,49 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     g.scale.setScalar(0.8);
     return g;
   }
-  const UPGRADE_MODELS = { pool, 'apple-tree': appleTree, capybara };
+  /** Cat: an orange tabby sitting in the front yard (right of the door), tail swishing. */
+  function cat() {
+    const fur = M('#e8913a');
+    const stripe = M('#b8642a');
+    const dark = M('#3b2a1f');
+    const g = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.SphereGeometry(0.32, 14, 10), fur);
+    body.scale.set(0.85, 1.05, 1);
+    body.position.y = 0.32;
+    const chest = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 8), M('#f6e3c8'));
+    chest.position.set(0, 0.36, 0.22);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 14, 10), fur);
+    head.position.set(0, 0.74, 0.08);
+    g.add(body, chest, head);
+    for (const s of [-1, 1]) {
+      const ear = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.16, 4), fur);
+      ear.position.set(s * 0.12, 0.95, 0.06);
+      ear.rotation.z = -s * 0.25;
+      const eye = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 6), dark);
+      eye.position.set(s * 0.08, 0.78, 0.28);
+      const paw = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), M('#f6e3c8'));
+      paw.position.set(s * 0.1, 0.05, 0.27);
+      g.add(ear, eye, paw);
+    }
+    for (let i = 0; i < 3; i++) {
+      const st = new THREE.Mesh(new THREE.TorusGeometry(0.29, 0.025, 6, 20, Math.PI), stripe);
+      st.position.set(0, 0.42 + i * 0.1, -0.02);
+      st.rotation.set(0, Math.PI / 2, 0);
+      g.add(st);
+    }
+    const nose = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), M('#d9667a'));
+    nose.position.set(0, 0.72, 0.3);
+    const tail = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.05, 6, 18, Math.PI * 0.9), fur);
+    tail.position.set(0, 0.3, -0.28);
+    tail.rotation.y = Math.PI / 2;
+    g.add(nose, tail);
+    shadowAll(g);
+    g.position.set(1.75, 0.27, 2.55);
+    g.scale.setScalar(0.85);
+    g.userData.tick = (t) => { tail.rotation.x = Math.sin(t * 2.4) * 0.35; };
+    return g;
+  }
+  const UPGRADE_MODELS = { pool, 'apple-tree': appleTree, capybara, cat };
 
   world.landmarks = new Map();
   /** Adds landmarks and house upgrades from data/specials.json. Call after build(). */
@@ -438,6 +480,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       const obj = model();
       (entry.upgradeObjects ||= {})[up.type] = obj;
       entry.outer.add(obj);
+      if (obj.userData.tick) world.upgradeTicks.push(obj.userData.tick);
       const shown = entry.shownFloors;
       entry.shownKey = null;
       world.setFloors(entry, shown); // re-place the house (pool shifts it)
@@ -704,6 +747,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     world.cars?.update(seconds);
     for (const l of world.landmarks.values()) l.tick?.(seconds);
     for (const e of world.customEntries) e.tick?.(seconds);
+    for (const f of world.upgradeTicks) f(seconds);
   };
 
   world.render = () => {

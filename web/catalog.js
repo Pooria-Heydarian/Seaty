@@ -7,6 +7,7 @@ export const UPGRADE_TYPES = {
   pool: 'a swimming pool in the yard next to the house',
   'apple-tree': 'an apple tree with red apples in the backyard',
   capybara: 'a pet capybara with an orange on its head in the front yard',
+  cat: 'a pet cat sitting in the front yard',
 };
 
 /** Landmarks with their own 3D model. Any other landmark is built as a generic gold-domed hall with a name sign. */
@@ -22,6 +23,7 @@ export const LANDMARK_TYPES = {
 export const HOUSE_SHAPES = {
   classic: 'a normal house (use this when they only ask for colours, a roof or extras)',
   cottage: 'a cosy wide cottage with timber beams',
+  mansion: 'a grand mansion: main house with two side wings, white columns at the entrance and steps',
   castle: 'a stone castle with four corner turrets and battlements',
   tower: 'a round tower',
   dome: 'a round building with a big dome on top (observatory, mosque-like dome, planetarium)',

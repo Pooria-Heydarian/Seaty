@@ -136,6 +136,32 @@ export function createHouseKit({ windows, FOOT, FLOOR_H, TEX_FLOORS, nightMat })
       for (let f = 1; f * FLOOR_H < h - 0.1; f++) g.add(new THREE.Mesh(box(w + 0.05, 0.14, d + 0.05, f * FLOOR_H - 0.07), WOOD));
       return { body, top: roof(g, r.roof === 'pointed' ? 'gable' : r.roof, r.roofColor, w, d, h), eave: h, front: d / 2, width: w };
     },
+    mansion(g, r, h) {
+      h = Math.max(h, 2.4); // a mansion always looks grand
+      const cw = 2.6, cd = 3.4, ww = 1.3, wd = 2.8;
+      const wh = Math.max(1.8, h * 0.7);
+      const body = windowBox(cw, h, cd, r.wall);
+      g.add(body, door(r.door, cd / 2, 1.2));
+      for (const side of [-1, 1]) {
+        const wing = new THREE.Group();
+        wing.add(windowBox(ww, wh, wd, r.wall));
+        roof(wing, r.roof === 'flat' ? 'flat' : 'pointed', r.roofColor, ww, wd, wh);
+        wing.position.set(side * (cw / 2 + ww / 2), 0, -0.2);
+        g.add(wing);
+      }
+      // porch: four white columns, a triangle top and steps
+      const ph = Math.min(h, 3.6) - 0.15;
+      const zc = cd / 2 + 0.55;
+      for (const x of [-0.95, -0.32, 0.32, 0.95]) {
+        g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.13, ph, 10).translate(x, ph / 2 + 0.12, zc), WHITE));
+      }
+      g.add(new THREE.Mesh(box(2.5, 0.16, 1.15, ph + 0.12).translate(0, 0, cd / 2 + 0.45), WHITE));
+      const tri = new THREE.Shape([new THREE.Vector2(-1.25, 0), new THREE.Vector2(1.25, 0), new THREE.Vector2(0, 0.7)]);
+      g.add(new THREE.Mesh(new THREE.ExtrudeGeometry(tri, { depth: 1.15, bevelEnabled: false }).translate(0, ph + 0.28, cd / 2 - 0.12), plain(r.roofColor, { flatShading: true })));
+      g.add(new THREE.Mesh(box(2.4, 0.12, 0.5, 0).translate(0, 0, cd / 2 + 1.2), WHITE));
+      const top = roof(g, r.roof, r.roofColor, cw, cd, h);
+      return { body, top, eave: h, front: cd / 2 + 1.4, width: cw + 2 * ww };
+    },
     castle(g, r, h) {
       h = Math.max(h, 2.4);
       const w = 3.4;
