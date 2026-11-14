@@ -4,7 +4,8 @@
 //   'model-id'(g, r, h, k) -> { body, top, eave, front, width, tick? }
 //     g  THREE.Group to add meshes to (house faces +z, the lot is 6 x 6, keep it within about 5 x 5)
 //     r  the recipe: r.wall, r.roofColor, r.door, r.accent (#rrggbb) and r.extras
-//     h  height from the floors (floors x 1.2); grow the model with it
+//     h  height from the floors (floors x 1.2). Every floor must show: start at your minimum height and add
+//        (h - k.FLOOR_H), e.g. const H = 3.0 + h, so 1 and 2 floors never look the same
 //     k  helpers: THREE, plain(color, extra), glowing(color, day, night), windowBox(w, h, d, color, y),
 //        windowCylinder(rTop, rBottom, h, color, y), door(color, z, scale, y), roof(g, kind, color, w, d, y),
 //        box(w, h, d, y), WHITE, DARK, GOLD, WOOD, LEAF, GLASS, FOOT, FLOOR_H
@@ -18,7 +19,7 @@ export const HOUSE_MODELS = {
   /** A giant head with a boxy flat-top afro and a two-colour visor (requested by @TheBigCityBee, Day 2). */
   'gem-head'(g, r, h, k) {
     const { THREE, plain, glowing } = k;
-    const H = Math.max(4.2, h + 2.4); // face height grows with the floors
+    const H = 3.0 + h; // 4.2 at 1 floor, +1.2 per floor
     const skin = plain(r.wall);
     const shade = plain(new THREE.Color(r.wall).multiplyScalar(0.8).getStyle());
     // hair a little lighter than the recipe colour, so its shape reads in shadow
@@ -51,7 +52,7 @@ export const HOUSE_MODELS = {
   /** A chess knight standing on a round base, with a blue "!!" brilliant-move badge floating above (requested by @Railey_508, Day 2). */
   'chess-knight'(g, r, h, k) {
     const { THREE, plain } = k;
-    const H = Math.max(4.2, h + 2.6);
+    const H = 3.0 + h; // 4.2 at 1 floor, +1.2 per floor
     const piece = plain(r.wall, { roughness: 0.45 });
     // round stepped base
     g.add(new THREE.Mesh(new THREE.CylinderGeometry(2.1, 2.3, 0.45, 32).translate(0, 0.225, 0), piece));

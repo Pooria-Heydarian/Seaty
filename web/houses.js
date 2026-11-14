@@ -125,7 +125,7 @@ export function createHouseKit({ windows, FOOT, FLOOR_H, TEX_FLOORS, nightMat })
       return { body, top: roof(g, r.roof, r.roofColor, FOOT, FOOT, h), eave: h, front: FOOT / 2, width: FOOT };
     },
     cottage(g, r, h) {
-      h = Math.max(h, 1.6);
+      h = 1.6 + h - FLOOR_H; // starts a bit taller, +1 floor per video
       const w = 4.8, d = 3.8;
       const body = windowBox(w, h, d, r.wall);
       g.add(body, door(r.door, d / 2));
@@ -138,7 +138,7 @@ export function createHouseKit({ windows, FOOT, FLOOR_H, TEX_FLOORS, nightMat })
       return { body, top: roof(g, r.roof === 'pointed' ? 'gable' : r.roof, r.roofColor, w, d, h), eave: h, front: d / 2, width: w };
     },
     mansion(g, r, h) {
-      h = Math.max(h, 2.4); // a mansion always looks grand
+      h = 2.4 + h - FLOOR_H; // a mansion starts grand (2 floors high), +1 floor per video
       const cw = 2.6, cd = 3.4, ww = 1.3, wd = 2.8;
       const wh = Math.max(1.8, h * 0.7);
       const body = windowBox(cw, h, cd, r.wall);
@@ -164,7 +164,7 @@ export function createHouseKit({ windows, FOOT, FLOOR_H, TEX_FLOORS, nightMat })
       return { body, top, eave: h, front: cd / 2 + 1.4, width: cw + 2 * ww };
     },
     castle(g, r, h) {
-      h = Math.max(h, 2.4);
+      h = 2.4 + h - FLOOR_H;
       const w = 3.4;
       const body = windowBox(w, h, w, r.wall);
       g.add(body, door(r.door, w / 2, 1.15));
@@ -218,7 +218,7 @@ export function createHouseKit({ windows, FOOT, FLOOR_H, TEX_FLOORS, nightMat })
       return { body, top: h + 1, eave: h, front: 2.4, width: 4.8 };
     },
     mushroom(g, r, h) {
-      const stemH = Math.max(h, 1.6);
+      const stemH = 1.6 + h - FLOOR_H;
       const c = windowCylinder(1.15, 1.35, stemH, r.wall);
       g.add(c, door(r.door, 1.3));
       const capR = 2.5;
@@ -239,7 +239,7 @@ export function createHouseKit({ windows, FOOT, FLOOR_H, TEX_FLOORS, nightMat })
       return { body: c.userData.body, top: stemH + capR * 0.72, eave: stemH, front: 1.3, width: capR * 2 };
     },
     treehouse(g, r, h) {
-      const trunkH = Math.max(2.2, h);
+      const trunkH = 2.2 + h - FLOOR_H;
       g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.65, trunkH + 1.2, 10).translate(0, (trunkH + 1.2) / 2, 0), WOOD));
       g.add(new THREE.Mesh(box(3.6, 0.2, 3.6, trunkH), WOOD));
       const body = windowBox(2.6, 1.6, 2.6, r.wall, trunkH + 0.2);
@@ -253,7 +253,7 @@ export function createHouseKit({ windows, FOOT, FLOOR_H, TEX_FLOORS, nightMat })
       return { body, top: Math.max(top, trunkH + 2.8), eave: trunkH + 1.8, front: 1.3, width: 3.6 };
     },
     lighthouse(g, r, h) {
-      const H = Math.max(h, 3.6);
+      const H = 3.6 + h - FLOOR_H;
       const n = Math.max(2, Math.round(H / FLOOR_H));
       const segH = H / n;
       let body = null;
@@ -270,7 +270,7 @@ export function createHouseKit({ windows, FOOT, FLOOR_H, TEX_FLOORS, nightMat })
       return { body, top: H + 2.5, eave: H, front: 1.9, width: 3.8 };
     },
     rocket(g, r, h) {
-      const H = Math.max(h, 3);
+      const H = 3 + h - FLOOR_H;
       const rad = 1.25;
       const lift = 0.7;
       const c = windowCylinder(rad, rad, H, r.wall, lift);
@@ -286,7 +286,7 @@ export function createHouseKit({ windows, FOOT, FLOOR_H, TEX_FLOORS, nightMat })
     },
     igloo(g, r, h) {
       const rad = 2.2;
-      const sy = Math.max(1, h / rad);
+      const sy = 1 + (h - FLOOR_H) * 0.4; // the dome gets taller with each floor
       const ice = plain(r.wall, { roughness: 0.35 });
       const body = new THREE.Mesh(new THREE.SphereGeometry(rad, 28, 14, 0, Math.PI * 2, 0, Math.PI / 2), ice);
       body.geometry.scale(1, sy, 1);

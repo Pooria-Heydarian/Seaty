@@ -82,6 +82,29 @@ function select(entry, { fly = true, updateUrl = true } = {}) {
   if (fly) flyTo(entry);
 }
 
+/** Landmarks are buildings too: info panel with the owner and floors (they grow with their owner). */
+function selectLandmark(lm, { fly = true, updateUrl = true } = {}) {
+  select(null, { updateUrl: false });
+  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(lm.body.geometry, 25), new THREE.LineBasicMaterial({ color: '#ff7a45' }));
+  edges.position.copy(lm.body.position);
+  lm.body.parent.add(edges);
+  selectionOutline = edges;
+  const d = lm.def;
+  $('info-name').textContent = d.name;
+  $('info-meta').textContent = `Landmark${d.requestedBy ? ` · requested by ${d.requestedBy}` : ''}${d.added ? ` · opened ${new Date(d.added).toLocaleDateString()}` : ''}`;
+  $('info-floors').textContent = lm.floors;
+  $('info-rank').textContent = '★';
+  $('info-plot').textContent = d.block ? 'edge' : 'downtown';
+  const avatar = $('info-avatar');
+  avatar.textContent = '★';
+  const link = $('info-channel');
+  link.hidden = !(city.mode === 'live' && lm.owner);
+  if (lm.owner) link.href = `https://www.youtube.com/channel/${encodeURIComponent(lm.owner.resident.id)}`;
+  $('info').hidden = false;
+  if (updateUrl) history.replaceState(null, '', `?l=${encodeURIComponent(d.id)}`);
+  if (fly) flyTo({ outer: lm.outer, height: lm.height * 0.8 });
+}
+
 // ---------- Growth replay ----------
 function replayGrowth(totalMs = 8000) {
   const t0 = performance.now();
@@ -173,7 +196,7 @@ function fillUi() {
     } catch {
       $('info-share').textContent = 'Copy failed';
     }
-    setTimeout(() => ($('info-share').textContent = 'Copy link to this house'), 1500);
+    setTimeout(() => ($('info-share').textContent = 'Copy link'), 1500);
   };
 
   const toggleRotate = () => {
@@ -205,8 +228,10 @@ const pointer = new THREE.Vector2();
 function pick(e) {
   pointer.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
   raycaster.setFromCamera(pointer, camera);
-  return raycaster.intersectObjects(world.pickables, false)[0]?.object.userData.entry || null;
+  const d = raycaster.intersectObjects(world.pickables, false)[0]?.object.userData;
+  return d?.entry || d?.landmark || null;
 }
+const isLandmark = (x) => Boolean(x?.def);
 const tooltip = $('tooltip');
 let hoverQueued = false;
 renderer.domElement.addEventListener('pointermove', (e) => {
@@ -217,7 +242,9 @@ renderer.domElement.addEventListener('pointermove', (e) => {
     const hit = pick(e);
     renderer.domElement.style.cursor = hit ? 'pointer' : '';
     if (!hit || document.body.classList.contains('recording')) { tooltip.hidden = true; return; }
-    tooltip.textContent = `${hit.resident.name} · ${hit.resident.floors} floor${hit.resident.floors === 1 ? '' : 's'}`;
+    tooltip.textContent = isLandmark(hit)
+      ? `${hit.def.name}${hit.def.requestedBy ? ` · by ${hit.def.requestedBy}` : ''} · ${hit.floors} floor${hit.floors === 1 ? '' : 's'}`
+      : `${hit.resident.name} · ${hit.resident.floors} floor${hit.resident.floors === 1 ? '' : 's'}`;
     tooltip.style.left = `${Math.min(e.clientX + 14, innerWidth - tooltip.offsetWidth - 8)}px`;
     tooltip.style.top = `${e.clientY + 14}px`;
     tooltip.hidden = false;
@@ -228,7 +255,8 @@ renderer.domElement.addEventListener('pointerdown', (e) => { downAt = [e.clientX
 renderer.domElement.addEventListener('pointerup', (e) => {
   if (!downAt || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 5) return;
   const hit = pick(e);
-  if (hit) select(hit);
+  if (isLandmark(hit)) selectLandmark(hit);
+  else if (hit) select(hit);
 });
 addEventListener('resize', () => world.resize(innerWidth, innerHeight));
 
@@ -284,7 +312,9 @@ async function boot() {
   fillUi();
 
   const start = params.get('u') && world.entries.get(params.get('u'));
+  const startLandmark = params.get('l') && world.landmarks.get(params.get('l'));
   if (start) select(start, { updateUrl: false });
+  else if (startLandmark) selectLandmark(startLandmark, { updateUrl: false });
   else replayGrowth(Math.min(6000, 1500 + world.list.length * 8));
   requestAnimationFrame(tick);
 }

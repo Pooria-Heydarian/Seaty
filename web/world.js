@@ -262,10 +262,22 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
   const shadowAll = (g) => g.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
 
   /** Spaghetti Factory: sawtooth-roof hall, striped chimney with steam, giant spaghetti plate on the roof. */
-  function spaghettiFactory() {
+  function spaghettiFactory(def, floors = 1) {
+    const root = new THREE.Group();
+    const dy = (floors - 1) * FLOOR_H; // each floor of its owner makes the hall one floor taller
+    const hall = new THREE.Mesh(new THREE.BoxGeometry(9.5, 4.2 + dy, 7).translate(0, (4.2 + dy) / 2, 0), SPECIAL_MAT.cream);
+    root.add(hall);
+    // windows along the front (one row per floor) + big door
+    for (let f = 0; f < floors; f++) {
+      for (let i = 0; i < 4; i++) {
+        root.add(new THREE.Mesh(new THREE.BoxGeometry(1.3, f ? 0.8 : 1.4, 0.1).translate(-3.6 + i * 2.4, f ? 3.6 + (f - 0.5) * FLOOR_H : 2.6, 3.52), SPECIAL_MAT.glass));
+      }
+    }
+    root.add(new THREE.Mesh(new THREE.BoxGeometry(2.4, 2.6, 0.12).translate(0, 1.3, 3.54), SPECIAL_MAT.dark));
+    // everything on the roof sits on the top floor
     const g = new THREE.Group();
-    const hall = new THREE.Mesh(new THREE.BoxGeometry(9.5, 4.2, 7).translate(0, 2.1, 0), SPECIAL_MAT.cream);
-    g.add(hall);
+    g.position.y = dy;
+    root.add(g);
     // sawtooth roof
     const tooth = new THREE.Shape([new THREE.Vector2(0, 0), new THREE.Vector2(3.1, 0), new THREE.Vector2(0, 1.6)]);
     const toothGeo = new THREE.ExtrudeGeometry(tooth, { depth: 7, bevelEnabled: false }).translate(-4.75, 4.2, -3.5);
@@ -276,12 +288,6 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       const win = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.3, 6.4).translate(-4.7 + i * 3.15, 4.95, 0), SPECIAL_MAT.glass);
       g.add(win);
     }
-    // windows along the front + big door
-    for (let i = 0; i < 4; i++) {
-      const w = new THREE.Mesh(new THREE.BoxGeometry(1.3, 1.4, 0.1).translate(-3.6 + i * 2.4, 2.6, 3.52), SPECIAL_MAT.glass);
-      g.add(w);
-    }
-    g.add(new THREE.Mesh(new THREE.BoxGeometry(2.4, 2.6, 0.12).translate(0, 1.3, 3.54), SPECIAL_MAT.dark));
     // striped chimney + steam
     for (let i = 0; i < 6; i++) {
       const c = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.6, 1.2, 16).translate(0, 0.6, 0), i % 2 ? SPECIAL_MAT.white : SPECIAL_MAT.red);
@@ -312,9 +318,9 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 2.4, 8).translate(0, 1.2, 0), SPECIAL_MAT.steel);
     stand.position.set(-1.2, 4.2, 0.8);
     g.add(plate, noodles, ball, fork, stand);
-    shadowAll(g);
+    shadowAll(root);
     puffs.forEach((p) => (p.castShadow = false));
-    g.userData.tick = (t) => {
+    root.userData.tick = (t) => {
       puffs.forEach((p, i) => {
         const k = (t * 0.35 + i / puffs.length) % 1;
         p.position.set(3.6 + k * 1.2, 11.4 + k * 4, -2.4 - k * 0.6);
@@ -322,18 +328,23 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       });
       noodles.rotation.z = t * 0.6;
     };
-    return { group: g, height: 9.5 };
+    return { group: root, body: hall, height: 9.5 + dy };
   }
 
-  /** Fallback for landmark types without their own model yet. */
-  function genericLandmark(def) {
+  /** Fallback for landmark types without their own model yet: a hall with a gold dome, one floor per floor of its owner. */
+  function genericLandmark(def, floors = 1) {
     const g = new THREE.Group();
-    const base = new THREE.Mesh(new THREE.BoxGeometry(8, 3.5, 6).translate(0, 1.75, 0), SPECIAL_MAT.cream);
-    const dome = new THREE.Mesh(new THREE.SphereGeometry(2.4, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2).translate(0, 3.5, 0), mat.gold);
+    const bh = 3.5 + (floors - 1) * FLOOR_H;
+    const base = new THREE.Mesh(new THREE.BoxGeometry(8, bh, 6).translate(0, bh / 2, 0), SPECIAL_MAT.cream);
+    const dome = new THREE.Mesh(new THREE.SphereGeometry(2.4, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2).translate(0, bh, 0), mat.gold);
     g.add(base, dome);
     for (let i = 0; i < 4; i++) g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 3.5, 12).translate(-3 + i * 2, 1.75, 3.2), SPECIAL_MAT.white));
+    // a row of windows for every floor above the porch
+    for (let f = 1; f < floors; f++) {
+      for (const x of [-2.6, 0, 2.6]) g.add(new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.7, 0.1).translate(x, 3.5 + (f - 0.5) * FLOOR_H, 3.02), SPECIAL_MAT.glass));
+    }
     shadowAll(g);
-    return { group: g, height: 6 };
+    return { group: g, body: base, height: bh + 2.5 };
   }
   const LANDMARK_MODELS = { 'spaghetti-factory': spaghettiFactory };
 
@@ -450,10 +461,14 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
   world.landmarks = new Map();
   /** Adds landmarks and house upgrades from data/specials.json. Call after build(). */
   world.addSpecials = (specials) => {
+    const norm = (s) => String(s || '').trim().replace(/^@/, '').toLowerCase();
     (specials?.landmarks || []).forEach((def, k) => {
       const block = landmarkBlock(def, k);
       if (!block) return; // an edge landmark without an assigned block (should not happen)
-      const made = (LANDMARK_MODELS[def.type] || genericLandmark)(def);
+      // A landmark belongs to the person who asked for it and has as many floors as they do.
+      const owner = world.list.find((e) => e.resident.id === def.requestedById || (def.requestedBy && norm(e.resident.name) === norm(def.requestedBy)));
+      const floors = Math.max(1, owner?.resident.floors || 1);
+      const made = (LANDMARK_MODELS[def.type] || genericLandmark)(def, floors);
       const outer = new THREE.Group();
       outer.position.set(block[0] * PITCH, 0, block[1] * PITCH);
       // face the town square
@@ -463,17 +478,19 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       const el = document.createElement('div');
       el.className = 'label landmark';
       el.textContent = def.name;
-      if (def.requestedBy) {
-        const by = document.createElement('small');
-        by.textContent = `by @${String(def.requestedBy).replace(/^@/, '')}`;
-        el.appendChild(by);
-      }
+      const by = document.createElement('small');
+      by.textContent = `${def.requestedBy ? `by @${String(def.requestedBy).replace(/^@/, '')} · ` : ''}${floors} floor${floors === 1 ? '' : 's'}`;
+      el.appendChild(by);
       const label = new CSS2DObject(el);
       label.position.set(0, made.height + 2.5, 0);
       outer.add(label);
-      world.landmarks.set(def.id, { def, outer, height: made.height, label, tick: made.group.userData.tick });
+      const lm = { def, outer, height: made.height, label, floors, owner, body: made.body, tick: made.group.userData.tick };
+      if (made.body) {
+        made.body.userData.landmark = lm;
+        world.pickables.push(made.body);
+      }
+      world.landmarks.set(def.id, lm);
     });
-    const norm = (s) => String(s || '').trim().replace(/^@/, '').toLowerCase();
     for (const up of specials?.upgrades || []) {
       const who = norm(up.resident);
       const entry = world.list.find((e) => e.resident.id === up.resident || norm(e.resident.name) === who);
