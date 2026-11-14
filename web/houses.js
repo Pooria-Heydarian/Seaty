@@ -5,6 +5,7 @@
 
 import * as THREE from 'three';
 import { cleanHouseRecipe } from './catalog.js';
+import { HOUSE_MODELS } from './house-models.js';
 
 /**
  * @param {object} o
@@ -485,6 +486,9 @@ export function createHouseKit({ windows, FOOT, FLOOR_H, TEX_FLOORS, nightMat })
     },
   };
 
+  // Helpers for one-off models in house-models.js
+  const helpers = { THREE, plain, glowing, windowBox, windowCylinder, door, roof, roundRoof, box, WHITE, DARK, GOLD, WOOD, LEAF, GLASS, FOOT, FLOOR_H };
+
   /**
    * Builds a custom house with `floors` floors.
    * @returns {{ group: THREE.Group, body: THREE.Mesh, height: number, roofTop: number, tick?: (t:number)=>void }}
@@ -493,8 +497,12 @@ export function createHouseKit({ windows, FOOT, FLOOR_H, TEX_FLOORS, nightMat })
     const r = cleanHouseRecipe(recipe);
     const g = new THREE.Group();
     const h = Math.max(1, floors) * FLOOR_H;
-    const s = (SHAPES[r.shape] || SHAPES.classic)(g, r, h);
-    const ticks = [];
+    const s = SHAPES[r.shape]
+      ? SHAPES[r.shape](g, r, h)
+      : HOUSE_MODELS[r.shape]
+        ? HOUSE_MODELS[r.shape](g, r, h, helpers)
+        : SHAPES.classic(g, r, h);
+    const ticks = s.tick ? [s.tick] : [];
     let top = s.top;
     for (const e of r.extras) {
       const out = EXTRAS[e]?.(g, r, { ...s, top });

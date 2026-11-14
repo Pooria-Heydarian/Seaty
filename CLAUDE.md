@@ -8,7 +8,7 @@ The owner comes here once a day and asks for the daily update ("daily", "/daily"
 
 ## Where things are
 
-- `web/world.js`: the 3D town (shared by the site, the daily Short and the trailer). `web/houses.js`: custom house kit. `web/catalog.js`: what can be built (keep it in sync with the models). `web/layout.js`: plot / block layout (houses never move).
+- `web/world.js`: the 3D town (shared by the site, the daily Short and the trailer). `web/houses.js`: custom house kit; `web/house-models.js`: one-off models made for requests; `web/model.html?u=<channelId>`: one house alone, to check a model from every side. `web/catalog.js`: what can be built (keep it in sync with the models). `web/layout.js`: plot / block layout (houses never move).
 - `web/data/specials.json`: landmarks, upgrades and custom houses. Change it with `npm run special` (it checks the rules).
 - `scripts/fetch-comments.mjs` → `web/data/city.json` + `comments/new-comments.json` (since `data/last-update.json`).
 - `scripts/daily-report.mjs` → report, history snapshot, `web/data/changes.json` (what the video shows).

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seaty Model Preview</title>
+  <!--
+    Look at one house on its own, from every side (used in the daily session to check new models).
+      model.html?shape=gem-head&floors=1&wall=%23a3415e&roofColor=%231f1424&accent=%23ff4d8d
+      model.html?u=<channelId>            the house of that resident, from specials.json
+    Add &night=1 for night. Drag to turn. window.setView(azimuthRadians, elevationDeg, distance) for screenshots.
+  -->
+  <script type="importmap">
+    { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    } }
+  </script>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #bcd8ee; font: 14px system-ui, sans-serif; }
+    #scene { position: fixed; inset: 0; }
+    #info { position: fixed; left: 12px; top: 12px; background: #fff; padding: 8px 12px; border-radius: 8px; box-shadow: 0 4px 14px rgba(0,0,0,.15); }
+  </style>
+</head>
+<body>
+  <div id="scene"></div>
+  <div id="info">Loading…</div>
+  <script type="module">
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { createWorld, THREE } from './world.js';
+
+    const q = new URLSearchParams(location.search);
+    const world = createWorld({ container: document.getElementById('scene'), width: innerWidth, height: innerHeight });
+    const controls = new OrbitControls(world.camera, world.renderer.domElement);
+
+    let specials = { houses: [], upgrades: [], landmarks: [] };
+    let resident = { id: 'preview', name: 'preview', floors: Number(q.get('floors') || 1), joined: '2026-01-01' };
+    if (q.get('u')) {
+      const [city, sp] = await Promise.all([fetch('data/city.json').then((r) => r.json()), fetch('data/specials.json').then((r) => r.json())]);
+      const r = city.residents.find((x) => x.id === q.get('u'));
+      if (r) resident = { ...r, joined: '2026-01-01' };
+      specials = {
+        houses: (sp.houses || []).filter((h) => h.resident === resident.id),
+        upgrades: (sp.upgrades || []).filter((u) => u.resident === resident.id),
+        landmarks: [],
+      };
+    } else {
+      const recipe = Object.fromEntries(['shape', 'roof', 'wall', 'roofColor', 'door', 'accent'].filter((k) => q.get(k)).map((k) => [k, q.get(k)]));
+      if (q.get('extras')) recipe.extras = q.get('extras').split(',');
+      specials.houses.push({ resident: 'preview', recipe, title: recipe.shape || 'house' });
+    }
+    world.build({ residents: [resident], videoCount: 1, residentCount: 1, totalFloors: resident.floors }, { labelTop: 0, specials });
+    const e = world.list[0];
+    e.outer.rotation.y = 0; // front (door side) faces +z
+    world.townHall.visible = false;
+    world.setNight(q.get('night') === '1');
+    document.getElementById('info').textContent = `${specials.houses[0]?.recipe?.shape || 'house'} · ${resident.floors} floor(s) · top ${e.roofTop.toFixed(1)}`;
+
+    const target = new THREE.Vector3(e.outer.position.x, e.roofTop * 0.45, e.outer.position.z);
+    window.setView = (az = 0.5, elev = 22, dist = Math.max(14, e.roofTop * 1.9)) => {
+      const el = (elev * Math.PI) / 180;
+      world.camera.position.set(target.x + Math.sin(az) * Math.cos(el) * dist, target.y + Math.sin(el) * dist, target.z + Math.cos(az) * Math.cos(el) * dist);
+      controls.target.copy(target);
+      controls.update();
+    };
+    window.setView();
+    const loop = (t) => { world.tick(t / 1000); controls.update(); world.render(); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop);
+    window.modelReady = true;
+  </script>
+</body>
+</html>

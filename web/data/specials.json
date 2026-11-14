@@ -221,6 +221,38 @@
       },
       "requestedIn": "Ugwx0h_vuoY7uGAkLD14AaABAg",
       "added": "2026-11-14"
+    },
+    {
+      "resident": "UCHkEsssVMIqBscQy1-pXAdQ",
+      "name": "@TheBigCityBee",
+      "title": "Gem Head House",
+      "recipe": {
+        "shape": "gem-head",
+        "roof": "pointed",
+        "wall": "#a3415e",
+        "roofColor": "#1f1424",
+        "door": "#4a1f2e",
+        "accent": "#ff4d8d",
+        "extras": []
+      },
+      "requestedIn": "UgxhbdvY7mNHTllcUhx4AaABAg",
+      "added": "2026-11-14"
+    },
+    {
+      "resident": "UCNNLnLR0N_8YlVw_eDVQzEA",
+      "name": "@Railey_508",
+      "title": "Chess Knight House",
+      "recipe": {
+        "shape": "chess-knight",
+        "roof": "pointed",
+        "wall": "#f2efe6",
+        "roofColor": "#2b2d42",
+        "door": "#6b4630",
+        "accent": "#26a1d6",
+        "extras": []
+      },
+      "requestedIn": "UgzWJ7hjJYKynwPYrYJ4AaABAg",
+      "added": "2026-11-14"
     }
   ]
 }

@@ -146,6 +146,7 @@ npm run lottery -- --seed "<public value>" --tickets equal
 | `scripts/requests.mjs` | New comments with each person's house info → `comments/today.md` |
 | `scripts/add-special.mjs` | `npm run special`: add dream houses, upgrades, landmarks, wishes |
 | `web/houses.js`, `web/catalog.js` | The dream house kit / everything that can be built |
+| `web/house-models.js`, `web/model.html` | One-off house models made for requests / preview one house from every side |
 | `scripts/demo-data.mjs` | Fake city (`npm run demo -- 1000 120` = 1000 residents, 120 videos) |
 | `scripts/daily-report.mjs` | Compares with yesterday's snapshot → markdown report |
 | `scripts/lottery.mjs` | Verifiable monthly draw |

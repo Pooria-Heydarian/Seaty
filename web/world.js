@@ -463,6 +463,11 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       const el = document.createElement('div');
       el.className = 'label landmark';
       el.textContent = def.name;
+      if (def.requestedBy) {
+        const by = document.createElement('small');
+        by.textContent = `by @${String(def.requestedBy).replace(/^@/, '')}`;
+        el.appendChild(by);
+      }
       const label = new CSS2DObject(el);
       label.position.set(0, made.height + 2.5, 0);
       outer.add(label);

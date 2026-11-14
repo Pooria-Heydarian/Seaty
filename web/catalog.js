@@ -34,6 +34,9 @@ export const HOUSE_SHAPES = {
   rocket: 'a rocket ship standing on fins',
   igloo: 'an igloo / snow dome house',
   glass: 'a modern glass skyscraper-style building',
+  // One-off models (web/house-models.js), made for a request; anyone can ask for them later too.
+  'gem-head': 'a giant head with a boxy flat-top afro and a two-colour visor (wall = skin, roofColor = hair, accent = left lens)',
+  'chess-knight': 'a chess knight piece on a round base with a floating "!!" badge (wall = piece, roofColor = eyes, accent = badge)',
 };
 
 /** Roofs. Ignored by shapes that have their own top (mushroom, rocket, igloo, pyramid, dome, lighthouse). */
