@@ -8,11 +8,26 @@ export const UPGRADE_TYPES = {
   'apple-tree': 'an apple tree with red apples in the backyard',
   capybara: 'a pet capybara with an orange on its head in the front yard',
   cat: 'a pet cat sitting in the front yard',
+  dog: 'a pet dog in the front yard, wagging its tail',
+  gems: 'a glowing red ruby and blue sapphire crystal on stone stands',
+  'flower-tree': 'a blossom tree covered in pink flowers',
+  pond: 'a little backyard pond with lily pads',
+  campfire: 'a stone patio with a campfire and log benches',
+  chickens: 'a chicken coop with two chickens',
+  'giant-apple-tree': 'a GIANT apple tree towering over the house',
 };
 
 /** Landmarks with their own 3D model. Any other landmark is built as a generic gold-domed hall with a name sign. */
 export const LANDMARK_TYPES = {
   'spaghetti-factory': 'a spaghetti / pasta / noodle factory',
+  stadium: 'a football / soccer stadium (use --color for the seats and --accent for the trim)',
+  ballpark: 'a baseball park with a diamond and a scoreboard (--color for the seats)',
+  'theme-park': 'a theme park: Ferris wheel, roller coaster, carousel',
+  'power-plant': 'a (nuclear) power plant with cooling towers',
+  park: 'a park with a fountain, trees, benches, a pond and a clock tower',
+  farm: 'a farm: red barn, silo, crop fields',
+  'watermelon-factory': 'a watermelon factory with a giant slice on the roof (and a "no seeds" sign)',
+  'car-show': 'a car showroom with cars and a pickup truck on a turntable',
 };
 
 // ---------- Custom house kit ----------
@@ -37,6 +52,10 @@ export const HOUSE_SHAPES = {
   // One-off models (web/house-models.js), made for a request; anyone can ask for them later too.
   'gem-head': 'a giant head with a boxy flat-top afro and a two-colour visor (wall = skin, roofColor = hair, accent = left lens)',
   'chess-knight': 'a chess knight piece on a round base with a floating "!!" badge (wall = piece, roofColor = eyes, accent = badge)',
+  medieval: 'a medieval house: stone ground floor, half-timbered upper floors, steep roof (wall = plaster)',
+  bunker: 'a concrete bunker in a grassy mound with slit windows and a heavy door (wall = concrete, accent = hazard stripes)',
+  caravan: 'a camper caravan with an awning; extra floors add a pop-top level (wall = shell, accent = stripe and awning)',
+  'japanese-cafe': 'a Japanese house / café: paper screens, tiled roofs with upturned corners (one tier per floor), noren curtain, red lanterns (wall = wood, accent = curtain)',
 };
 
 /** Roofs. Ignored by shapes that have their own top (mushroom, rocket, igloo, pyramid, dome, lighthouse). */

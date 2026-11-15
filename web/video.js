@@ -17,6 +17,8 @@ document.body.classList.add(RENDER ? 'render' : 'preview');
 const MAX_FEATURED_NEW = 4;
 const MAX_FEATURED_GROW = 3;
 const MAX_FEATURED_HOUSES = 4; // more dream houses than this share one "+N more" shot
+const MAX_FEATURED_LANDMARKS = 4; // same for new landmarks
+const MAX_FEATURED_UPGRADES = 4; // and for house upgrades
 const AVATAR_COLORS = ['#ff7a45', '#2e86ab', '#7a5cff', '#2a9d8f', '#e76f51', '#d62f6f', '#3a86ff'];
 
 // ---------- Easing ----------
@@ -145,9 +147,21 @@ function buildTimeline(city, ch) {
     'apple-tree': (n) => [`${n} now has an apple tree in the backyard!`, 'Got an apple tree in the backyard!'],
     capybara: (n) => [`${n}'s house now has its very own capybara!`, 'Got a pet capybara!'],
     cat: (n) => [`${n} adopted a cat! Look at it sitting in the front yard.`, 'Got a pet cat!'],
+    dog: (n) => [`${n} got a dog! Look at that tail wag.`, 'Got a pet dog!'],
+    gems: (n) => [`${n}'s backyard now has a giant ruby and a sapphire!`, 'Got a ruby and a sapphire!'],
+    'flower-tree': (n) => [`${n}'s blossom tree is in full bloom!`, 'Got a blossom tree!'],
+    pond: (n) => [`${n} has a brand new pond in the backyard!`, 'Got a backyard pond!'],
+    campfire: (n) => [`${n} built a patio with a cozy campfire!`, 'Got a campfire patio!'],
+    chickens: (n) => [`${n} moved in with a chicken coop!`, 'Got a chicken coop!'],
+    'giant-apple-tree': (n) => [`Whoa! ${n} has a giant apple tree!`, 'Got a GIANT apple tree!'],
   };
-  for (const sp of newSpecials.filter((s) => s.kind === 'landmark')) {
+  const newLandmarks = newSpecials.filter((s) => s.kind === 'landmark');
+  for (const sp of newLandmarks.slice(0, MAX_FEATURED_LANDMARKS)) {
     add('landmark', 4.4, { sp }, { text: `Big news! Seaty just opened a brand new ${sp.name}${sp.requestedBy ? `, requested by ${say(sp.requestedBy)}` : ''}!`, at: 1.0 });
+  }
+  const moreLandmarks = newLandmarks.slice(MAX_FEATURED_LANDMARKS).map((sp) => ({ ...sp, pos: world.landmarks.get(sp.id).outer.position }));
+  if (moreLandmarks.length) {
+    add('moreLandmarks', 4.2, { list: moreLandmarks }, { text: `And ${moreLandmarks.length} more new ${moreLandmarks.length === 1 ? 'landmark' : 'landmarks'}: ${moreLandmarks.map((l) => l.name).slice(0, 5).join(', ')}${moreLandmarks.length > 5 ? ' and more' : ''}!`, at: 0.4 });
   }
   if (!city.residents.length) add('empty', 5.5, {}, { text: 'The city is empty. Nobody lives here yet. Comment below, and I will build your house tomorrow!', at: 0.4 });
   featuredNew.forEach((n, i) => add('newcomer', 3.6, { n }, {
@@ -155,9 +169,14 @@ function buildTimeline(city, ch) {
     at: 1.0,
   }));
   if (montageNew.length) add('montage', 3.4, { list: montageNew }, { text: `Plus ${montageNew.length} more new ${montageNew.length === 1 ? 'neighbor' : 'neighbors'}!`, at: 0.4 });
-  for (const sp of newSpecials.filter((s) => s.kind === 'upgrade')) {
+  const newUpgrades = newSpecials.filter((s) => s.kind === 'upgrade');
+  for (const sp of newUpgrades.slice(0, MAX_FEATURED_UPGRADES)) {
     const [line, caption] = (UPGRADE_LINE[sp.type] || ((n) => [`${n} got a house upgrade!`, 'Got a house upgrade!']))(say(sp.name));
     add('upgrade', 3.8, { sp, caption, entry: world.entries.get(sp.id) }, { text: line, at: 0.9 });
+  }
+  const moreUpgrades = newUpgrades.slice(MAX_FEATURED_UPGRADES).map((sp) => ({ ...sp, entry: world.entries.get(sp.id) }));
+  if (moreUpgrades.length) {
+    add('moreUpgrades', 3.6, { list: moreUpgrades }, { text: `Plus ${moreUpgrades.length} more house ${moreUpgrades.length === 1 ? 'upgrade' : 'upgrades'}: pools, pets and more!`, at: 0.4 });
   }
   const newHouses = newSpecials.filter((s) => s.kind === 'house');
   newHouses.slice(0, MAX_FEATURED_HOUSES).forEach((sp, i) => {
@@ -195,16 +214,23 @@ function buildTimeline(city, ch) {
   const reveal = new Map();
   for (const s of scenes) {
     if (s.type === 'newcomer') reveal.set(s.n.id, s.start + 1.15);
-    if (s.type === 'montage' || s.type === 'moreHouses') {
+    if (['montage', 'moreHouses', 'moreLandmarks', 'moreUpgrades'].includes(s.type)) {
       if (s.type === 'montage') s.list.forEach((n, i) => reveal.set(n.id, s.start + 0.5 + (i / Math.max(1, s.list.length)) * 1.8));
-      const c = new THREE.Vector3();
-      s.list.forEach((n) => c.add(n.entry.outer.position));
-      s.center = c.divideScalar(s.list.length);
+      const pts = s.list.map((n) => n.pos || n.entry.outer.position);
+      s.center = pts.reduce((c, p) => c.add(p), new THREE.Vector3()).divideScalar(pts.length);
+      s.dist = Math.max(62, ...pts.map((p) => p.distanceTo(s.center) * 2.4 + 30));
     }
   }
   // New landmarks rise in their news scene; upgrades pop in during theirs.
-  const landmarkReveal = new Map(scenes.filter((s) => s.type === 'landmark').map((s) => [s.sp.id, s.start + 1.0]));
-  const upgradeReveal = scenes.filter((s) => s.type === 'upgrade').map((s) => ({ obj: s.entry.upgradeObjects[s.sp.type], at: s.start + 1.0 }));
+  const stagger = (s, i) => s.start + 0.7 + (i / s.list.length) * 1.8;
+  const landmarkReveal = new Map([
+    ...scenes.filter((s) => s.type === 'landmark').map((s) => [s.sp.id, s.start + 1.0]),
+    ...scenes.filter((s) => s.type === 'moreLandmarks').flatMap((s) => s.list.map((l, i) => [l.id, stagger(s, i)])),
+  ]);
+  const upgradeReveal = [
+    ...scenes.filter((s) => s.type === 'upgrade').map((s) => ({ obj: s.entry.upgradeObjects[s.sp.type], at: s.start + 1.0 })),
+    ...scenes.filter((s) => s.type === 'moreUpgrades').flatMap((s) => s.list.map((u, i) => ({ obj: u.entry.upgradeObjects[u.type], at: stagger(s, i) }))),
+  ].filter((u) => u.obj);
   // Custom houses: the old house is shown until its makeover scene, then the new one pops up.
   const houseReveal = [
     ...scenes.filter((s) => s.type === 'house').map((s) => ({ entry: s.entry, at: s.start + 1.3 })),
@@ -251,7 +277,9 @@ function buildTimeline(city, ch) {
         return buildingShot(s.g.entry, s.g.to, lt, s.dur);
       case 'montage':
       case 'moreHouses':
-        return orbit(s.center, 62, 0.9 + k * 0.4, 50);
+      case 'moreLandmarks':
+      case 'moreUpgrades':
+        return orbit(s.center, s.dist || 62, 0.9 + k * 0.4, 50);
       case 'landmark': {
         const l = world.landmarks.get(s.sp.id);
         return orbit(new THREE.Vector3(l.outer.position.x, l.height * 0.45, l.outer.position.z), 27 - 3 * k, l.outer.rotation.y + 0.55 + k * 0.4, 26);
@@ -421,6 +449,9 @@ function buildTimeline(city, ch) {
       const k = clamp01((lt - 0.5) / 1.8);
       const shown = Math.ceil(s.list.length * k);
       $('montage').innerHTML = `+${shown}<small>more new residents</small>`;
+      montageOn = fade(lt, 0.3, s.dur - 0.35);
+    } else if (s.type === 'moreLandmarks' || s.type === 'moreUpgrades') {
+      $('montage').innerHTML = `+${s.list.length}<small>${s.type === 'moreLandmarks' ? 'more new landmarks' : 'more house upgrades'}</small>`;
       montageOn = fade(lt, 0.3, s.dur - 0.35);
     } else if (s.type === 'moreHouses') {
       $('montage').innerHTML = `+${s.list.length}<small>more dream houses</small>`;

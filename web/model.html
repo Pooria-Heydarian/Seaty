@@ -8,6 +8,8 @@
     Look at one house on its own, from every side (used in the daily session to check new models).
       model.html?shape=gem-head&floors=1&wall=%23a3415e&roofColor=%231f1424&accent=%23ff4d8d
       model.html?u=<channelId>            the house of that resident, from specials.json
+      model.html?upgrades=dog,pond        add yard upgrades to the preview house
+      model.html?landmark=stadium&floors=2&color=%231f4d2b   one landmark alone
     Add &night=1 for night. Drag to turn. window.setView(azimuthRadians, elevationDeg, distance) for screenshots.
   -->
   <script type="importmap">
@@ -47,17 +49,26 @@
     } else {
       const recipe = Object.fromEntries(['shape', 'roof', 'wall', 'roofColor', 'door', 'accent'].filter((k) => q.get(k)).map((k) => [k, q.get(k)]));
       if (q.get('extras')) recipe.extras = q.get('extras').split(',');
-      specials.houses.push({ resident: 'preview', recipe, title: recipe.shape || 'house' });
+      if (recipe.shape) specials.houses.push({ resident: 'preview', recipe, title: recipe.shape });
+    }
+    if (q.get('upgrades')) for (const type of q.get('upgrades').split(',')) specials.upgrades.push({ resident: resident.id, type });
+    if (q.get('landmark')) {
+      specials.landmarks.push({ id: 'preview-landmark', type: q.get('landmark'), name: q.get('landmark'), requestedById: resident.id,
+        ...(q.get('color') ? { color: q.get('color') } : {}), ...(q.get('accent') ? { accent: q.get('accent') } : {}) });
     }
     world.build({ residents: [resident], videoCount: 1, residentCount: 1, totalFloors: resident.floors }, { labelTop: 0, specials });
     const e = world.list[0];
     e.outer.rotation.y = 0; // front (door side) faces +z
     world.townHall.visible = false;
     world.setNight(q.get('night') === '1');
-    document.getElementById('info').textContent = `${specials.houses[0]?.recipe?.shape || 'house'} · ${resident.floors} floor(s) · top ${e.roofTop.toFixed(1)}`;
+    const lm = world.landmarks.get('preview-landmark');
+    if (lm) { lm.outer.rotation.y = 0; e.outer.visible = false; }
+    const focus = lm ? { pos: lm.outer.position, top: lm.height } : { pos: e.outer.position, top: e.roofTop };
+    document.getElementById('info').textContent = `${lm ? q.get('landmark') : specials.houses[0]?.recipe?.shape || 'house'} · ${resident.floors} floor(s) · top ${focus.top.toFixed(1)}`;
 
-    const target = new THREE.Vector3(e.outer.position.x, e.roofTop * 0.45, e.outer.position.z);
-    window.setView = (az = 0.5, elev = 22, dist = Math.max(14, e.roofTop * 1.9)) => {
+    const at = (q.get('at') || '0,0').split(',').map(Number); // aim at a spot in the yard (local x,z)
+    const target = new THREE.Vector3(focus.pos.x + at[0], q.get('at') ? 0.6 : focus.top * 0.4, focus.pos.z + at[1]);
+    window.setView = (az = 0.5, elev = 22, dist = lm ? Math.max(22, focus.top * 2.6) : Math.max(14, focus.top * 1.9)) => {
       const el = (elev * Math.PI) / 180;
       world.camera.position.set(target.x + Math.sin(az) * Math.cos(el) * dist, target.y + Math.sin(el) * dist, target.z + Math.cos(az) * Math.cos(el) * dist);
       controls.target.copy(target);

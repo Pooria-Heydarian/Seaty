@@ -92,7 +92,8 @@ switch (cmd) {
     const by = flags.by && flags.by !== true ? resident(flags.by) : null;
     let id = slug(name);
     while (specials.landmarks.some((l) => l.id === id)) id += '-2';
-    const def = { id, type, name, ...(by ? { requestedBy: by.name, requestedById: by.id } : {}), ...(flags.comment ? { requestedIn: flags.comment } : {}), added: date };
+    const hex = (v) => (typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v) ? v : null);
+    const def = { id, type, name, ...(by ? { requestedBy: by.name, requestedById: by.id } : {}), ...(hex(flags.color) ? { color: flags.color } : {}), ...(hex(flags.accent) ? { accent: flags.accent } : {}), ...(flags.comment ? { requestedIn: flags.comment } : {}), added: date };
     if (specials.landmarks.length >= LANDMARK_BLOCKS.length) {
       const edge = specials.landmarks.slice(LANDMARK_BLOCKS.length).map((l) => l.block).filter(Array.isArray);
       def.block = nextEdgeLandmarkBlock(city.residents.length, edge);
@@ -100,6 +101,17 @@ switch (cmd) {
     specials.landmarks.push(def);
     save();
     console.log(`✓ Landmark "${name}" (${type}) added${def.block ? ` on edge block ${def.block}` : ' downtown'}${by ? `, requested by ${by.name}` : ''}`);
+    break;
+  }
+  case 'landmark-model': {
+    // npm run special -- landmark-model <id-or-name> <type> [--color #hex] [--accent #hex]   give an existing landmark a new 3D model
+    const l = specials.landmarks.find((x) => x.id === a || norm(x.name) === norm(a));
+    if (!l) fail(`No landmark "${a}".`);
+    if (b !== 'generic' && !LANDMARK_TYPES[b]) fail(`No 3D model "${b}". Models: ${Object.keys(LANDMARK_TYPES).join(', ')}`);
+    l.type = b;
+    for (const k of ['color', 'accent']) if (typeof flags[k] === 'string' && /^#[0-9a-f]{6}$/i.test(flags[k])) l[k] = flags[k];
+    save();
+    console.log(`✓ "${l.name}" now uses the ${b} model`);
     break;
   }
   case 'wish': {

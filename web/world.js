@@ -7,6 +7,7 @@ export { THREE, CSS2DObject };
 import { LOT, BLOCK, PITCH, LOT_OFFSETS, LANDMARK_BLOCKS, spiral, spiralIndexOf, createLayout } from './layout.js';
 import { createHouseKit } from './houses.js';
 import { cleanHouseRecipe } from './catalog.js';
+import { createExtraModels } from './extra-models.js';
 export { LOT, BLOCK, PITCH, LANDMARK_BLOCKS };
 
 // ---------- Layout constants ----------
@@ -260,6 +261,13 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     steam: M('#ffffff', { transparent: true, opacity: 0.75 }),
   };
   const shadowAll = (g) => g.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  /** A material that glows a little by day and more at night. */
+  const glow = (color, day = 0.5, night = 2) => {
+    const m = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: world.night ? night : day, roughness: 0.4 });
+    nightMats.push({ m, day, night });
+    return m;
+  };
+  const EXTRA = createExtraModels({ THREE, M, mat, FLOOR_H, glow, shadowAll });
 
   /** Spaghetti Factory: sawtooth-roof hall, striped chimney with steam, giant spaghetti plate on the roof. */
   function spaghettiFactory(def, floors = 1) {
@@ -346,7 +354,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     shadowAll(g);
     return { group: g, body: base, height: bh + 2.5 };
   }
-  const LANDMARK_MODELS = { 'spaghetti-factory': spaghettiFactory };
+  const LANDMARK_MODELS = { 'spaghetti-factory': spaghettiFactory, ...EXTRA.landmarks };
 
   function pool() {
     const g = new THREE.Group();
@@ -456,7 +464,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     g.userData.tick = (t) => { tail.rotation.x = Math.sin(t * 2.4) * 0.35; };
     return g;
   }
-  const UPGRADE_MODELS = { pool, 'apple-tree': appleTree, capybara, cat };
+  const UPGRADE_MODELS = { pool, 'apple-tree': appleTree, capybara, cat, ...EXTRA.upgrades };
 
   world.landmarks = new Map();
   /** Adds landmarks and house upgrades from data/specials.json. Call after build(). */
@@ -470,7 +478,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       const floors = Math.max(1, owner?.resident.floors || 1);
       const made = (LANDMARK_MODELS[def.type] || genericLandmark)(def, floors);
       const outer = new THREE.Group();
-      outer.position.set(block[0] * PITCH, 0, block[1] * PITCH);
+      outer.position.set(block[0] * PITCH, 0.25, block[1] * PITCH); // on top of the block's pavement, like the houses
       // face the town square
       outer.rotation.y = Math.atan2(-outer.position.x, -outer.position.z);
       outer.add(made.group);

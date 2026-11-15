@@ -91,4 +91,155 @@ export const HOUSE_MODELS = {
       tick: (t) => { badge.rotation.y = t * 0.9; badge.position.y = by + Math.sin(t * 2) * 0.15; },
     };
   },
+
+  /** Medieval house: stone ground floor, overhanging half-timbered upper floors, steep roof (requested by @Historyguy-i2m, Day 3). */
+  medieval(g, r, h, k) {
+    const { THREE, plain } = k;
+    const stone = plain('#8f8a80', { flatShading: true });
+    const beam = plain('#4a3426');
+    const plaster = plain(r.wall);
+    const gh = 1.4;
+    g.add(new THREE.Mesh(k.box(3.6, gh, 3.2), stone));
+    // arched door
+    g.add(k.door(r.door, 1.6, 0.95));
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.43, 0.43, 0.12, 12, 1, false, -Math.PI / 2, Math.PI).rotateX(Math.PI / 2).translate(0, 1.42, 1.66), plain(r.door)));
+    // upper floors: overhang ("jetty"), one band of timber per floor
+    const uh = 1.4 + (h - k.FLOOR_H);
+    const W = 4.1, D = 3.7;
+    const upper = new THREE.Mesh(k.box(W, uh, D, gh), plaster);
+    g.add(upper);
+    const floors = Math.max(1, Math.round(uh / 1.2));
+    for (let i = 0; i <= floors; i++) g.add(new THREE.Mesh(k.box(W + 0.06, 0.14, D + 0.06, gh + (uh * i) / floors - 0.07), beam));
+    for (const x of [-W / 2, -W / 6, W / 6, W / 2]) for (const z of [-D / 2, D / 2]) g.add(new THREE.Mesh(k.box(0.14, uh, 0.14, gh).translate(x, 0, z), beam));
+    for (const x of [-W / 2, W / 2]) for (const z of [-D / 6, D / 6]) g.add(new THREE.Mesh(k.box(0.14, uh, 0.14, gh).translate(x, 0, z), beam));
+    // diagonal braces + small windows, every floor
+    for (let i = 0; i < floors; i++) {
+      const y0 = gh + (uh * i) / floors, fh = uh / floors;
+      for (const s of [-1, 1]) {
+        const brace = new THREE.Mesh(new THREE.BoxGeometry(0.12, Math.hypot(W / 3, fh) * 0.95, 0.1), beam);
+        brace.position.set(s * W / 3, y0 + fh / 2, D / 2 + 0.03);
+        brace.rotation.z = s * Math.atan2(W / 3, fh);
+        g.add(brace);
+      }
+      g.add(new THREE.Mesh(k.box(0.7, fh * 0.5, 0.08, y0 + fh * 0.25).translate(0, 0, D / 2 + 0.04), k.GLASS));
+      for (const x of [-W / 2 - 0.04, W / 2 + 0.04]) g.add(new THREE.Mesh(k.box(0.08, fh * 0.45, 0.6, y0 + fh * 0.28).translate(x, 0, 0), k.GLASS));
+    }
+    // steep gable roof + stone chimney
+    const top = gh + uh;
+    const tri = new THREE.Shape([new THREE.Vector2(-W / 2 - 0.3, 0), new THREE.Vector2(W / 2 + 0.3, 0), new THREE.Vector2(0, 2.4)]);
+    g.add(new THREE.Mesh(new THREE.ExtrudeGeometry(tri, { depth: D + 0.5, bevelEnabled: false }).translate(0, top, -D / 2 - 0.25), plain(r.roofColor, { flatShading: true })));
+    g.add(new THREE.Mesh(k.box(0.55, 2.6, 0.55, top - 0.2).translate(1.2, 0, -0.9), stone));
+    return { body: upper, top: top + 2.4, eave: top, front: D / 2 + 0.1, width: W + 0.6 };
+  },
+
+  /** Bunker: concrete bunker half-buried in a grassy mound, slit windows, heavy door, vents, antenna (requested by @GLITCHPROBGAMING, Day 3). */
+  bunker(g, r, h, k) {
+    const { THREE, plain } = k;
+    const concrete = plain(r.wall, { roughness: 0.95 });
+    const H = 1.6 + (h - k.FLOOR_H);
+    const mound = new THREE.Mesh(new THREE.SphereGeometry(2.5, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), plain('#6f9e4f', { flatShading: true }));
+    mound.scale.set(1, (H + 0.4) / 2.5, 1);
+    mound.position.z = -0.4;
+    g.add(mound);
+    const face = new THREE.Mesh(k.box(3.4, H, 1.0).translate(0, 0, 1.55), concrete);
+    g.add(face, new THREE.Mesh(k.box(3.8, 0.3, 1.3, H).translate(0, 0, 1.6), concrete));
+    // one row of slit windows per floor
+    const rows = Math.max(1, Math.round(H / 1.2));
+    for (let i = 0; i < rows; i++) for (const x of [-1.15, 1.15]) {
+      g.add(new THREE.Mesh(k.box(0.8, 0.14, 0.05, 0.75 + (i * (H - 0.6)) / rows).translate(x, 0, 2.06), k.DARK));
+    }
+    // heavy door with a wheel and hazard stripes
+    g.add(new THREE.Mesh(k.box(1.1, 1.45, 0.08, 0).translate(0, 0, 2.06), plain(r.door, { metalness: 0.5, roughness: 0.45 })));
+    g.add(new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.04, 6, 16).translate(0, 0.75, 2.13), k.DARK));
+    for (let i = 0; i < 5; i++) g.add(new THREE.Mesh(k.box(0.22, 0.18, 0.04, 1.55).translate(-0.44 + i * 0.22, 0, 2.08), i % 2 ? k.DARK : plain(r.accent)));
+    // vents and antenna on the mound
+    for (const [x, z] of [[-1.0, -0.8], [0.9, -1.2]]) {
+      g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, H * 0.9, 8).translate(x, H * 0.45 + 0.4, z), concrete));
+      g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.12, 8).translate(x, H * 0.9 + 0.45, z), k.DARK));
+    }
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.0, 5).translate(0.2, H + 1.4, -0.6), k.DARK));
+    return { body: face, top: H + 2.4, eave: H, front: 2.1, width: 3.8 };
+  },
+
+  /** Caravan: camper trailer with an awning, wheels and a hitch; every extra floor adds a pop-top level (requested by @MRBNANAMRBNANA, Day 3). */
+  caravan(g, r, h, k) {
+    const { THREE, plain } = k;
+    const shell = plain(r.wall, { roughness: 0.4 });
+    const L = 4.0, Wd = 2.0, ch = 1.5, lift = 0.38;
+    const body = new THREE.Mesh(k.box(L, ch, Wd, lift), shell);
+    g.add(body);
+    // rounded ends
+    for (const s of [-1, 1]) {
+      g.add(new THREE.Mesh(new THREE.CylinderGeometry(ch / 2, ch / 2, Wd, 16, 1, false, s > 0 ? 0 : Math.PI, Math.PI).rotateX(Math.PI / 2).translate(s * L / 2, lift + ch / 2, 0), shell));
+    }
+    // stripe, windows, door
+    g.add(new THREE.Mesh(k.box(L + 1.2, 0.16, Wd + 0.02, lift + 0.45), plain(r.accent)));
+    for (const x of [-1.25, 0.9]) g.add(new THREE.Mesh(k.box(0.9, 0.45, 0.05, lift + 0.85).translate(x, 0, Wd / 2 + 0.01), k.GLASS));
+    g.add(new THREE.Mesh(k.box(0.6, 1.15, 0.05, lift + 0.1).translate(-0.2, 0, Wd / 2 + 0.02), plain(r.door)));
+    // wheels + hitch
+    for (const z of [-Wd / 2 - 0.05, Wd / 2 + 0.05]) g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.18, 14).rotateX(Math.PI / 2).translate(0.2, 0.32, z), k.DARK));
+    g.add(new THREE.Mesh(k.box(0.9, 0.08, 0.08, 0.4).translate(L / 2 + 1.0, 0, 0), k.DARK));
+    // awning over the door, on two poles
+    const awn = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.05, 1.1), plain(r.accent));
+    awn.position.set(-0.2, lift + ch - 0.12, Wd / 2 + 0.55);
+    awn.rotation.x = 0.18;
+    g.add(awn);
+    for (const x of [-1.15, 0.75]) g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, lift + ch - 0.2, 5).translate(x, (lift + ch - 0.2) / 2, Wd / 2 + 1.05), k.DARK));
+    // pop-top levels for extra floors
+    let top = lift + ch + 0.1;
+    const extra = h - k.FLOOR_H;
+    if (extra > 0.01) {
+      g.add(k.windowBox(L - 0.6, extra, Wd - 0.2, r.wall, lift + ch));
+      g.add(new THREE.Mesh(k.box(L - 0.4, 0.12, Wd, lift + ch + extra), plain(r.roofColor)));
+      top = lift + ch + extra + 0.12;
+    }
+    return { body, top, eave: lift + ch + Math.max(0, extra), front: Wd / 2 + 1.1, width: L + 1.4 };
+  },
+
+  /** Japanese house with a café: stone base, wooden posts, paper screens, tiled roofs with upturned corners (one tier per floor), noren curtain, lanterns (requested by @Get_jin_in_use, Day 3). */
+  'japanese-cafe'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const wood = plain(r.wall);
+    const paper = plain('#f6f1e4');
+    const tile = plain(r.roofColor, { flatShading: true });
+    g.add(new THREE.Mesh(k.box(4.4, 0.35, 3.8), plain('#9a958b', { flatShading: true })));
+    const tiers = Math.max(1, Math.round(h / k.FLOOR_H));
+    let y = 0.35;
+    let body = null;
+    for (let t = 0; t < tiers; t++) {
+      const w = 3.6 - t * 0.45, d = 3.0 - t * 0.35, th = t === 0 ? 1.5 : 1.1;
+      const wall = new THREE.Mesh(k.box(w, th, d, y), paper);
+      g.add(wall);
+      body ||= wall;
+      // wooden posts and a rail
+      for (const x of [-w / 2, -w / 6, w / 6, w / 2]) for (const z of [-d / 2, d / 2]) g.add(new THREE.Mesh(k.box(0.12, th, 0.12, y).translate(x, 0, z), wood));
+      for (const x of [-w / 2, w / 2]) for (const z of [-d / 6, d / 6]) g.add(new THREE.Mesh(k.box(0.12, th, 0.12, y).translate(x, 0, z), wood));
+      g.add(new THREE.Mesh(k.box(w + 0.04, 0.06, d + 0.04, y + th * 0.5), wood));
+      // tiled roof with upturned corners
+      const ry = y + th;
+      const rw = w + 1.1, rd = d + 1.1;
+      g.add(new THREE.Mesh(k.box(rw, 0.12, rd, ry), tile));
+      const cap = new THREE.Mesh(new THREE.ConeGeometry(Math.max(rw, rd) * 0.62, 0.9, 4).rotateY(Math.PI / 4).translate(0, ry + 0.55, 0), tile);
+      cap.scale.set(rw / Math.max(rw, rd), 1, rd / Math.max(rw, rd));
+      g.add(cap);
+      for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+        const tip = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.4, 4).translate(0, 0.2, 0), tile);
+        tip.position.set(sx * rw / 2, ry + 0.06, sz * rd / 2);
+        tip.rotation.set(sz * 0.6, 0, -sx * 0.6);
+        g.add(tip);
+      }
+      y = ry + 0.35;
+    }
+    // café front: door with a noren curtain, a sign and two red lanterns
+    g.add(k.door(r.door, 1.5, 1.0, 0.35));
+    for (let i = 0; i < 3; i++) g.add(new THREE.Mesh(k.box(0.3, 0.55, 0.03, 1.3).translate(-0.33 + i * 0.33, 0, 1.58), plain(r.accent)));
+    g.add(new THREE.Mesh(k.box(1.2, 0.35, 0.06, 1.95).translate(0, 0, 1.56), wood));
+    for (const x of [-1.3, 1.3]) {
+      const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 10), glowing('#e63946', 0.6, 2.4));
+      lamp.scale.set(1, 1.3, 1);
+      lamp.position.set(x, 1.35, 1.75);
+      g.add(lamp);
+    }
+    return { body, top: y + 0.6, eave: y - 0.35, front: 1.9, width: 4.6 };
+  },
 };
