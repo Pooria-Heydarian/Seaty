@@ -139,6 +139,230 @@
         3,
         1
       ]
+    },
+    {
+      "id": "mosque",
+      "type": "mosque",
+      "kind": "mosque",
+      "name": "Mosque",
+      "requestedBy": "@MrTauntyFace",
+      "requestedById": "UC_GtnlGVIQfvWpnr-nZvefQ",
+      "requestedIn": "UgyzEH9UqpTdILdtWKV4AaABAg",
+      "added": "2026-11-16",
+      "block": [
+        0,
+        3
+      ]
+    },
+    {
+      "id": "race-track",
+      "type": "race-track",
+      "kind": "race-track",
+      "name": "Race Track",
+      "requestedBy": "@Kirupa_49",
+      "requestedById": "UCZm0diFKnMvsNQ--CtXCsNA",
+      "requestedIn": "UgzqEbiJKCJdzD7x0vh4AaABAg",
+      "added": "2026-11-16",
+      "block": [
+        -1,
+        3
+      ]
+    },
+    {
+      "id": "circus",
+      "type": "circus",
+      "kind": "circus",
+      "name": "Circus",
+      "requestedBy": "@POUSALI2412",
+      "requestedById": "UCn-3PuoTEOwyWSCo-89yj0A",
+      "requestedIn": "UgzNwmvc6a2a-0Xaxut4AaABAg",
+      "added": "2026-11-16",
+      "block": [
+        -2,
+        3
+      ]
+    },
+    {
+      "id": "pet-store",
+      "type": "generic",
+      "kind": "pet-store",
+      "name": "Pet Store",
+      "requestedBy": "@AverageHuman67",
+      "requestedById": "UCKgB0kce7yRwStaUsMl_nZQ",
+      "requestedIn": "UgwkfVdHHok1F4lMgdx4AaABAg",
+      "added": "2026-11-16",
+      "block": [
+        -3,
+        3
+      ]
+    },
+    {
+      "id": "corner-shop",
+      "type": "generic",
+      "kind": "corner-shop",
+      "name": "Corner Shop",
+      "requestedBy": "@JoelEscott-c1y",
+      "requestedById": "UC9cbTDy_z9slOcWs4x1n-kQ",
+      "requestedIn": "Ugww9zBVPPLhHePY9Ip4AaABAg",
+      "added": "2026-11-16",
+      "block": [
+        -3,
+        2
+      ]
+    },
+    {
+      "id": "seaty-rail-transit",
+      "type": "rail",
+      "kind": "railway",
+      "name": "Seaty Rail Transit",
+      "requestedBy": "@markchesterajeemercado3237",
+      "requestedById": "UCICnlf3KRLmhydWXl38QXUQ",
+      "requestedIn": "UgzHNwXTVaMZ4IrzL5d4AaABAg",
+      "added": "2026-11-16",
+      "block": [
+        -3,
+        1
+      ]
+    },
+    {
+      "id": "jewelry-store",
+      "type": "generic",
+      "kind": "jewelry-store",
+      "name": "Jewelry Store",
+      "requestedBy": "@luqmanabdi8368",
+      "requestedById": "UCbTJNxoh05YPxAUaT-xjipg",
+      "requestedIn": "UgzM71HUO3U0z3jXZ014AaABAg",
+      "added": "2026-11-16",
+      "block": [
+        -3,
+        0
+      ]
+    },
+    {
+      "id": "octopus-aquarium",
+      "type": "aquarium",
+      "kind": "aquarium",
+      "name": "Octopus Aquarium",
+      "requestedBy": "@Staypositivels",
+      "requestedById": "UCJKwj1uw3QlueW6K3N-U2gw",
+      "requestedIn": "Ugx8tqVgrF3dpAd6crl4AaABAg",
+      "added": "2026-11-16",
+      "block": [
+        -3,
+        -1
+      ]
+    },
+    {
+      "id": "airport",
+      "type": "airport",
+      "kind": "airport",
+      "name": "Airport",
+      "requestedBy": "@Fly4Ever777",
+      "requestedById": "UC72l66Gfc4bCEQEASVG6oPQ",
+      "requestedIn": "UgxLhPvPjWYrABmRYud4AaABAg",
+      "added": "2026-11-16",
+      "block": [
+        -3,
+        -2
+      ]
+    },
+    {
+      "id": "toy-factory",
+      "type": "toy-factory",
+      "kind": "toy-factory",
+      "name": "Toy Factory",
+      "requestedBy": "@GamerGuy67x",
+      "requestedById": "UCrBakTMMz8PQAn8oIW1hp-g",
+      "requestedIn": "UgzORL4PKGR-QK6pPbR4AaABAg",
+      "added": "2026-11-16",
+      "block": [
+        -3,
+        -3
+      ]
+    },
+    {
+      "id": "mma-gym",
+      "type": "generic",
+      "kind": "gym",
+      "name": "MMA Gym",
+      "requestedBy": "@og-goat1.0",
+      "requestedById": "UC3Em45knIod38GO1zzu8j0Q",
+      "requestedIn": "Ugx_xSWd0XLH7WgqtLZ4AaABAg",
+      "added": "2026-11-16",
+      "block": [
+        -2,
+        -3
+      ]
+    },
+    {
+      "id": "school",
+      "type": "generic",
+      "kind": "school",
+      "name": "School",
+      "requestedBy": "@Onni_the_furry",
+      "requestedById": "UCAQ5RvmzbTwByI28r0B6qgw",
+      "requestedIn": "UgxS6iZOOjJkKHj-u_R4AaABAg",
+      "added": "2026-11-16",
+      "block": [
+        -1,
+        -3
+      ]
+    },
+    {
+      "id": "hospital",
+      "type": "hospital",
+      "kind": "hospital",
+      "name": "Hospital",
+      "requestedBy": "@batuSmile75",
+      "requestedById": "UC7wMDV5RN-vSsINyCRuHQ4A",
+      "requestedIn": "UgwieMULYf-OceytG4l4AaABAg",
+      "added": "2026-11-16",
+      "block": [
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "market",
+      "type": "generic",
+      "kind": "market",
+      "name": "Market",
+      "requestedBy": "@hasmask9103",
+      "requestedById": "UCTFf6UXQXcMuslCJiH2uTOQ",
+      "requestedIn": "UgwxqjHnFm2Smg4hiuB4AaABAg",
+      "added": "2026-11-16",
+      "block": [
+        1,
+        -3
+      ]
+    },
+    {
+      "id": "mall",
+      "type": "generic",
+      "kind": "mall",
+      "name": "Mall",
+      "requestedBy": "@MRsunglasses2.0",
+      "requestedById": "UCQ5Kmf2Jt6Qc_1tZRGrsiIw",
+      "requestedIn": "UgwL4__N2IB97Wr4wFR4AaABAg",
+      "added": "2026-11-16",
+      "block": [
+        2,
+        -3
+      ]
+    },
+    {
+      "id": "space-center",
+      "type": "space-center",
+      "kind": "space-center",
+      "name": "Space Center",
+      "requestedBy": "@GLITCHPROBGAMING",
+      "requestedById": "UCx99oD4-Mg6QhEllYy57Jiw",
+      "requestedIn": "UgyFzNM4P2lSqlaarFR4AaABAg",
+      "added": "2026-11-16",
+      "block": [
+        4,
+        -4
+      ]
     }
   ],
   "upgrades": [
@@ -274,6 +498,90 @@
       "type": "chickens",
       "requestedIn": "UgykiH7i4SXu3wpU_UV4AaABAg",
       "added": "2026-11-15"
+    },
+    {
+      "resident": "UC9o5frGl01cH3pn6u2VzG6Q",
+      "name": "@SEASALT-k7u",
+      "type": "giant-oak-tree",
+      "requestedIn": "Ugwu03lv4lwnnp9zwBN4AaABAg",
+      "added": "2026-11-16"
+    },
+    {
+      "resident": "UCQMGoJ1ocMTjuVtyI0RayUA",
+      "name": "@TeteaLalu",
+      "type": "garage",
+      "requestedIn": "Ugzmpli2R8SEGdiXX3V4AaABAg",
+      "added": "2026-11-16"
+    },
+    {
+      "resident": "UCVNoIdSeaoW2eEnaZ61pAEQ",
+      "name": "@Get_jin_in_use",
+      "type": "torii",
+      "requestedIn": "UgyGWnf94DYGyLU3Fp54AaABAg",
+      "added": "2026-11-16"
+    },
+    {
+      "resident": "UCv-a0knslevzeV3tfAHRhFg",
+      "name": "@ShashankShekhar-o3i",
+      "type": "cat",
+      "requestedIn": "UgxtrERDu4DmwD2ixPt4AaABAg",
+      "added": "2026-11-16"
+    },
+    {
+      "resident": "UCAHjDw7sioQOA8KE_CJcX-g",
+      "name": "@TheAr1yx",
+      "type": "cat",
+      "requestedIn": "UgxhV26qhaumlVMUOzZ4AaABAg",
+      "added": "2026-11-16"
+    },
+    {
+      "resident": "UCZcS07-x1ubdSIjAGrVgU-A",
+      "name": "@mdsadiq4737",
+      "type": "quail",
+      "requestedIn": "UgziPa3aefMSpDokBCd4AaABAg",
+      "added": "2026-11-16"
+    },
+    {
+      "resident": "UCAQ5RvmzbTwByI28r0B6qgw",
+      "name": "@Onni_the_furry",
+      "type": "pool",
+      "requestedIn": "Ugz2hlb4IPCAR0idAoR4AaABAg",
+      "added": "2026-11-16"
+    },
+    {
+      "resident": "UCWkYCJOI-n0B8BB8XAE66Hg",
+      "name": "@PolerGG",
+      "type": "pool",
+      "requestedIn": "Ugx2ygCjSZtblvfvK1Z4AaABAg",
+      "added": "2026-11-16"
+    },
+    {
+      "resident": "UC0pbp9LePnIsAf1cRyxG7Kw",
+      "name": "@Appilly_MSM",
+      "type": "apple-tree",
+      "requestedIn": "UgwIS3OES2gyVGxY4Hd4AaABAg",
+      "added": "2026-11-16"
+    },
+    {
+      "resident": "UCpD3u7o7qCaDE5Hui4Xo1bQ",
+      "name": "@prabhasishbhattacharya9226",
+      "type": "soccer-field",
+      "requestedIn": "UgxMW8band3X05pE9xx4AaABAg",
+      "added": "2026-11-16"
+    },
+    {
+      "resident": "UCZYD9tjWBaJgrwaKK6DXp7g",
+      "name": "@Eastonfortniteeee",
+      "type": "pool",
+      "requestedIn": "UgwZI8wjEJ23NTbJoBN4AaABAg",
+      "added": "2026-11-16"
+    },
+    {
+      "resident": "UCw-XTBd2D4HtHVOrsO_xZ0A",
+      "name": "@Lethalguyy",
+      "type": "pond",
+      "requestedIn": "UgwSlSX45DKOfwcLDUd4AaABAg",
+      "added": "2026-11-16"
     }
   ],
   "houses": [
@@ -612,6 +920,38 @@
       },
       "requestedIn": "UgwP9x8vgeIJDXwUWz94AaABAg",
       "added": "2026-11-15"
+    },
+    {
+      "resident": "UCcWjOp-PQpGG_NnjJ2N3DDQ",
+      "name": "@djvitixofficial",
+      "title": "Glass Tower",
+      "recipe": {
+        "shape": "glass",
+        "roof": "flat",
+        "wall": "#6fb7d9",
+        "roofColor": "#3b4552",
+        "door": "#2b2d42",
+        "accent": "#e9f5ff",
+        "extras": []
+      },
+      "requestedIn": "Ugx8aTA1ruAxOMo84HN4AaABAg",
+      "added": "2026-11-16"
+    },
+    {
+      "resident": "UCUh2iTRVNp77G29R_R6sM4A",
+      "name": "@TwoToThePowerOf999ImSmart",
+      "title": "Modern House",
+      "recipe": {
+        "shape": "classic",
+        "roof": "flat",
+        "wall": "#f7f7f5",
+        "roofColor": "#1f1f1f",
+        "door": "#2b2d42",
+        "accent": "#4cc9f0",
+        "extras": []
+      },
+      "requestedIn": "UgwiVNww-8Rf1kr3HUN4AaABAg",
+      "added": "2026-11-16"
     }
   ]
 }
