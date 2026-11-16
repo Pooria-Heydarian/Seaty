@@ -870,7 +870,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
 
     shadowAll(ship);
     for (const s of ship.children) if (s.material === screenMat) s.castShadow = false;
-    ship.scale.setScalar(1.2);
+    ship.scale.setScalar(0.8);
     const holder = new THREE.Group(); // turns and moves the ship along its route
     holder.add(ship);
     scene.add(holder);
@@ -878,7 +878,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     // route: a slow circle over the city, above the tallest buildings
     const tallest = Math.max(12, ...world.city.residents.map((r) => r.floors * FLOOR_H + 6));
     const radius = Math.max(28, world.radius * 0.5);
-    const height = Math.max(30, tallest + 16);
+    const height = Math.max(44, tallest + 28);
     const speed = 3.2; // world units per second
     const start = Math.PI * 1.25; // starts behind the city as seen from the opening camera
     const tick = (t) => {
