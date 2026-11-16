@@ -89,25 +89,51 @@ function buildingShot(entry, floors, lt, dur) {
  * neighbouring buildings (counts how much of the view ray runs below neighbours' roofs).
  */
 function clearestAzimuth(entry, targetY, dist, elevationDeg) {
-  const p = entry.outer.position;
-  const near = world.list.filter((o) => o !== entry && o.outer.position.distanceTo(p) < dist + 6);
+  return clearestView(entry.outer.position, entry.outer.rotation.y + 0.5, targetY, dist, elevationDeg, entry.outer, 4);
+}
+
+/**
+ * Of `steps` camera directions around `p` (starting at baseAz), the one whose line of sight is least
+ * blocked by houses and landmarks (tall cooling towers hide a lot). `self` is ignored as a blocker.
+ */
+function clearestView(p, baseAz, targetY, dist, elevationDeg, self, steps = 8) {
+  const blockers = [
+    ...world.list.filter((o) => o.outer !== self).map((o) => ({ pos: o.outer.position, half: 2.6, top: o.roofTop || 0 })),
+    ...[...world.landmarks.values()].filter((l) => l.outer !== self).map((l) => ({ pos: l.outer.position, half: 5.2, top: l.height })),
+  ].filter((b) => b.pos.distanceTo(p) < dist + 8);
   const el = (elevationDeg * Math.PI) / 180;
   let best = null;
-  for (let q = 0; q < 4; q++) {
-    const az = entry.outer.rotation.y + 0.5 + (q * Math.PI) / 2;
+  for (let q = 0; q < steps; q++) {
+    const az = baseAz + (q * Math.PI * 2) / steps;
     let blocked = 0;
     for (let d = 2; d < dist; d += 1) {
       const x = p.x + Math.sin(az) * Math.cos(el) * d;
       const z = p.z + Math.cos(az) * Math.cos(el) * d;
       const y = targetY + Math.sin(el) * d;
-      for (const o of near) {
-        const op = o.outer.position;
-        if (Math.abs(op.x - x) < 2.6 && Math.abs(op.z - z) < 2.6 && (o.roofTop || 0) > y) blocked += (o.roofTop - y);
+      for (const b of blockers) {
+        if (Math.abs(b.pos.x - x) < b.half && Math.abs(b.pos.z - z) < b.half && b.top > y) blocked += b.top - y;
       }
     }
     if (!best || blocked < best.blocked - 0.01) best = { az, blocked };
   }
   return best.az;
+}
+
+/** Frames a house upgrade from the side it is on (a garage beside the house, a pond behind it…). */
+function upgradeShot(s, lt) {
+  const e = s.entry;
+  const obj = e.upgradeObjects?.[s.sp.type];
+  const h = e.resident.floors * FLOOR_H;
+  const p = e.outer.position;
+  const lx = obj ? obj.position.x : 0, lz = obj ? obj.position.z : 3;
+  const ry = e.outer.rotation.y;
+  // the upgrade's spot in world space, and the direction from the house towards it
+  const wx = p.x + lx * Math.cos(ry) + lz * Math.sin(ry);
+  const wz = p.z - lx * Math.sin(ry) + lz * Math.cos(ry);
+  const target = new THREE.Vector3((p.x + wx) / 2, Math.max(1.5, h * 0.35), (p.z + wz) / 2);
+  const dist = Math.max(15, h * 1.2 + 9);
+  s.az ??= clearestView(target, ry + Math.atan2(lx, lz) - 0.35, target.y, dist, 34, e.outer, 6);
+  return orbit(target, dist, s.az + (lt / s.dur) * 0.3, 34);
 }
 
 // ---------- Timeline ----------
@@ -287,10 +313,12 @@ function buildTimeline(city, ch) {
         return orbit(s.center, s.dist || 62, 0.9 + k * 0.4, 50);
       case 'landmark': {
         const l = world.landmarks.get(s.sp.id);
-        return orbit(new THREE.Vector3(l.outer.position.x, l.height * 0.45, l.outer.position.z), 27 - 3 * k, l.outer.rotation.y + 0.55 + k * 0.4, 26);
+        const target = new THREE.Vector3(l.outer.position.x, l.height * 0.45, l.outer.position.z);
+        s.az ??= clearestView(l.outer.position, l.outer.rotation.y + 0.55, target.y, 27, 30, l.outer, 8);
+        return orbit(target, 27 - 3 * k, s.az + k * 0.4, 30);
       }
       case 'upgrade':
-        return buildingShot(s.entry, s.entry.resident.floors, lt, s.dur);
+        return upgradeShot(s, lt);
       case 'house': {
         // From higher up and from the side with the clearest view, framed on the house's full height.
         const e = s.entry;
