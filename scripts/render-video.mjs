@@ -1,4 +1,6 @@
 // Renders web/video.html into a vertical 1080x1920 MP4 Short, frame by frame.
+// Other timeline pages: --page trailer.html --name trailer, or the landscape city tour:
+//   npm run tour   (= --page tour.html --name seaty-city-tour --width 1920 --height 1080)
 //
 //   npm run video                       -> video/<date>.mp4 (+ <date>.json with title/description)
 //   npm run video -- --seconds 6        -> quick test: only the first 6 seconds
@@ -57,7 +59,8 @@ const browser = await puppeteer.launch({
 const page = await browser.newPage();
 page.on('pageerror', (e) => console.error('page error:', e.message));
 page.on('console', (m) => m.type() === 'error' && console.error('page console:', m.text()));
-await page.setViewport({ width: 1080, height: 1920, deviceScaleFactor: 1 });
+// --width 1920 --height 1080 for a landscape video (the page must be laid out for that size)
+await page.setViewport({ width: Number(args.width || 1080), height: Number(args.height || 1920), deviceScaleFactor: 1 });
 const url = `http://127.0.0.1:${port}/${pageName}?render=1${site ? `&site=${encodeURIComponent(site)}` : ''}`;
 await page.goto(url, { waitUntil: 'networkidle0', timeout: 120000 });
 let info = await page.evaluate(() => window.seaty.ready);
