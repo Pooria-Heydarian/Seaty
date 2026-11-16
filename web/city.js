@@ -254,9 +254,10 @@ function pick(e) {
   pointer.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
   raycaster.setFromCamera(pointer, camera);
   const d = raycaster.intersectObjects(world.pickables, false)[0]?.object.userData;
-  return d?.entry || d?.landmark || null;
+  return d?.entry || d?.landmark || d?.airship || null;
 }
 const isLandmark = (x) => Boolean(x?.def);
+const isBillboard = (x) => x === world.airship?.info;
 const tooltip = $('tooltip');
 let hoverQueued = false;
 renderer.domElement.addEventListener('pointermove', (e) => {
@@ -267,7 +268,9 @@ renderer.domElement.addEventListener('pointermove', (e) => {
     const hit = pick(e);
     renderer.domElement.style.cursor = hit ? 'pointer' : '';
     if (!hit || document.body.classList.contains('recording')) { tooltip.hidden = true; return; }
-    tooltip.textContent = isLandmark(hit)
+    tooltip.textContent = isBillboard(hit)
+      ? (hit.url ? `▶ New video: ${hit.title} · click to watch` : 'Seaty airship')
+      : isLandmark(hit)
       ? `${hit.def.name}${hit.def.requestedBy ? ` · by ${hit.def.requestedBy}` : ''} · ${hit.floors} floor${hit.floors === 1 ? '' : 's'}`
       : `${hit.resident.name} · ${hit.resident.floors} floor${hit.resident.floors === 1 ? '' : 's'}`;
     tooltip.style.left = `${Math.min(e.clientX + 14, innerWidth - tooltip.offsetWidth - 8)}px`;
@@ -280,7 +283,8 @@ renderer.domElement.addEventListener('pointerdown', (e) => { downAt = [e.clientX
 renderer.domElement.addEventListener('pointerup', (e) => {
   if (!downAt || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 5) return;
   const hit = pick(e);
-  if (isLandmark(hit)) selectLandmark(hit);
+  if (isBillboard(hit)) { if (hit.url) open(hit.url, '_blank', 'noopener'); }
+  else if (isLandmark(hit)) selectLandmark(hit);
   else if (hit) select(hit);
 });
 addEventListener('resize', () => world.resize(innerWidth, innerHeight));
@@ -355,6 +359,16 @@ async function boot() {
     controls.maxPolarAngle = Math.PI / 2;
     camera.position.set(Math.sin(az) * Math.cos(el) * dist, Math.sin(el) * dist, Math.cos(az) * Math.cos(el) * dist);
     controls.target.set(0, 0, 0);
+    controls.update();
+  };
+  // For checks: look at the airship from outside its route (k = distance factor)
+  window.__seatyAirshipView = (k = 1.55, up = 4) => {
+    const p = world.airship?.group.position;
+    if (!p) return;
+    flight = null;
+    controls.maxDistance = Math.max(controls.maxDistance, p.length() * 3);
+    camera.position.set(p.x * k, p.y + up, p.z * k);
+    controls.target.copy(p);
     controls.update();
   };
   requestAnimationFrame(tick);

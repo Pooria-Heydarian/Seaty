@@ -7,11 +7,11 @@
   "type": "module",
   "scripts": {
     "demo": "node scripts/demo-data.mjs",
-    "fetch": "node scripts/fetch-comments.mjs",
+    "fetch": "node scripts/fetch-comments.mjs && node scripts/latest-video.mjs",
     "report": "node scripts/daily-report.mjs",
     "lottery": "node scripts/lottery.mjs",
     "serve": "node scripts/serve.mjs",
-    "daily": "node scripts/fetch-comments.mjs && node scripts/requests.mjs",
+    "daily": "node scripts/fetch-comments.mjs && node scripts/latest-video.mjs && node scripts/requests.mjs",
     "video": "node scripts/render-video.mjs",
     "upload": "node scripts/upload-youtube.mjs",
     "youtube-auth": "node scripts/youtube-auth.mjs",

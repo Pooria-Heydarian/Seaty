@@ -770,6 +770,183 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     world.townHall = group;
   }
 
+  // ----- Airship: circles over the city with the channel's newest video on its sides -----
+  // (web/data/latest-video.json + .jpg, written by scripts/latest-video.mjs after every fetch)
+  function buildAirship() {
+    const A = 13, B = 5; // envelope half-length and radius
+    const ship = new THREE.Group(); // nose points along +x
+    const white = new THREE.MeshStandardMaterial({ color: '#f4f1ea', roughness: 0.55 });
+    const orange = new THREE.MeshStandardMaterial({ color: '#ff7a45', roughness: 0.5 });
+    const dark = new THREE.MeshStandardMaterial({ color: '#2b3340', roughness: 0.5, metalness: 0.2 });
+
+    const envelope = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 24), white);
+    envelope.scale.set(A, B, B);
+    ship.add(envelope);
+    // orange nose cap and a band round the tail
+    const nose = new THREE.Mesh(new THREE.SphereGeometry(1, 24, 16, 0, Math.PI * 2, 0, 0.55), orange);
+    nose.rotation.z = -Math.PI / 2;
+    nose.scale.set(B * 1.01, A * 1.004, B * 1.01);
+    ship.add(nose);
+    const band = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1.2, 40, 1, true), orange);
+    band.rotation.z = Math.PI / 2;
+    const bx = -A * 0.62, br = B * Math.sqrt(1 - (bx / A) ** 2) * 1.015;
+    band.position.x = bx;
+    band.scale.set(br, 1, br);
+    ship.add(band);
+    // four tail fins
+    for (let k = 0; k < 4; k++) {
+      const fin = new THREE.Mesh(new THREE.BoxGeometry(3.6, 3, 0.3), orange);
+      const g = new THREE.Group();
+      fin.position.set(-A * 0.82, B * 0.62 + 1.2, 0);
+      g.add(fin);
+      g.rotation.x = (k * Math.PI) / 2 + Math.PI / 4;
+      ship.add(g);
+    }
+    // gondola with lit windows and two propellers
+    const gondola = new THREE.Mesh(new THREE.BoxGeometry(5.5, 1.5, 2.2), dark);
+    gondola.position.y = -B - 0.5;
+    ship.add(gondola);
+    const win = glow('#ffe7a8', 0.3, 2.2);
+    for (const z of [1.11, -1.11]) for (let i = 0; i < 4; i++) {
+      const w = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.55), win);
+      w.position.set(-1.8 + i * 1.2, -B - 0.4, z);
+      if (z < 0) w.rotation.y = Math.PI;
+      ship.add(w);
+    }
+    const props = [];
+    for (const z of [1.9, -1.9]) {
+      const arm = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 1.4), dark);
+      arm.position.set(-2.4, -B - 0.4, z * 0.8);
+      const hub = new THREE.Group();
+      hub.position.set(-3, -B - 0.4, z);
+      for (let k = 0; k < 3; k++) {
+        const blade = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.8, 0.35), dark);
+        blade.position.y = 0.9;
+        const bg = new THREE.Group();
+        bg.rotation.x = (k * Math.PI * 2) / 3;
+        bg.add(blade);
+        hub.add(bg);
+      }
+      props.push(hub);
+      ship.add(arm, hub);
+    }
+    // navigation lights: red on the left, green on the right, white at the tail
+    const navs = [['#ff3b3b', 0, B * 0.98], ['#3bff6e', 0, -B * 0.98], ['#ffffff', -A * 0.99, 0]].map(([c, x, z]) => {
+      const l = new THREE.Mesh(new THREE.SphereGeometry(0.28, 10, 8), glow(c, 0.8, 3));
+      l.position.set(x, 0.3, z);
+      ship.add(l);
+      return l;
+    });
+
+    // the screens: canvas texture laid on the curve of the envelope, one on each side
+    const cv = document.createElement('canvas');
+    cv.width = 1024; cv.height = 576;
+    const tex = new THREE.CanvasTexture(cv);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 8;
+    const screenMat = new THREE.MeshStandardMaterial({ color: '#000', map: tex, emissive: '#ffffff', emissiveMap: tex, roughness: 0.35 });
+    const screenGlow = { m: screenMat, day: 0.9, night: 1.1 };
+    screenMat.emissiveIntensity = world.night ? screenGlow.night : screenGlow.day;
+    nightMats.push(screenGlow);
+    const info = { url: '', title: '', video: null };
+    const SW = 12, SH = 6.75;
+    for (const side of [1, -1]) {
+      const geo = new THREE.PlaneGeometry(SW, SH, 24, 12);
+      if (side < 0) geo.rotateY(Math.PI);
+      const p = geo.attributes.position;
+      for (let i = 0; i < p.count; i++) {
+        const x = p.getX(i), y = p.getY(i) + 0.4;
+        const d = 1 - (x / A) ** 2 - (y / B) ** 2;
+        p.setXYZ(i, x, y, side * (Math.sqrt(Math.max(0, d)) * B + 0.06));
+      }
+      geo.computeVertexNormals();
+      const screen = new THREE.Mesh(geo, screenMat);
+      screen.userData.airship = info;
+      world.pickables.push(screen);
+      ship.add(screen);
+    }
+    envelope.userData.airship = info;
+    world.pickables.push(envelope);
+
+    shadowAll(ship);
+    for (const s of ship.children) if (s.material === screenMat) s.castShadow = false;
+    ship.scale.setScalar(1.2);
+    const holder = new THREE.Group(); // turns and moves the ship along its route
+    holder.add(ship);
+    scene.add(holder);
+
+    // route: a slow circle over the city, above the tallest buildings
+    const tallest = Math.max(12, ...world.city.residents.map((r) => r.floors * FLOOR_H + 6));
+    const radius = Math.max(28, world.radius * 0.5);
+    const height = Math.max(30, tallest + 16);
+    const speed = 3.2; // world units per second
+    const start = Math.PI * 1.25; // starts behind the city as seen from the opening camera
+    const tick = (t) => {
+      const a = start + (t * speed) / radius;
+      holder.position.set(Math.sin(a) * radius, height + Math.sin(t * 0.5) * 0.8, Math.cos(a) * radius);
+      holder.rotation.y = a; // nose along the direction of travel, screens facing in and out
+      ship.rotation.z = Math.sin(t * 0.35) * 0.025;
+      for (const p of props) p.rotation.x = t * 14;
+      const blink = (t % 1.6) < 0.25;
+      for (const l of navs) l.visible = !world.night || blink || l === navs[0] || l === navs[1];
+    };
+    tick(0);
+
+    const draw = (img) => {
+      const g = cv.getContext('2d');
+      const font = (w, px) => `${w} ${px}px Inter, "Segoe UI", system-ui, sans-serif`;
+      g.fillStyle = '#0b1220';
+      g.fillRect(0, 0, 1024, 576);
+      const top = 84, bottom = 80, ih = 576 - top - bottom;
+      if (img) {
+        // blurred fill behind, the whole thumbnail in front (works for Shorts and normal videos)
+        const cover = Math.max(1024 / img.width, ih / img.height), contain = Math.min(1024 / img.width, ih / img.height);
+        g.save();
+        g.beginPath(); g.rect(0, top, 1024, ih); g.clip();
+        g.filter = 'blur(18px) brightness(0.6)';
+        g.drawImage(img, (1024 - img.width * cover) / 2, top + (ih - img.height * cover) / 2, img.width * cover, img.height * cover);
+        g.filter = 'none';
+        g.drawImage(img, (1024 - img.width * contain) / 2, top + (ih - img.height * contain) / 2, img.width * contain, img.height * contain);
+        g.restore();
+      } else {
+        g.fillStyle = '#1b2a44';
+        g.fillRect(0, top, 1024, ih);
+        g.fillStyle = '#fff';
+        g.textAlign = 'center';
+        g.font = font(900, 130);
+        g.fillText('SEATY', 512, top + ih / 2 + 45);
+      }
+      g.fillStyle = '#e63946';
+      g.fillRect(0, 0, 1024, top);
+      g.fillStyle = '#fff';
+      g.textAlign = 'center';
+      g.font = font(900, 60);
+      g.fillText(info.url ? '▶ NEW VIDEO' : 'SEATY CITY', 512, 64);
+      g.fillStyle = '#ffd23f';
+      g.fillRect(0, 576 - bottom, 1024, bottom);
+      g.fillStyle = '#0b1220';
+      g.font = font(900, 46);
+      g.fillText(info.url ? 'Comment on it for +1 floor!' : 'Comment to get a house!', 512, 576 - 24);
+      tex.needsUpdate = true;
+    };
+    draw(null);
+    const ready = fetch('data/latest-video.json')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((video) => {
+        if (!video?.id) return;
+        Object.assign(info, { video, title: video.title, url: `https://www.youtube.com/watch?v=${video.id}` });
+        if (!video.thumb) return draw(null);
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => { draw(img); resolve(); };
+          img.onerror = () => { draw(null); resolve(); };
+          img.src = `${video.thumb}?v=${encodeURIComponent(video.id)}`;
+        });
+      })
+      .catch(() => {});
+    world.airship = { group: holder, info, tick, ready };
+  }
+
   /** Build the whole town from city.json data (positions come from the city plan in layout.js). */
   world.build = (city, { labelTop = 5, specials = null } = {}) => {
     world.city = city;
@@ -809,6 +986,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       if (entry.rank <= labelTop) world.addLabel(entry);
     });
     if (specials) world.addSpecials(specials);
+    buildAirship();
 
     // Light, shadows and fog sized to the whole map
     const R = world.extent;
@@ -847,6 +1025,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     for (const l of world.landmarks.values()) l.tick?.(seconds);
     for (const e of world.customEntries) e.tick?.(seconds);
     for (const f of world.upgradeTicks) f(seconds);
+    world.airship?.tick(seconds);
   };
 
   world.render = () => {
