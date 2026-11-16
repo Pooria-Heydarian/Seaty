@@ -6,6 +6,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readJSON, ROOT, CITY_FILE, SPECIALS_FILE, NEW_COMMENTS_FILE } from './lib.mjs';
+import { MAX_LANDMARKS_PER_CITIZEN, landmarkKind } from '../web/catalog.js';
 
 const input = readJSON(NEW_COMMENTS_FILE);
 if (!input) {
@@ -34,6 +35,10 @@ const md = [
   `Written between ${input.since?.slice(0, 16).replace('T', ' ')} and ${input.cutoff?.slice(0, 16).replace('T', ' ')} UTC.`,
   `City: ${city.residentCount} residents, ${city.totalFloors} floors, ${city.videoCount} videos.`,
   '',
+  `**Rules:** one house per citizen (a new design replaces the old one) · at most ${MAX_LANDMARKS_PER_CITIZEN} landmarks per citizen · one landmark of each kind in the city.`,
+  '',
+  `**Landmarks already in the city** (kind · name · owner): ${(specials.landmarks || []).map((l) => `${landmarkKind(l)} · ${l.name} · ${l.requestedBy || 'city'}`).join(' | ') || 'none'}`,
+  '',
 ];
 for (const [id, list] of people) {
   const r = byId.get(id);
@@ -46,7 +51,7 @@ for (const [id, list] of people) {
     const house = mine(specials.houses, r).at(-1);
     if (house) md.push(`- custom house: **${house.title || house.recipe?.shape}** \`${JSON.stringify(house.recipe)}\``);
     const lms = (specials.landmarks || []).filter((l) => l.requestedById === id || norm(l.requestedBy) === norm(r.name));
-    if (lms.length) md.push(`- requested landmarks: ${lms.map((l) => `${l.name} (${l.added || '?'})`).join(', ')}`);
+    md.push(`- landmarks owned: ${lms.length}/${MAX_LANDMARKS_PER_CITIZEN}${lms.length ? ` (${lms.map((l) => l.name).join(', ')})` : ''}${lms.length >= MAX_LANDMARKS_PER_CITIZEN ? ' · **at the limit**' : ''}`);
   } else {
     md.push('- not in the city (comment too short, or written after the cutoff)');
   }

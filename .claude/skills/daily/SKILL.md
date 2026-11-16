@@ -35,17 +35,20 @@ See what can be built: `npm run special -- kit`
 | A special house / their house to look like X (castle, rocket, mushroom, igloo, treehouse, pink house, house with a flag…) | `npm run special -- house <who> '<recipe>' --title "<2-3 word name>" --comment <id>` |
 | Only colours / a roof / an extra on their house | same command; start from their current recipe in `today.md` and change only what they asked |
 | Pool, apple tree, capybara | `npm run special -- upgrade <who> <type> --comment <id>` |
-| A public building (shop, park, stadium, zoo…) | `npm run special -- landmark "<Name>" --by <who> --comment <id>` (add `--type spaghetti-factory` only for that model; anything else is a generic gold-domed hall with its name sign) |
+| A public building (shop, park, stadium, zoo…) | `npm run special -- landmark "<Name>" --by <who> --kind <kind> --comment <id>`; check the city rules below first |
 | A house shaped like something the kit doesn't have (a chess knight, a character's head, a car, a cake, an animal…) | **Build it today.** Make a new model in `web/house-models.js` (see below), then give it with the `house` command |
 | A pet / yard thing that isn't an upgrade yet (trampoline, horse, garden…) | **Build it today** as a new upgrade in `upgrades` of `web/extra-models.js` + `UPGRADE_TYPES` (`web/catalog.js`), a line in `UPGRADE_LINE` (`web/video.js`), `UP` (`scripts/daily-report.mjs`) and `UPGRADE_NAMES` (`web/city.js`). Check it with `model.html?upgrades=<type>&at=<x>,<z>` (aims at that yard spot) |
 | A public building (shop, stadium, zoo, hospital…) | Use an existing model if one fits (`npm run special -- kit`, stadiums take `--color`/`--accent`). If they described something with its own look, build it today in `landmarks` of `web/extra-models.js` + `LANDMARK_TYPES` (`web/catalog.js`) and use `--type`; check it with `model.html?landmark=<type>&floors=2`. A plain name with no description can be the generic hall. To give an existing landmark a new model: `npm run special -- landmark-model <id> <type>` |
 
 Recipe fields (all optional): `shape`, `roof`, `wall`, `roofColor`, `door`, `accent` (colours as `#rrggbb`), `extras` (max 4). Pick colours that look good together. The `--title` is shown in the video and spoken by the voiceover, so keep it short, friendly and in English ("Purple Castle", "Rocket House", "Mushroom Cottage").
 
-**Rules**
+**City rules** (`npm run special` enforces them; `today.md` lists every landmark and how many each person owns)
+- **One house per citizen.** A new design replaces their old one. "Give me 20 apartments" / "a mansion AND a villa" → one house; explain kindly.
+- **At most 2 landmarks per citizen**, ever. A third one: impossible ("you already own the X and the Y; each citizen can own two landmarks").
+- **One landmark of each kind in the city** (one airport, one zoo, one hospital…). Give every new landmark a `--kind` by *meaning*: "Airport", "Big Airport" and "Airfield" are all `airport`; a football stadium (`stadium`) and a baseball park (`ballpark`) are different. If the kind is taken: impossible ("Seaty already has an Airport, built for @x"), and suggest they ask for something the city doesn't have yet. If several people ask for the same new kind on the same day, the earliest comment gets it.
 - A house design is for the commenter's **own** house only. Requests for someone else's house: impossible (they can ask themselves).
-- A new design replaces their old one. Each upgrade type only once per house.
-- At most **one new landmark per person per day**. Landmark names: generic, no brands, trademarks or real people ("McDonald's" → "Burger Shop").
+- Each upgrade type only once per house.
+- Landmark names: generic, no brands, trademarks or real people ("McDonald's" → "Burger Shop").
 - Impossible, with these reasons:
   - bigger / taller / more floors → "houses grow one floor for each different video you comment on"
   - moving the house / choosing a plot → "plots go in the order people moved in"

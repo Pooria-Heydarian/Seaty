@@ -122,7 +122,8 @@ npm run special -- wish "dragon statue" --by @name --note "needs its own 3D mode
 
 - **Dream houses** (the house kit, `web/houses.js`): 12 shapes (classic, cottage, castle, tower, dome, pyramid, mushroom, treehouse, lighthouse, rocket, igloo, glass), 5 roofs, any colours for walls, roof, door and accent, and up to 4 extras: flag, flowers, fence, solar panels, chimney smoke, fairy lights, statue, fountain, satellite dish, windmill, hearts, star. The house still grows one floor per video. A new design replaces the old one.
 - **Upgrades:** `pool`, `apple-tree`, `capybara`. Each type once per house.
-- **Landmarks:** the first 8 go on the reserved downtown blocks around the town square. Each later landmark gets its own block at the city edge, chosen automatically, and houses never move. Model types: `spaghetti-factory`; anything else gets a generic gold-domed hall with its name sign. One new landmark per person per day.
+- **Landmarks:** the first 8 go on the reserved downtown blocks around the town square. Each later landmark gets its own block at the city edge, chosen automatically, and houses never move. Model types: see `npm run special -- kit`; anything else gets a generic gold-domed hall with its name sign. Landmarks grow with their owner's floors.
+- **City rules:** one house per citizen (a new design replaces the old one), at most **2 landmarks per citizen**, and **one landmark of each kind** in the city (one airport, one zoo…). `npm run special` checks them; `npm run special -- landmarks` lists what exists.
 - **Impossible requests** (a bigger house, moving the house, prizes…) get a kind reply explaining why. Nice ideas the kit can't do go on the wish list (`data/wishlist.json`) and can become new shapes or models later.
 - The next Short announces each new one once (`data/specials-seen.json` remembers), and the website shows it as soon as it's pushed.
 

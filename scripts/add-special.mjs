@@ -6,7 +6,14 @@
 //        recipe: {"shape":"castle","roof":"spire","wall":"#b49ad8","roofColor":"#5b3e96","door":"#6b4630","accent":"#ffd23f","extras":["flag"]}
 //        (any field can be left out; a new design replaces the person's old one)
 //   npm run special -- upgrade <who> pool|apple-tree|capybara
-//   npm run special -- landmark "Pizza Shop" --by <who> [--type spaghetti-factory]   (no --type = generic hall)
+//   npm run special -- landmark "Pizza Shop" --by <who> [--type spaghetti-factory] [--kind pizza-shop]   (no --type = generic hall)
+//   npm run special -- landmarks                             every landmark: kind, name, owner
+//
+// City rules (checked here):
+//   - one house per citizen (a new design replaces the old one)
+//   - at most MAX_LANDMARKS_PER_CITIZEN landmarks per citizen
+//   - one landmark of each kind in the city (one airport, one zoo…). The kind is --kind, or the model type,
+//     or the name. Pick --kind by meaning: "Airport", "Big Airport" and "Airfield" are all kind "airport".
 //   npm run special -- wish "dragon statue" --by <who> --note "needs its own 3D model"
 //   npm run special -- remove house|upgrade|landmark <who-or-landmark-id> [type]
 //
@@ -14,7 +21,7 @@
 
 import path from 'node:path';
 import { readJSON, writeJSON, today, CITY_FILE, SPECIALS_FILE, WISHLIST_FILE } from './lib.mjs';
-import { UPGRADE_TYPES, LANDMARK_TYPES, HOUSE_SHAPES, HOUSE_ROOFS, HOUSE_EXTRAS, MAX_HOUSE_EXTRAS, cleanHouseRecipe } from '../web/catalog.js';
+import { UPGRADE_TYPES, LANDMARK_TYPES, HOUSE_SHAPES, HOUSE_ROOFS, HOUSE_EXTRAS, MAX_HOUSE_EXTRAS, MAX_LANDMARKS_PER_CITIZEN, landmarkKind, cleanHouseRecipe } from '../web/catalog.js';
 import { LANDMARK_BLOCKS, nextEdgeLandmarkBlock } from '../web/layout.js';
 
 const argv = process.argv.slice(2);
@@ -90,10 +97,23 @@ switch (cmd) {
     const type = flags.type && flags.type !== true ? flags.type : 'generic';
     if (type !== 'generic' && !LANDMARK_TYPES[type]) fail(`No 3D model "${type}". Models: ${Object.keys(LANDMARK_TYPES).join(', ')} (or leave out --type for the generic hall).`);
     const by = flags.by && flags.by !== true ? resident(flags.by) : null;
+    // Rule: one landmark of each kind in the city
+    const kind = landmarkKind({ kind: flags.kind && flags.kind !== true ? flags.kind : '', type, name });
+    const taken = specials.landmarks.find((l) => landmarkKind(l) === kind);
+    if (taken) fail(`ALREADY EXISTS: Seaty already has ${/^[aeiou]/.test(kind) ? 'an' : 'a'} ${kind} ("${taken.name}"${taken.requestedBy ? `, by ${taken.requestedBy}` : ''}). One of each kind per city.`);
+    // Rule: at most MAX_LANDMARKS_PER_CITIZEN landmarks per citizen
+    if (by) {
+      const owned = specials.landmarks.filter((l) => l.requestedById === by.id || (!l.requestedById && same(l.requestedBy, by)));
+      if (owned.length >= MAX_LANDMARKS_PER_CITIZEN) fail(`LIMIT: ${by.name} already owns ${owned.length} landmarks (${owned.map((l) => l.name).join(', ')}). Max ${MAX_LANDMARKS_PER_CITIZEN} per citizen.`);
+    }
+    // Similar names are a hint that the kind may be the same (e.g. "Airport" vs "Airfield"): check it yourself.
+    const words = (s) => norm(s).split(/[^\p{L}\p{N}]+/u).filter((w) => w.length > 3 && !['seaty', 'city', 'grand', 'great', 'new', 'big', 'small', 'little', 'the', 'house', 'center', 'centre', 'shop', 'store'].includes(w));
+    const similar = specials.landmarks.filter((l) => words(l.name).some((w) => words(name).includes(w)));
+    if (similar.length) console.log(`⚠ Similar names already in the city: ${similar.map((l) => `"${l.name}" (kind ${landmarkKind(l)})`).join(', ')}. Make sure it's really a different kind.`);
     let id = slug(name);
     while (specials.landmarks.some((l) => l.id === id)) id += '-2';
     const hex = (v) => (typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v) ? v : null);
-    const def = { id, type, name, ...(by ? { requestedBy: by.name, requestedById: by.id } : {}), ...(hex(flags.color) ? { color: flags.color } : {}), ...(hex(flags.accent) ? { accent: flags.accent } : {}), ...(flags.comment ? { requestedIn: flags.comment } : {}), added: date };
+    const def = { id, type, kind, name, ...(by ? { requestedBy: by.name, requestedById: by.id } : {}), ...(hex(flags.color) ? { color: flags.color } : {}), ...(hex(flags.accent) ? { accent: flags.accent } : {}), ...(flags.comment ? { requestedIn: flags.comment } : {}), added: date };
     if (specials.landmarks.length >= LANDMARK_BLOCKS.length) {
       const edge = specials.landmarks.slice(LANDMARK_BLOCKS.length).map((l) => l.block).filter(Array.isArray);
       def.block = nextEdgeLandmarkBlock(city.residents.length, edge);
@@ -101,6 +121,10 @@ switch (cmd) {
     specials.landmarks.push(def);
     save();
     console.log(`✓ Landmark "${name}" (${type}) added${def.block ? ` on edge block ${def.block}` : ' downtown'}${by ? `, requested by ${by.name}` : ''}`);
+    break;
+  }
+  case 'landmarks': {
+    for (const l of specials.landmarks) console.log(`${landmarkKind(l).padEnd(20)} ${l.name.padEnd(30)} ${l.requestedBy || '(city)'}`);
     break;
   }
   case 'landmark-model': {

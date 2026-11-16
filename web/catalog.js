@@ -30,6 +30,22 @@ export const LANDMARK_TYPES = {
   'car-show': 'a car showroom with cars and a pickup truck on a turntable',
 };
 
+// ---------- City rules ----------
+/** Each citizen: one house (a new design replaces the old one) and at most this many landmarks. */
+export const MAX_LANDMARKS_PER_CITIZEN = 2;
+
+/**
+ * The kind of a landmark: the city has at most one of each kind (one airport, one zoo…).
+ * Uses def.kind, else the model type, else the name ("Pizza Shop" -> "pizza-shop").
+ * Stadiums: a football stadium and a ballpark are different kinds.
+ */
+export function landmarkKind(def) {
+  const slug = (s) => String(s || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '');
+  if (def.kind) return slug(def.kind);
+  if (def.type && def.type !== 'generic') return slug(def.type);
+  return slug(def.name);
+}
+
 // ---------- Custom house kit ----------
 // A resident can ask for their own special house. The AI step turns the request into a
 // "recipe" made only of these parts; world.js builds it. Floors still grow +1 per video.
