@@ -65,7 +65,7 @@ function select(entry, { fly = true, updateUrl = true } = {}) {
   $('info-name').textContent = r.name;
   const UPGRADE_NAMES = { pool: '🏊 Pool', 'apple-tree': '🍎 Apple tree', capybara: '🦫 Capybara', cat: '🐈 Cat', dog: '🐕 Dog', gems: '💎 Ruby & Sapphire', 'flower-tree': '🌸 Blossom tree', pond: '🪷 Pond', campfire: '🔥 Campfire', chickens: '🐔 Chickens', 'giant-apple-tree': '🍎 Giant apple tree', 'giant-oak-tree': '🌳 Giant oak', garage: '🏎️ Garage', torii: '⛩️ Shrine gate', quail: '🐦 Quail', 'soccer-field': '⚽ Soccer field' };
   const ups = [...(entry.recipe ? [`🏰 ${entry.houseTitle || 'Dream house'}`] : []), ...[...(entry.upgrades || [])].map((u) => UPGRADE_NAMES[u] || u)];
-  $('info-meta').textContent = `Resident since ${new Date(r.joined).toLocaleDateString()}${ups.length ? ` · ${ups.join(' · ')}` : ''}`;
+  $('info-meta').textContent = `${entry.neighbourhood ? `${entry.neighbourhood} · ` : ''}Resident since ${new Date(r.joined).toLocaleDateString()}${ups.length ? ` · ${ups.join(' · ')}` : ''}`;
   $('info-floors').textContent = r.floors;
   $('info-rank').textContent = `#${entry.rank}`;
   $('info-plot').textContent = entry.plot;
@@ -103,7 +103,7 @@ function selectLandmark(lm, { fly = true, updateUrl = true } = {}) {
   $('info-meta').textContent = `Landmark${d.requestedBy ? ` · requested by ${d.requestedBy}` : ''}${d.added ? ` · opened ${new Date(d.added).toLocaleDateString()}` : ''}`;
   $('info-floors').textContent = lm.floors;
   $('info-rank').textContent = '★';
-  $('info-plot').textContent = d.block ? 'edge' : 'downtown';
+  $('info-plot').textContent = lm.district || 'downtown';
   const avatar = $('info-avatar');
   avatar.textContent = '★';
   const link = $('info-channel');
@@ -347,6 +347,16 @@ async function boot() {
   if (start) select(start, { updateUrl: false });
   else if (startLandmark) selectLandmark(startLandmark, { updateUrl: false });
   else replayGrowth(Math.min(6000, 1500 + world.list.length * 8));
+  // For screenshots / checks: window.__seatyView(azimuth, distance, elevation 0..1 where 1 = straight down)
+  window.__seatyView = (az, dist, elevK) => {
+    const el = Math.min(1.55, elevK * (Math.PI / 2));
+    flight = null;
+    controls.maxDistance = Math.max(controls.maxDistance, dist * 1.1);
+    controls.maxPolarAngle = Math.PI / 2;
+    camera.position.set(Math.sin(az) * Math.cos(el) * dist, Math.sin(el) * dist, Math.cos(az) * Math.cos(el) * dist);
+    controls.target.set(0, 0, 0);
+    controls.update();
+  };
   requestAnimationFrame(tick);
 }
 boot();

@@ -49,6 +49,7 @@ Recipe fields (all optional): `shape`, `roof`, `wall`, `roofColor`, `door`, `acc
 - A house design is for the commenter's **own** house only. Requests for someone else's house: impossible (they can ask themselves).
 - Each upgrade type only once per house.
 - Landmark names: generic, no brands, trademarks or real people ("McDonald's" → "Burger Shop").
+- **Where things go is automatic** (the city plan in `web/layout.js`): civic buildings downtown, bigger shops on Main Street, everyday shops (bakery, corner shop, market, café…) between the houses of the owner's neighbourhood, stadiums / parks / farms in the green belt, factories / airport / power plants in the outskirts. A makeover moves the house to its style's neighbourhood. When you add a **new** landmark type, add it to `LANDMARK_PLAN` in `web/catalog.js` (district + size S/M/L) and a new house shape to `SHAPE_STYLE` (its neighbourhood).
 - Impossible, with these reasons:
   - bigger / taller / more floors → "houses grow one floor for each different video you comment on"
   - moving the house / choosing a plot → "plots go in the order people moved in"

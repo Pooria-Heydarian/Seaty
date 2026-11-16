@@ -4,11 +4,11 @@ import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer
 
 export { THREE, CSS2DObject };
 
-import { LOT, BLOCK, PITCH, LOT_OFFSETS, LANDMARK_BLOCKS, spiral, spiralIndexOf, createLayout } from './layout.js';
+import { LOT, BLOCK, ROAD, PITCH, LOT_OFFSETS, createCityLayout } from './layout.js';
 import { createHouseKit } from './houses.js';
-import { cleanHouseRecipe } from './catalog.js';
+import { cleanHouseRecipe, NEIGHBOURHOODS } from './catalog.js';
 import { createExtraModels } from './extra-models.js';
-export { LOT, BLOCK, PITCH, LANDMARK_BLOCKS };
+export { LOT, BLOCK, PITCH };
 
 // ---------- Layout constants ----------
 export const FLOOR_H = 1.2;
@@ -26,19 +26,6 @@ export function hashId(id) {
   return [...id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
 }
 
-// The active layout (rebuilt by world.build when specials add edge landmark blocks).
-let layout = createLayout();
-
-/** Resident plot index (0-based) -> world position. Block 0 is the town square. */
-export function plotPosition(i) {
-  const { x, z } = layout.plot(i);
-  return new THREE.Vector3(x, 0, z);
-}
-
-/** Landmark definition number k -> centre of its block (downtown for the first 8, then its own edge block). */
-function landmarkBlock(def, k) {
-  return k < LANDMARK_BLOCKS.length ? LANDMARK_BLOCKS[k] : Array.isArray(def.block) ? def.block : null;
-}
 
 // ---------- Textures & materials ----------
 function windowTextures(seed) {
@@ -474,17 +461,20 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
   /** Adds landmarks and house upgrades from data/specials.json. Call after build(). */
   world.addSpecials = (specials) => {
     const norm = (s) => String(s || '').trim().replace(/^@/, '').toLowerCase();
-    (specials?.landmarks || []).forEach((def, k) => {
-      const block = landmarkBlock(def, k);
-      if (!block) return; // an edge landmark without an assigned block (should not happen)
+    (specials?.landmarks || []).forEach((def) => {
+      const spot = world.layout?.spots.get(def.id);
+      if (!spot) return;
       // A landmark belongs to the person who asked for it and has as many floors as they do.
       const owner = world.list.find((e) => e.resident.id === def.requestedById || (def.requestedBy && norm(e.resident.name) === norm(def.requestedBy)));
       const floors = Math.max(1, owner?.resident.floors || 1);
       const made = (LANDMARK_MODELS[def.type] || genericLandmark)(def, floors);
+      // size by use: S = a house lot (x0.5), M = a block, L = 2 x 2 blocks (x2)
+      made.group.scale.setScalar(spot.scale);
+      made.height *= spot.scale;
       const outer = new THREE.Group();
-      outer.position.set(block[0] * PITCH, 0.25, block[1] * PITCH); // on top of the block's pavement, like the houses
-      // face the town square
-      outer.rotation.y = Math.atan2(-outer.position.x, -outer.position.z);
+      const inCity = Math.max(Math.abs(spot.x), Math.abs(spot.z)) <= (world.layout.cityR + 0.5) * PITCH;
+      outer.position.set(spot.x, inCity ? 0.25 : 0.02, spot.z); // on the pavement in town, on the grass outside
+      outer.rotation.y = spot.rot;
       outer.add(made.group);
       scene.add(outer);
       const el = document.createElement('div');
@@ -496,7 +486,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       const label = new CSS2DObject(el);
       label.position.set(0, made.height + 2.5, 0);
       outer.add(label);
-      const lm = { def, outer, height: made.height, label, floors, owner, body: made.body, tick: made.group.userData.tick };
+      const lm = { def, outer, height: made.height, label, floors, owner, body: made.body, tick: made.group.userData.tick, district: spot.district, size: spot.size };
       if (made.body) {
         made.body.userData.landmark = lm;
         world.pickables.push(made.body);
@@ -556,114 +546,185 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     if (entry.label) { entry.label.removeFromParent(); entry.label = null; }
   };
 
-  // ----- Ground, roads, trees -----
-  function buildGround(ringBlocks) {
-    const size = world.radius * 2 + PITCH * 6;
-    const asphalt = new THREE.Mesh(new THREE.PlaneGeometry(size, size), new THREE.MeshStandardMaterial({ color: '#6f7782', roughness: 1 }));
-    asphalt.rotation.x = -Math.PI / 2;
-    asphalt.receiveShadow = true;
-    scene.add(asphalt);
-
-    const grass = new THREE.Mesh(new THREE.RingGeometry(size * 0.5, size * 4, 64), new THREE.MeshStandardMaterial({ color: '#8fb46e', roughness: 1 }));
-    grass.rotation.x = -Math.PI / 2;
-    grass.position.y = -0.02;
-    scene.add(grass);
-
-    const padGeo = new THREE.BoxGeometry(BLOCK, 0.25, BLOCK).translate(0, 0.125, 0);
-    const pads = new THREE.InstancedMesh(padGeo, new THREE.MeshStandardMaterial({ color: '#d9d6cf', roughness: 1 }), ringBlocks);
-    pads.receiveShadow = true;
+  // ----- Ground, roads, trees (drawn from the city plan in layout.js) -----
+  function buildGround(L) {
+    const R = L.cityR;
     const m = new THREE.Matrix4();
-    for (let b = 0; b < ringBlocks; b++) {
-      const [bx, bz] = spiral(b);
-      pads.setMatrixAt(b, m.makeTranslation(bx * PITCH, 0, bz * PITCH));
-    }
-    scene.add(pads);
-
-    // Lawn on every plot so houses sit in little gardens; work out which plots get trees.
-    const lawnGeo = new THREE.BoxGeometry(LOT - 0.8, 0.05, LOT - 0.8).translate(0, 0.27, 0);
-    const lawns = new THREE.InstancedMesh(lawnGeo, new THREE.MeshStandardMaterial({ color: '#a3c784', roughness: 1 }), (ringBlocks - 1) * 4);
-    lawns.receiveShadow = true;
-    const used = world.city.residents.length;
-    const busyLandmark = new Set(
-      (world.specials?.landmarks || []).map((d, k) => landmarkBlock(d, k)).filter(Boolean).map(([x, z]) => `${x},${z}`),
-    );
-    const treePlots = [];
-    for (let b = 1; b < ringBlocks; b++) {
-      const [bx, bz] = spiral(b);
-      const key = `${bx},${bz}`;
-      let free; // which of the 4 plots get trees
-      if (layout.isReserved(bx, bz)) free = busyLandmark.has(key) ? [] : [0, 1, 2, 3];
-      else {
-        const ri = layout.residentIndexOfN(b);
-        free = [0, 1, 2, 3].filter((j) => ri * 4 + j >= used);
-      }
-      LOT_OFFSETS.forEach(([ox, oz], j) => {
-        const pos = new THREE.Vector3(bx * PITCH + ox, 0, bz * PITCH + oz);
-        lawns.setMatrixAt((b - 1) * 4 + j, m.makeTranslation(pos.x, 0, pos.z));
-        if (free.includes(j)) treePlots.push(pos);
-      });
-    }
-    scene.add(lawns);
-
-    const dashGeo = new THREE.PlaneGeometry(0.25, 1.6).rotateX(-Math.PI / 2);
-    const span = Math.ceil(Math.sqrt(ringBlocks)) + 1;
-    world.roadSpan = span;
-    const dashPositions = [];
-    for (let g = -span; g <= span; g++) {
-      const line = g * PITCH + PITCH / 2;
-      for (let s = -span * PITCH; s < span * PITCH; s += 4) dashPositions.push([line, s, 0], [s, line, Math.PI / 2]);
-    }
-    const dashes = new THREE.InstancedMesh(dashGeo, new THREE.MeshBasicMaterial({ color: '#f1efe6' }), dashPositions.length);
     const q = new THREE.Quaternion();
     const up = new THREE.Vector3(0, 1, 0);
-    const one = new THREE.Vector3(1, 1, 1);
-    dashPositions.forEach(([x, z, rot], i) => {
-      dashes.setMatrixAt(i, m.compose(new THREE.Vector3(x, 0.01, z), q.setFromAxisAngle(up, rot), one));
-    });
+    const v = (x, y, z) => new THREE.Vector3(x, y, z);
+    const at = (x, z, sx = 1, sz = 1, rot = 0) => new THREE.Matrix4().compose(v(x, 0, z), new THREE.Quaternion().setFromAxisAngle(up, rot), v(sx, 1, sz));
+    const flat = (geo, color, list) => {
+      if (!list.length) return;
+      const im = new THREE.InstancedMesh(geo, new THREE.MeshStandardMaterial({ color, roughness: 1 }), list.length);
+      list.forEach((mat4, i) => im.setMatrixAt(i, mat4));
+      im.receiveShadow = true;
+      scene.add(im);
+    };
+
+    // grass everywhere; roads and pavement only around the blocks that are built (the city grows organically)
+    const outer = (L.outerR * 2 + 10) * PITCH;
+    const grass = new THREE.Mesh(new THREE.PlaneGeometry(outer, outer), new THREE.MeshStandardMaterial({ color: '#8fb46e', roughness: 1 }));
+    grass.rotation.x = -Math.PI / 2;
+    grass.position.y = -0.02;
+    grass.receiveShadow = true;
+    scene.add(grass);
+    const byKey = new Map(L.blocks.map((b) => [`${b.x},${b.z}`, b]));
+    const BUILT = new Set(['square', 'civic-empty', 'homes', 'park', 'promenade', 'main-empty']);
+    const isBuilt = (x, z) => {
+      const b = byKey.get(`${x},${z}`);
+      if (!b) return false;
+      if (b.kind === 'landmark') return Math.max(Math.abs(x), Math.abs(z)) <= R;
+      if (b.kind === 'boulevard') { // a boulevard runs as far as the houses along it
+        const side = x === 0 ? [[-1, z], [1, z]] : [[x, -1], [x, 1]];
+        return side.some(([sx, sz]) => { const n = byKey.get(`${sx},${sz}`); return n && ['homes', 'park', 'landmark', 'civic-empty'].includes(n.kind); });
+      }
+      return BUILT.has(b.kind);
+    };
+    const built = L.blocks.filter((b) => isBuilt(b.x, b.z));
+    world.builtBlocks = built;
+    const roads = built.map((b) => at(b.x * PITCH, b.z * PITCH, PITCH / BLOCK, PITCH / BLOCK));
+
+    const pads = [], pavers = [], lotLawns = [], blockLawns = [], paths = [], benches = [], trees = [], lamps = [];
+    const r = rng(7);
+    const tree = (x, z, s = 1, y = 0.25) => trees.push([x, z, s * (0.75 + r() * 0.5), y]);
+    for (const b of L.blocks) {
+      const cx = b.x * PITCH, cz = b.z * PITCH;
+      const here = isBuilt(b.x, b.z);
+      if (here && b.kind !== 'promenade') pads.push(at(cx, cz));
+      if (!here && (b.kind === 'lawn' || b.kind === 'boulevard')) { // open meadow until the neighbourhood grows here
+        if (r() < 0.6) tree(cx + (r() - 0.5) * 10, cz + (r() - 0.5) * 10, 1.1, 0);
+        continue;
+      }
+      switch (b.kind) {
+        case 'homes':
+          b.lots.forEach((lot, j) => {
+            const [ox, oz] = LOT_OFFSETS[j];
+            lotLawns.push(at(cx + ox, cz + oz));
+            if (lot !== 'house') { tree(cx + ox - 1, cz + oz - 0.8); tree(cx + ox + 1.1, cz + oz + 0.9, 0.8); } // garden or empty lot
+          });
+          break;
+        case 'park': {
+          blockLawns.push(at(cx, cz));
+          paths.push(at(cx, cz, 1, 0.12), at(cx, cz, 0.12, 1));
+          benches.push([cx - 2.2, cz + 0.9, 0], [cx + 2.2, cz - 0.9, Math.PI]);
+          const shopLots = b.lots.map((l, j) => (l === 'shop' ? j : -1)).filter((j) => j >= 0);
+          LOT_OFFSETS.forEach(([ox, oz], j) => {
+            if (!shopLots.includes(j)) { tree(cx + ox * 1.25, cz + oz * 1.25, 1.1); tree(cx + ox * 0.55, cz + oz * 0.25, 0.8); }
+          });
+          break;
+        }
+        case 'lawn':
+        case 'civic-empty':
+        case 'main-empty':
+          blockLawns.push(at(cx, cz));
+          LOT_OFFSETS.forEach(([ox, oz]) => tree(cx + ox + (r() - 0.5) * 2, cz + oz + (r() - 0.5) * 2));
+          break;
+        case 'promenade':
+          // Main Street: a paved walk with lamps on both sides and trees down the middle
+          pavers.push(at(cx, cz, (PITCH + 0.01) / BLOCK, 1));
+          for (const dx of [-5, 0, 5]) lamps.push([cx + dx, cz - 4.6], [cx + dx, cz + 4.6]);
+          for (const dx of [-2.6, 2.6]) tree(cx + dx, cz, 0.7);
+          benches.push([cx - 5, cz - 1.6, 0], [cx + 5, cz + 1.6, Math.PI]);
+          break;
+        case 'boulevard': {
+          // tree-lined boulevard: lawn median with two rows of trees and lamps along the axis
+          const alongZ = b.x === 0;
+          blockLawns.push(at(cx, cz, alongZ ? 0.5 : 1, alongZ ? 1 : 0.5));
+          for (const t of [-4.5, -1.5, 1.5, 4.5]) {
+            if (alongZ) { tree(cx - 3.8, cz + t, 0.9); tree(cx + 3.8, cz + t, 0.9); }
+            else { tree(cx + t, cz - 3.8, 0.9); tree(cx + t, cz + 3.8, 0.9); }
+          }
+          for (const t of [-3, 3]) lamps.push(alongZ ? [cx, cz + t] : [cx + t, cz]);
+          break;
+        }
+        case 'belt':
+          for (let k = 0; k < 3; k++) tree(cx + (r() - 0.5) * 10, cz + (r() - 0.5) * 10, 1.1, 0);
+          break;
+        case 'meadow':
+          if (r() < 0.5) tree(cx + (r() - 0.5) * 10, cz + (r() - 0.5) * 10, 1.2, 0);
+          break;
+      }
+    }
+    flat(new THREE.BoxGeometry(BLOCK, 0.02, BLOCK).translate(0, 0.01, 0), '#6f7782', roads);
+    flat(new THREE.BoxGeometry(BLOCK, 0.25, BLOCK).translate(0, 0.125, 0), '#d9d6cf', pads);
+    flat(new THREE.BoxGeometry(BLOCK, 0.22, BLOCK).translate(0, 0.11, 0), '#eadfca', pavers);
+    flat(new THREE.BoxGeometry(LOT - 0.8, 0.05, LOT - 0.8).translate(0, 0.27, 0), '#a3c784', lotLawns);
+    flat(new THREE.BoxGeometry(BLOCK - 0.6, 0.05, BLOCK - 0.6).translate(0, 0.27, 0), '#9cc77d', blockLawns);
+    flat(new THREE.BoxGeometry(BLOCK - 0.6, 0.03, BLOCK - 0.6).translate(0, 0.3, 0), '#e2d6bd', paths);
+
+    if (benches.length) {
+      const seat = new THREE.InstancedMesh(new THREE.BoxGeometry(1.2, 0.1, 0.4).translate(0, 0.62, 0), new THREE.MeshStandardMaterial({ color: '#7b5a3c' }), benches.length);
+      benches.forEach(([x, z, rot], i) => seat.setMatrixAt(i, at(x, z, 1, 1, rot)));
+      scene.add(seat);
+    }
+    if (lamps.length) {
+      // street lamps (glow at night)
+      const pole = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.06, 0.08, 2.6, 6).translate(0, 1.55, 0), new THREE.MeshStandardMaterial({ color: '#3b4552' }), lamps.length);
+      const head = new THREE.InstancedMesh(new THREE.SphereGeometry(0.2, 10, 8).translate(0, 2.9, 0), glow('#ffe7a8', 0.05, 2.6), lamps.length);
+      lamps.forEach(([x, z], i) => { pole.setMatrixAt(i, at(x, z)); head.setMatrixAt(i, at(x, z)); });
+      scene.add(pole, head);
+    }
+
+    // road markings: along every edge of a built block (each edge once)
+    world.roadSpan = R + 1;
+    const dashGeo = new THREE.PlaneGeometry(0.25, 1.6).rotateX(-Math.PI / 2);
+    const dashPositions = [];
+    const edges = new Set();
+    for (const b of built) {
+      const cx = b.x * PITCH, cz = b.z * PITCH, h = PITCH / 2;
+      for (const [ex, ez, alongX] of [[cx + h, cz, false], [cx - h, cz, false], [cx, cz + h, true], [cx, cz - h, true]]) {
+        const k = `${ex},${ez}`;
+        if (edges.has(k)) continue;
+        edges.add(k);
+        for (let s = -h + 2; s < h; s += 4) dashPositions.push(alongX ? [ex + s, ez, Math.PI / 2] : [ex, ez + s, 0]);
+      }
+    }
+    const dashes = new THREE.InstancedMesh(dashGeo, new THREE.MeshBasicMaterial({ color: '#f1efe6' }), dashPositions.length);
+    dashPositions.forEach(([x, z, rot], i) => dashes.setMatrixAt(i, new THREE.Matrix4().compose(v(x, 0.03, z), new THREE.Quaternion().setFromAxisAngle(up, rot), v(1, 1, 1))));
     scene.add(dashes);
 
-    // Trees on plots nobody lives on yet (and on landmark blocks still waiting for a landmark)
-    const trunkGeo = new THREE.CylinderGeometry(0.15, 0.2, 1, 6).translate(0, 0.5, 0);
-    const crownGeo = new THREE.IcosahedronGeometry(1.1, 0).translate(0, 1.9, 0);
-    const n = Math.max(1, treePlots.length * 2);
-    const trunks = new THREE.InstancedMesh(trunkGeo, new THREE.MeshStandardMaterial({ color: '#7b5a3c' }), n);
-    const crowns = new THREE.InstancedMesh(crownGeo, new THREE.MeshStandardMaterial({ color: '#5f9a4e', flatShading: true }), n);
+    // trees
+    const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.15, 0.2, 1, 6).translate(0, 0.5, 0), new THREE.MeshStandardMaterial({ color: '#7b5a3c' }), Math.max(1, trees.length));
+    const crowns = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1.1, 0).translate(0, 1.9, 0), new THREE.MeshStandardMaterial({ color: '#5f9a4e', flatShading: true }), Math.max(1, trees.length));
     crowns.castShadow = true;
-    trunks.count = crowns.count = treePlots.length * 2;
-    const r = rng(5);
-    treePlots.forEach((p, i) => {
-      for (let k = 0; k < 2; k++) {
-        const s = 0.7 + r() * 0.6;
-        m.compose(new THREE.Vector3(p.x + (r() - 0.5) * 3, 0.25, p.z + (r() - 0.5) * 3), q.identity(), new THREE.Vector3(s, s, s));
-        trunks.setMatrixAt(i * 2 + k, m);
-        crowns.setMatrixAt(i * 2 + k, m);
-      }
+    trunks.count = crowns.count = trees.length;
+    trees.forEach(([x, z, s, y], i) => {
+      m.compose(v(x, y, z), q.identity(), v(s, s, s));
+      trunks.setMatrixAt(i, m);
+      crowns.setMatrixAt(i, m);
     });
     scene.add(trunks, crowns);
   }
 
-  // ----- Cars -----
+  // ----- Cars (only on streets that exist: between built blocks) -----
   function buildCars() {
-    const span = world.roadSpan;
-    const count = Math.min(80, 10 + span * 6);
-    const len = span * 2 * PITCH;
+    const built = new Set((world.builtBlocks || []).map((b) => `${b.x},${b.z}`));
+    const has = (x, z) => built.has(`${x},${z}`);
+    // every street line with the stretch of built blocks along it
+    const streets = [];
+    const span = world.roadSpan + 2;
+    for (let g = -span; g < span; g++) {
+      for (const alongX of [true, false]) {
+        const cells = [];
+        for (let s = -span; s <= span; s++) if (alongX ? has(s, g) || has(s, g + 1) : has(g, s) || has(g + 1, s)) cells.push(s);
+        if (cells.length < 2) continue;
+        streets.push({ alongX, line: g * PITCH + PITCH / 2, from: (Math.min(...cells) - 0.5) * PITCH, to: (Math.max(...cells) + 0.5) * PITCH });
+      }
+    }
+    const count = Math.min(80, streets.length * 2);
     const bodyGeo = new THREE.BoxGeometry(1.7, 0.6, 0.95).translate(0, 0.45, 0);
     const cabGeo = new THREE.BoxGeometry(0.9, 0.45, 0.85).translate(-0.1, 0.95, 0);
-    const bodies = new THREE.InstancedMesh(bodyGeo, new THREE.MeshStandardMaterial({ roughness: 0.5 }), count);
-    const cabs = new THREE.InstancedMesh(cabGeo, new THREE.MeshStandardMaterial({ color: '#dfe8f0', roughness: 0.3 }), count);
+    const bodies = new THREE.InstancedMesh(bodyGeo, new THREE.MeshStandardMaterial({ roughness: 0.5 }), Math.max(1, count));
+    const cabs = new THREE.InstancedMesh(cabGeo, new THREE.MeshStandardMaterial({ color: '#dfe8f0', roughness: 0.3 }), Math.max(1, count));
+    bodies.count = cabs.count = count;
     bodies.castShadow = true;
     const colors = ['#e4572e', '#2e86ab', '#f3a712', '#ffffff', '#29335c', '#669bbc', '#c1121f'];
     const r = rng(11);
     const cars = [];
     for (let i = 0; i < count; i++) {
-      const g = Math.floor(r() * span * 2) - span;
-      cars.push({
-        alongX: r() < 0.5,
-        line: g * PITCH + PITCH / 2,
-        dir: r() < 0.5 ? 1 : -1,
-        speed: 4 + r() * 4,
-        offset: r() * len,
-      });
+      const st = streets[Math.floor(r() * streets.length)];
+      cars.push({ ...st, dir: r() < 0.5 ? 1 : -1, speed: 4 + r() * 4, offset: r() });
       bodies.setColorAt(i, new THREE.Color(colors[i % colors.length]));
     }
     scene.add(bodies, cabs);
@@ -675,7 +736,9 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     world.cars = {
       update(t) {
         cars.forEach((c, i) => {
-          const s = ((((c.offset + c.dir * c.speed * t) % len) + len) % len) - len / 2;
+          const len = c.to - c.from;
+          const k = ((((c.offset * len + c.dir * c.speed * t) % len) + len) % len);
+          const s = c.from + k;
           const lane = c.line + c.dir * 1;
           if (c.alongX) { p.set(s, 0, lane); q.setFromAxisAngle(up, c.dir > 0 ? 0 : Math.PI); }
           else { p.set(lane, 0, s); q.setFromAxisAngle(up, c.dir > 0 ? -Math.PI / 2 : Math.PI / 2); }
@@ -707,26 +770,26 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     world.townHall = group;
   }
 
-  /** Build the whole town from city.json data. */
+  /** Build the whole town from city.json data (positions come from the city plan in layout.js). */
   world.build = (city, { labelTop = 5, specials = null } = {}) => {
     world.city = city;
     world.specials = specials;
-    // Houses skip the blocks of edge landmarks (#9 and later), so rebuild the layout with them.
-    const edgeBlocks = (specials?.landmarks || []).slice(LANDMARK_BLOCKS.length).map((d) => d.block).filter(Array.isArray);
-    layout = createLayout(edgeBlocks);
-    const blocks = Math.ceil(city.residents.length / 4);
-    // Furthest spiral block in use: last house block, downtown landmark blocks, or edge landmarks.
-    const landmarkReach = (specials?.landmarks?.length || 0) > 4 ? 24 : 8;
-    const maxN = Math.max(
-      landmarkReach,
-      blocks ? layout.residentBlock(blocks - 1).n : 0,
-      ...edgeBlocks.map(([x, z]) => spiralIndexOf(x, z)),
+    // each resident's current design (it decides their neighbourhood) and since when they have it
+    const norm = (s) => String(s || '').trim().replace(/^@/, '').toLowerCase();
+    const design = new Map();
+    for (const h of specials?.houses || []) {
+      const r = city.residents.find((x) => x.id === h.resident || norm(x.name) === norm(h.resident));
+      if (r) design.set(r.id, { recipe: cleanHouseRecipe(h.recipe), since: h.added || '' });
+    }
+    const L = createCityLayout(
+      city.residents.map((r) => ({ id: r.id, recipe: design.get(r.id)?.recipe || null, styleSince: design.get(r.id)?.since || '' })),
+      specials?.landmarks || [],
     );
-    const side = Math.ceil(Math.sqrt(maxN + 1));
-    const ringBlocks = Math.pow(side + 2, 2);
-    world.radius = ((side + 1) * PITCH) / 2 + PITCH;
+    world.layout = L;
+    world.radius = (L.cityR + 1.5) * PITCH; // the city itself (camera framing)
+    world.extent = (L.outerR + 1) * PITCH; // city + green belt + outskirts (ground, shadows)
 
-    buildGround(ringBlocks);
+    buildGround(L);
     buildCars();
     buildTownHall();
 
@@ -734,11 +797,12 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     const rankOf = new Map(ranked.map((r, i) => [r.id, i + 1]));
     city.residents.forEach((resident, i) => {
       const hash = hashId(resident.id);
+      const home = L.homes.get(resident.id);
       const outer = new THREE.Group();
-      outer.position.copy(plotPosition(i));
-      outer.rotation.y = ((hash >>> 3) % 4) * (Math.PI / 2);
+      outer.position.set(home.x, 0, home.z);
+      outer.rotation.y = home.rot; // every house faces its street
       scene.add(outer);
-      const entry = { resident, plot: i + 1, rank: rankOf.get(resident.id), hash, outer };
+      const entry = { resident, plot: i + 1, rank: rankOf.get(resident.id), hash, outer, neighbourhood: NEIGHBOURHOODS[home.style] };
       world.setFloors(entry, resident.floors);
       world.entries.set(resident.id, entry);
       world.list.push(entry);
@@ -746,14 +810,15 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     });
     if (specials) world.addSpecials(specials);
 
-    // Light, shadows and fog sized to the city
-    const R = world.radius;
-    const d = Math.max(60, R * 1.6);
-    scene.fog = new THREE.Fog(0xbcd8ee, d * 1.6, d * 5);
-    sun.position.set(R * 0.8 + 40, R + 80, R * 0.4 + 30);
-    const s = R + PITCH * 2;
+    // Light, shadows and fog sized to the whole map
+    const R = world.extent;
+    const d = Math.max(60, world.radius * 1.6);
+    scene.fog = new THREE.Fog(0xbcd8ee, Math.max(d * 1.6, R * 1.2), Math.max(d * 5, R * 3));
+    sun.position.set(R * 0.6 + 40, R + 80, R * 0.3 + 30);
+    const s = R + PITCH;
     Object.assign(sun.shadow.camera, { left: -s, right: s, top: s, bottom: -s, near: 1, far: R * 4 + 300 });
     sun.shadow.camera.updateProjectionMatrix();
+    sun.shadow.mapSize.set(4096, 4096);
     world.setNight(false);
   };
 

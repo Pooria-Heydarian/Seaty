@@ -21,8 +21,8 @@
 
 import path from 'node:path';
 import { readJSON, writeJSON, today, CITY_FILE, SPECIALS_FILE, WISHLIST_FILE } from './lib.mjs';
-import { UPGRADE_TYPES, LANDMARK_TYPES, HOUSE_SHAPES, HOUSE_ROOFS, HOUSE_EXTRAS, MAX_HOUSE_EXTRAS, MAX_LANDMARKS_PER_CITIZEN, landmarkKind, cleanHouseRecipe } from '../web/catalog.js';
-import { LANDMARK_BLOCKS, nextEdgeLandmarkBlock } from '../web/layout.js';
+import { UPGRADE_TYPES, LANDMARK_TYPES, HOUSE_SHAPES, HOUSE_ROOFS, HOUSE_EXTRAS, MAX_HOUSE_EXTRAS, MAX_LANDMARKS_PER_CITIZEN, landmarkKind, landmarkPlan, cleanHouseRecipe } from '../web/catalog.js';
+// Landmark positions come from the city plan (web/layout.js); this script only records the landmark.
 
 const argv = process.argv.slice(2);
 const flags = {};
@@ -114,13 +114,11 @@ switch (cmd) {
     while (specials.landmarks.some((l) => l.id === id)) id += '-2';
     const hex = (v) => (typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v) ? v : null);
     const def = { id, type, kind, name, ...(by ? { requestedBy: by.name, requestedById: by.id } : {}), ...(hex(flags.color) ? { color: flags.color } : {}), ...(hex(flags.accent) ? { accent: flags.accent } : {}), ...(flags.comment ? { requestedIn: flags.comment } : {}), added: date };
-    if (specials.landmarks.length >= LANDMARK_BLOCKS.length) {
-      const edge = specials.landmarks.slice(LANDMARK_BLOCKS.length).map((l) => l.block).filter(Array.isArray);
-      def.block = nextEdgeLandmarkBlock(city.residents.length, edge);
-    }
     specials.landmarks.push(def);
     save();
-    console.log(`✓ Landmark "${name}" (${type}) added${def.block ? ` on edge block ${def.block}` : ' downtown'}${by ? `, requested by ${by.name}` : ''}`);
+    const plan = landmarkPlan(def);
+    const where = { civic: 'downtown', main: 'on Main Street', local: "between the houses of the owner's neighbourhood", belt: 'in the green belt', outskirts: 'in the outskirts', station: 'at the end of Main Street' }[plan.district];
+    console.log(`✓ Landmark "${name}" (${type}, size ${plan.size}) added ${where}${by ? `, requested by ${by.name}` : ''}`);
     break;
   }
   case 'landmarks': {

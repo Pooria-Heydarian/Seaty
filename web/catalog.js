@@ -70,6 +70,57 @@ export function landmarkKind(def) {
   return slug(def.name);
 }
 
+// ---------- City plan: neighbourhoods, districts, sizes ----------
+
+/** Neighbourhoods by house style. A house lives in the neighbourhood of its style; a makeover moves it. */
+export const NEIGHBOURHOODS = {
+  classic: 'Classic Homes',
+  tower: 'Tower Row',
+  villa: 'Villa Hills',
+  old: 'Old Town',
+  fantasy: 'Fantasy Lane',
+};
+const SHAPE_STYLE = {
+  glass: 'tower', tower: 'tower', dome: 'tower',
+  mansion: 'villa', castle: 'villa',
+  cottage: 'old', medieval: 'old', 'japanese-cafe': 'old',
+  mushroom: 'fantasy', rocket: 'fantasy', igloo: 'fantasy', treehouse: 'fantasy', pyramid: 'fantasy', lighthouse: 'fantasy',
+  'gem-head': 'fantasy', 'chess-knight': 'fantasy', bunker: 'fantasy', caravan: 'fantasy',
+};
+/** The neighbourhood of a house recipe (no recipe = classic). A classic shape with a flat roof counts as modern (Tower Row). */
+export function houseStyle(recipe) {
+  if (!recipe) return 'classic';
+  if (SHAPE_STYLE[recipe.shape]) return SHAPE_STYLE[recipe.shape];
+  if (recipe.shape === 'classic' && recipe.roof === 'flat') return 'tower';
+  return 'classic';
+}
+
+/**
+ * Where a landmark goes and how big it is.
+ *   districts: civic (downtown around the town hall), main (Main Street shops), local (everyday shops between houses),
+ *              belt (green belt: fun, sports, nature), outskirts (industry and transport), station (end of Main Street)
+ *   sizes: S = one house lot, M = one block, L = 2 x 2 blocks
+ */
+const LANDMARK_PLAN = {
+  museum: ['civic', 'M'], school: ['civic', 'M'], hospital: ['civic', 'M'], 'fire-station': ['civic', 'M'], mosque: ['civic', 'M'],
+  library: ['civic', 'M'], 'police-station': ['civic', 'M'], church: ['civic', 'M'], temple: ['civic', 'M'], 'post-office': ['civic', 'M'],
+  'jewelry-store': ['main', 'M'], 'pet-store': ['main', 'M'], 'mma-gym': ['main', 'M'], gym: ['main', 'M'], 'car-show': ['main', 'M'], mall: ['main', 'M'],
+  bakery: ['local', 'S'], 'corner-shop': ['local', 'S'], market: ['local', 'S'], cafe: ['local', 'S'], pharmacy: ['local', 'S'], florist: ['local', 'S'],
+  stadium: ['belt', 'L'], ballpark: ['belt', 'L'], 'theme-park': ['belt', 'L'], 'race-track': ['belt', 'L'], circus: ['belt', 'M'], aquarium: ['belt', 'M'],
+  park: ['belt', 'L'], farm: ['belt', 'L'], zoo: ['belt', 'L'],
+  'power-plant': ['outskirts', 'L'], 'spaghetti-factory': ['outskirts', 'L'], 'watermelon-factory': ['outskirts', 'L'], 'toy-factory': ['outskirts', 'L'],
+  airport: ['outskirts', 'L'], 'space-center': ['outskirts', 'L'],
+  rail: ['station', 'L'], railway: ['station', 'L'],
+};
+export function landmarkPlan(def) {
+  const kind = landmarkKind(def);
+  const plan = LANDMARK_PLAN[def.type] || LANDMARK_PLAN[kind];
+  if (plan) return { district: plan[0], size: plan[1] };
+  if (/factory|plant|works|port$|mine|refinery/.test(kind)) return { district: 'outskirts', size: 'L' };
+  if (/stadium|arena|track|zoo|park$|garden/.test(kind)) return { district: 'belt', size: 'L' };
+  return { district: 'main', size: 'M' }; // any other shop or public building goes on Main Street
+}
+
 // ---------- Custom house kit ----------
 // A resident can ask for their own special house. The AI step turns the request into a
 // "recipe" made only of these parts; world.js builds it. Floors still grow +1 per video.
