@@ -343,8 +343,12 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
   function genericLandmark(def, floors = 1) {
     const g = new THREE.Group();
     const bh = 3.5 + (floors - 1) * FLOOR_H;
-    const base = new THREE.Mesh(new THREE.BoxGeometry(8, bh, 6).translate(0, bh / 2, 0), SPECIAL_MAT.cream);
-    const dome = new THREE.Mesh(new THREE.SphereGeometry(2.4, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2).translate(0, bh, 0), mat.gold);
+    // Each hall gets its own colours (from its name), so a street of halls doesn't look the same.
+    const WALLS = ['#f3e3c3', '#e8d5e8', '#d6e6f2', '#e3efd6', '#f6d7c3', '#efe9b8', '#dfe3e8'];
+    const DOMES = [mat.gold, M('#2f8f83', { roughness: 0.35, metalness: 0.2 }), M('#c8553d', { roughness: 0.5 }), M('#3a5ba0', { roughness: 0.4, metalness: 0.2 }), M('#7a5cff', { roughness: 0.4 })];
+    const h = hashId(def.name || def.id || '');
+    const base = new THREE.Mesh(new THREE.BoxGeometry(8, bh, 6).translate(0, bh / 2, 0), def.color ? M(def.color) : M(WALLS[h % WALLS.length]));
+    const dome = new THREE.Mesh(new THREE.SphereGeometry(2.4, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2).translate(0, bh, 0), def.accent ? M(def.accent) : DOMES[(h >>> 3) % DOMES.length]);
     g.add(base, dome);
     for (let i = 0; i < 4; i++) g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 3.5, 12).translate(-3 + i * 2, 1.75, 3.2), SPECIAL_MAT.white));
     // a row of windows for every floor above the porch

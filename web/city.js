@@ -16,6 +16,7 @@ controls.autoRotateSpeed = 0.6;
 
 let city = null;
 let selected = null;
+let selectedLandmark = null;
 let selectionOutline = null;
 let flight = null;
 const anims = [];
@@ -41,6 +42,7 @@ function select(entry, { fly = true, updateUrl = true } = {}) {
   if (selected && selected.rank > LABEL_TOP) world.removeLabel(selected);
   if (selected && selected.rank <= LABEL_TOP) world.addLabel(selected);
   selected = entry;
+  selectedLandmark = null;
   const info = $('info');
   if (!entry) {
     info.hidden = true;
@@ -55,7 +57,7 @@ function select(entry, { fly = true, updateUrl = true } = {}) {
 
   const r = entry.resident;
   $('info-name').textContent = r.name;
-  const UPGRADE_NAMES = { pool: '🏊 Pool', 'apple-tree': '🍎 Apple tree', capybara: '🦫 Capybara', cat: '🐈 Cat', dog: '🐕 Dog', gems: '💎 Ruby & Sapphire', 'flower-tree': '🌸 Blossom tree', pond: '🪷 Pond', campfire: '🔥 Campfire', chickens: '🐔 Chickens', 'giant-apple-tree': '🍎 Giant apple tree' };
+  const UPGRADE_NAMES = { pool: '🏊 Pool', 'apple-tree': '🍎 Apple tree', capybara: '🦫 Capybara', cat: '🐈 Cat', dog: '🐕 Dog', gems: '💎 Ruby & Sapphire', 'flower-tree': '🌸 Blossom tree', pond: '🪷 Pond', campfire: '🔥 Campfire', chickens: '🐔 Chickens', 'giant-apple-tree': '🍎 Giant apple tree', 'giant-oak-tree': '🌳 Giant oak', garage: '🏎️ Garage', torii: '⛩️ Shrine gate', quail: '🐦 Quail', 'soccer-field': '⚽ Soccer field' };
   const ups = [...(entry.recipe ? [`🏰 ${entry.houseTitle || 'Dream house'}`] : []), ...[...(entry.upgrades || [])].map((u) => UPGRADE_NAMES[u] || u)];
   $('info-meta').textContent = `Resident since ${new Date(r.joined).toLocaleDateString()}${ups.length ? ` · ${ups.join(' · ')}` : ''}`;
   $('info-floors').textContent = r.floors;
@@ -85,6 +87,7 @@ function select(entry, { fly = true, updateUrl = true } = {}) {
 /** Landmarks are buildings too: info panel with the owner and floors (they grow with their owner). */
 function selectLandmark(lm, { fly = true, updateUrl = true } = {}) {
   select(null, { updateUrl: false });
+  selectedLandmark = lm;
   const edges = new THREE.LineSegments(new THREE.EdgesGeometry(lm.body.geometry, 25), new THREE.LineBasicMaterial({ color: '#ff7a45' }));
   edges.position.copy(lm.body.position);
   lm.body.parent.add(edges);
@@ -276,6 +279,10 @@ function tick(now) {
     const t = Math.min(1, (now - a.start) / a.dur);
     a.b.outer.scale.y = Math.max(0.0001, ease(t));
     if (t === 1) anims.splice(i, 1);
+  }
+  // Landmark signs: only near the camera (or the selected one), so the overview isn't a wall of signs.
+  for (const l of world.landmarks.values()) {
+    l.label.visible = l === selectedLandmark || camera.position.distanceTo(l.outer.position) < 55;
   }
   world.tick(now / 1000);
   controls.update();

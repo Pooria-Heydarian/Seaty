@@ -15,6 +15,11 @@ export const UPGRADE_TYPES = {
   campfire: 'a stone patio with a campfire and log benches',
   chickens: 'a chicken coop with two chickens',
   'giant-apple-tree': 'a GIANT apple tree towering over the house',
+  'giant-oak-tree': 'a GIANT oak tree in the backyard',
+  garage: 'a garage with a red sports car in front',
+  torii: 'a red Japanese shrine gate (torii) in front of the house',
+  quail: 'a pet quail hopping in the front yard',
+  'soccer-field': 'a small soccer pitch with two goals beside the house',
 };
 
 /** Landmarks with their own 3D model. Any other landmark is built as a generic gold-domed hall with a name sign. */
@@ -28,6 +33,15 @@ export const LANDMARK_TYPES = {
   farm: 'a farm: red barn, silo, crop fields',
   'watermelon-factory': 'a watermelon factory with a giant slice on the roof (and a "no seeds" sign)',
   'car-show': 'a car showroom with cars and a pickup truck on a turntable',
+  mosque: 'a mosque with a big central dome and two minarets (--color walls, --accent domes)',
+  'race-track': 'an oval race track with a grandstand and racing cars',
+  circus: 'a circus: big striped top tent, flags and a small tent',
+  airport: 'an airport: runway, terminal, control tower, planes',
+  rail: 'an elevated railway loop with a station and a train',
+  aquarium: 'an aquarium: a big glass tank with an octopus',
+  'toy-factory': 'a toy factory with giant toy bricks on the roof and a teddy bear',
+  hospital: 'a hospital with a red cross, helipad and ambulance',
+  'space-center': 'a space center: rocket on a launch pad, service tower, mission control',
 };
 
 // ---------- City rules ----------

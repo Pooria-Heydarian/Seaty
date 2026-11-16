@@ -76,7 +76,7 @@ if (prev) {
 }
 
 if (newSpecials.length) {
-  const UP = { pool: 'a swimming pool', 'apple-tree': 'an apple tree', capybara: 'a capybara', cat: 'a pet cat', dog: 'a pet dog', gems: 'a ruby and a sapphire', 'flower-tree': 'a blossom tree', pond: 'a pond', campfire: 'a campfire patio', chickens: 'a chicken coop', 'giant-apple-tree': 'a giant apple tree' };
+  const UP = { pool: 'a swimming pool', 'apple-tree': 'an apple tree', capybara: 'a capybara', cat: 'a pet cat', dog: 'a pet dog', gems: 'a ruby and a sapphire', 'flower-tree': 'a blossom tree', pond: 'a pond', campfire: 'a campfire patio', chickens: 'a chicken coop', 'giant-apple-tree': 'a giant apple tree', 'giant-oak-tree': 'a giant oak tree', garage: 'a garage and a sports car', torii: 'a red shrine gate', quail: 'a pet quail', 'soccer-field': 'a soccer field' };
   lines.push('## ✨ New in town');
   for (const s of newSpecials) {
     lines.push(s.kind === 'landmark'

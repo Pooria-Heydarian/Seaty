@@ -154,6 +154,11 @@ function buildTimeline(city, ch) {
     campfire: (n) => [`${n} built a patio with a cozy campfire!`, 'Got a campfire patio!'],
     chickens: (n) => [`${n} moved in with a chicken coop!`, 'Got a chicken coop!'],
     'giant-apple-tree': (n) => [`Whoa! ${n} has a giant apple tree!`, 'Got a GIANT apple tree!'],
+    'giant-oak-tree': (n) => [`A giant oak tree now shades ${n}'s backyard!`, 'Got a GIANT oak tree!'],
+    garage: (n) => [`${n} got a garage and a shiny red sports car!`, 'Got a garage and a sports car!'],
+    torii: (n) => [`${n}'s café now has a red shrine gate!`, 'Got a red shrine gate!'],
+    quail: (n) => [`Meet ${n}'s new pet quail!`, 'Got a pet quail!'],
+    'soccer-field': (n) => [`${n} has a soccer field next to the house!`, 'Got a soccer field!'],
   };
   const newLandmarks = newSpecials.filter((s) => s.kind === 'landmark');
   for (const sp of newLandmarks.slice(0, MAX_FEATURED_LANDMARKS)) {
@@ -372,8 +377,14 @@ function buildTimeline(city, ch) {
     for (const [id, at] of landmarkReveal) {
       const l = world.landmarks.get(id);
       const k = clamp01((time - at) / 0.9);
-      l.outer.visible = l.label.visible = time >= at;
+      l.outer.visible = time >= at;
       l.outer.scale.set(0.9 + 0.1 * easeOut(k), Math.max(0.001, easeOutBack(k)), 0.9 + 0.1 * easeOut(k));
+    }
+    // Landmark signs only in their own scene (a city full of signs is unreadable).
+    {
+      const cur = scenes[Math.max(0, scenes.findLastIndex((x) => time >= x.start))];
+      const showing = new Set(cur.type === 'landmark' ? [cur.sp.id] : cur.type === 'moreLandmarks' ? cur.list.map((l) => l.id) : []);
+      for (const [id, l] of world.landmarks) l.label.visible = showing.has(id) && l.outer.visible && (!landmarkReveal.has(id) || time >= landmarkReveal.get(id) + 0.3);
     }
     for (const u of upgradeReveal) {
       const k = clamp01((time - u.at) / 0.6);
