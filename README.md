@@ -30,7 +30,7 @@ npm run serve
 Open http://localhost:5173
 
 Controls: drag to rotate, scroll to zoom, click a building for its info.
-Keys: **N** night, **R** auto-orbit, **G** replay the growth, **H** hide the interface (for screen recording).
+Keys: **N** night, **R** auto-orbit, **L** name labels (off by default; hover a building to see its name), **G** replay the growth, **H** hide the interface (for screen recording).
 Link to one house: `http://localhost:5173/?u=<channelId>`. Add `&night=1` to open it at night.
 
 ## Use your real channel

@@ -2,7 +2,11 @@
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createWorld, THREE, CSS2DObject } from './world.js';
 
-const LABEL_TOP = 5;
+const LABEL_TOP = 5; // with labels on: the 5 tallest buildings get a name tag
+// Name labels are off by default (a clean city); the Labels button / L key turns them on, and the choice is remembered.
+let labelsOn = false;
+try { labelsOn = localStorage.getItem('seaty-labels') === '1'; } catch {}
+let hallLabelObj = null;
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 
@@ -39,8 +43,10 @@ function flyTo(entry) {
 
 function select(entry, { fly = true, updateUrl = true } = {}) {
   if (selectionOutline) { selectionOutline.removeFromParent(); selectionOutline = null; }
-  if (selected && selected.rank > LABEL_TOP) world.removeLabel(selected);
-  if (selected && selected.rank <= LABEL_TOP) world.addLabel(selected);
+  if (selected) {
+    if (labelsOn && selected.rank <= LABEL_TOP) world.addLabel(selected);
+    else world.removeLabel(selected);
+  }
   selected = entry;
   selectedLandmark = null;
   const info = $('info');
@@ -214,6 +220,8 @@ function fillUi() {
   $('btn-rotate').onclick = toggleRotate;
   $('btn-replay').onclick = () => replayGrowth();
   $('btn-hide').onclick = toggleHide;
+  $('btn-labels').onclick = () => setLabels(!labelsOn);
+  $('btn-labels').setAttribute('aria-pressed', String(labelsOn));
   addEventListener('keydown', (e) => {
     if (e.target instanceof HTMLInputElement) return;
     const k = e.key.toLowerCase();
@@ -221,8 +229,22 @@ function fillUi() {
     else if (k === 'r') toggleRotate();
     else if (k === 'g') replayGrowth();
     else if (k === 'h') toggleHide();
+    else if (k === 'l') setLabels(!labelsOn);
     else if (k === 'escape') select(null);
   });
+}
+
+/** Show or hide name labels on buildings, landmarks and the town hall (the selected building always keeps its own). */
+function setLabels(on) {
+  labelsOn = on;
+  try { localStorage.setItem('seaty-labels', on ? '1' : '0'); } catch {}
+  $('btn-labels')?.setAttribute('aria-pressed', String(on));
+  for (const e of world.list) {
+    if (e === selected) continue;
+    if (on && e.rank <= LABEL_TOP) world.addLabel(e);
+    else world.removeLabel(e);
+  }
+  if (hallLabelObj) hallLabelObj.visible = on;
 }
 
 // ---------- Picking ----------
@@ -282,7 +304,7 @@ function tick(now) {
   }
   // Landmark signs: only near the camera (or the selected one), so the overview isn't a wall of signs.
   for (const l of world.landmarks.values()) {
-    l.label.visible = l === selectedLandmark || camera.position.distanceTo(l.outer.position) < 55;
+    l.label.visible = l === selectedLandmark || (labelsOn && camera.position.distanceTo(l.outer.position) < 55);
   }
   world.tick(now / 1000);
   controls.update();
@@ -303,13 +325,15 @@ async function boot() {
   }
 
   const specials = await fetch(`data/specials.json?t=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-  world.build(city, { labelTop: LABEL_TOP, specials });
+  world.build(city, { labelTop: 0, specials });
   const hallLabel = document.createElement('div');
   hallLabel.className = 'label hall';
   hallLabel.textContent = `${city.channel?.title || 'Town Hall'} · ${city.videoCount} video${city.videoCount === 1 ? "" : "s"}`;
   const hl = new CSS2DObject(hallLabel);
   hl.position.set(0, world.townHall.userData.height + 1.5, 0);
   world.scene.add(hl);
+  hallLabelObj = hl;
+  setLabels(labelsOn);
 
   const pose = world.overviewPose();
   camera.position.copy(pose.pos);
