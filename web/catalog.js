@@ -42,6 +42,16 @@ export const LANDMARK_TYPES = {
   'toy-factory': 'a toy factory with giant toy bricks on the roof and a teddy bear',
   hospital: 'a hospital with a red cross, helipad and ambulance',
   'space-center': 'a space center: rocket on a launch pad, service tower, mission control',
+  museum: 'a museum: classical columns, triangle pediment, steps and banners',
+  bakery: 'a bakery with a striped awning and a giant croissant on the roof',
+  'fire-station': 'a fire station: red brick, garage doors, hose tower, fire truck',
+  'pet-store': 'a pet store with a paw-print sign, a giant bone and a dog statue',
+  'corner-shop': 'a corner shop with an OPEN sign and crates of fruit outside',
+  'jewelry-store': 'a black-and-gold jewelry store with a giant turning diamond',
+  'mma-gym': 'an MMA gym with a boxing-glove sign and an octagon cage',
+  school: 'a school: brick building, clock, flagpole, playground, school bus',
+  market: 'a market: striped stalls with fruit and vegetables, and a market hall',
+  mall: 'a shopping mall with a glass atrium, glowing sign and car park',
 };
 
 // ---------- City rules ----------

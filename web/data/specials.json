@@ -103,7 +103,7 @@
     },
     {
       "id": "bakery",
-      "type": "generic",
+      "type": "bakery",
       "name": "Bakery",
       "requestedBy": "@Staypositivels",
       "requestedById": "UCJKwj1uw3QlueW6K3N-U2gw",
@@ -116,7 +116,7 @@
     },
     {
       "id": "museum",
-      "type": "generic",
+      "type": "museum",
       "name": "Museum",
       "requestedBy": "@theel-u7g",
       "requestedById": "UC1YmxZwrnml20qf9NvsMsKA",
@@ -129,7 +129,7 @@
     },
     {
       "id": "fire-station",
-      "type": "generic",
+      "type": "fire-station",
       "name": "Fire Station",
       "requestedBy": "@Owen_B13",
       "requestedById": "UC-Kcqoiyqx-UnJiJgjtCWbg",
@@ -184,7 +184,7 @@
     },
     {
       "id": "pet-store",
-      "type": "generic",
+      "type": "pet-store",
       "kind": "pet-store",
       "name": "Pet Store",
       "requestedBy": "@AverageHuman67",
@@ -198,7 +198,7 @@
     },
     {
       "id": "corner-shop",
-      "type": "generic",
+      "type": "corner-shop",
       "kind": "corner-shop",
       "name": "Corner Shop",
       "requestedBy": "@JoelEscott-c1y",
@@ -226,7 +226,7 @@
     },
     {
       "id": "jewelry-store",
-      "type": "generic",
+      "type": "jewelry-store",
       "kind": "jewelry-store",
       "name": "Jewelry Store",
       "requestedBy": "@luqmanabdi8368",
@@ -282,7 +282,7 @@
     },
     {
       "id": "mma-gym",
-      "type": "generic",
+      "type": "mma-gym",
       "kind": "gym",
       "name": "MMA Gym",
       "requestedBy": "@og-goat1.0",
@@ -296,7 +296,7 @@
     },
     {
       "id": "school",
-      "type": "generic",
+      "type": "school",
       "kind": "school",
       "name": "School",
       "requestedBy": "@Onni_the_furry",
@@ -324,7 +324,7 @@
     },
     {
       "id": "market",
-      "type": "generic",
+      "type": "market",
       "kind": "market",
       "name": "Market",
       "requestedBy": "@hasmask9103",
@@ -338,7 +338,7 @@
     },
     {
       "id": "mall",
-      "type": "generic",
+      "type": "mall",
       "kind": "mall",
       "name": "Mall",
       "requestedBy": "@MRsunglasses2.0",
