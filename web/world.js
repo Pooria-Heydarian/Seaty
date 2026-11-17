@@ -501,7 +501,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       entry.upgrades ||= new Set();
       if (entry.upgrades.has(up.type)) continue;
       entry.upgrades.add(up.type);
-      const obj = model();
+      const obj = model(entry);
       (entry.upgradeObjects ||= {})[up.type] = obj;
       entry.outer.add(obj);
       if (obj.userData.tick) world.upgradeTicks.push(obj.userData.tick);

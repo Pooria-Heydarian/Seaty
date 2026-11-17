@@ -20,6 +20,10 @@ export const UPGRADE_TYPES = {
   torii: 'a red Japanese shrine gate (torii) in front of the house',
   quail: 'a pet quail hopping in the front yard',
   'soccer-field': 'a small soccer pitch with two goals beside the house',
+  elephant: 'a friendly grey elephant in the front yard, flapping its ears',
+  shelter: 'a storm shelter / backyard bunker: grassy mound with slanted steel doors',
+  drone: 'a camera drone circling over the house',
+  'koi-pond': 'a koi pond with orange and white fish and a stone lantern',
 };
 
 /** Landmarks with their own 3D model. Any other landmark is built as a generic gold-domed hall with a name sign. */
@@ -42,6 +46,19 @@ export const LANDMARK_TYPES = {
   'toy-factory': 'a toy factory with giant toy bricks on the roof and a teddy bear',
   hospital: 'a hospital with a red cross, helipad and ambulance',
   'space-center': 'a space center: rocket on a launch pad, service tower, mission control',
+  skyscraper: 'a stepped glass apartment skyscraper with lit window bands and an antenna (--color glass, --accent trim)',
+  cafe: 'a cute pastel café with a giant coffee cup on the roof and parasol tables',
+  'lemon-farm': 'a lemon orchard with a yellow farmhouse and a lemonade stand',
+  'black-hole-reactor': 'a sci-fi reactor: glass dome over a black hole with a glowing disk, viewing gallery',
+  'hot-dog-stand': 'a hot dog cart with a parasol and a giant hot dog on top',
+  'baguette-statue': 'a giant statue of a girl with red drill pigtails holding up a baguette',
+  boutique: 'a clothing boutique with mannequins in dresses and a giant gold hanger sign',
+  dojo: 'a Japanese martial-arts dojo with a two-tier roof, training dummy and bamboo',
+  cinema: 'a movie theater with a glowing marquee, film reel and popcorn bucket',
+  university: 'a neoclassical university main building with columns and a big dome',
+  'gothic-church': 'a gothic church with twin dark spired towers and a rose window',
+  dam: 'a small dam between two hills with a reservoir, waterfall spillway and power house',
+  'construction-site': 'a construction site with a tower crane, steel frame and cement mixer',
   museum: 'a museum: classical columns, triangle pediment, steps and banners',
   bakery: 'a bakery with a striped awning and a giant croissant on the roof',
   'fire-station': 'a fire station: red brick, garage doors, hose tower, fire truck',
@@ -103,13 +120,13 @@ export function houseStyle(recipe) {
  */
 const LANDMARK_PLAN = {
   museum: ['civic', 'M'], school: ['civic', 'M'], hospital: ['civic', 'M'], 'fire-station': ['civic', 'M'], mosque: ['civic', 'M'],
-  library: ['civic', 'M'], 'police-station': ['civic', 'M'], church: ['civic', 'M'], temple: ['civic', 'M'], 'post-office': ['civic', 'M'],
-  'jewelry-store': ['main', 'M'], 'pet-store': ['main', 'M'], 'mma-gym': ['main', 'M'], gym: ['main', 'M'], 'car-show': ['main', 'M'], mall: ['main', 'M'],
-  bakery: ['local', 'S'], 'corner-shop': ['local', 'S'], market: ['local', 'S'], cafe: ['local', 'S'], pharmacy: ['local', 'S'], florist: ['local', 'S'],
+  library: ['civic', 'M'], university: ['civic', 'M'], 'gothic-church': ['civic', 'M'], 'police-station': ['civic', 'M'], church: ['civic', 'M'], temple: ['civic', 'M'], 'post-office': ['civic', 'M'],
+  'jewelry-store': ['main', 'M'], 'pet-store': ['main', 'M'], 'mma-gym': ['main', 'M'], skyscraper: ['main', 'M'], boutique: ['main', 'M'], cinema: ['main', 'M'], 'construction-site': ['main', 'M'], gym: ['main', 'M'], 'car-show': ['main', 'M'], mall: ['main', 'M'],
+  bakery: ['local', 'S'], 'corner-shop': ['local', 'S'], market: ['local', 'S'], cafe: ['local', 'S'], 'hot-dog-stand': ['local', 'S'], dojo: ['local', 'S'], pharmacy: ['local', 'S'], florist: ['local', 'S'],
   stadium: ['belt', 'L'], ballpark: ['belt', 'L'], 'theme-park': ['belt', 'L'], 'race-track': ['belt', 'L'], circus: ['belt', 'M'], aquarium: ['belt', 'M'],
-  park: ['belt', 'L'], farm: ['belt', 'L'], zoo: ['belt', 'L'],
+  park: ['belt', 'L'], farm: ['belt', 'L'], zoo: ['belt', 'L'], 'lemon-farm': ['belt', 'L'], 'baguette-statue': ['belt', 'M'], statue: ['belt', 'M'],
   'power-plant': ['outskirts', 'L'], 'spaghetti-factory': ['outskirts', 'L'], 'watermelon-factory': ['outskirts', 'L'], 'toy-factory': ['outskirts', 'L'],
-  airport: ['outskirts', 'L'], 'space-center': ['outskirts', 'L'],
+  airport: ['outskirts', 'L'], 'space-center': ['outskirts', 'L'], 'black-hole-reactor': ['outskirts', 'L'], dam: ['outskirts', 'L'],
   rail: ['station', 'L'], railway: ['station', 'L'],
 };
 export function landmarkPlan(def) {

@@ -1,312 +1,207 @@
 {
-  "date": "2026-11-16",
-  "day": 4,
+  "date": "2026-11-17",
+  "day": 5,
   "firstReport": false,
-  "residentCount": 79,
-  "totalFloors": 137,
-  "videoCount": 4,
-  "floorsAdded": 46,
+  "residentCount": 87,
+  "totalFloors": 169,
+  "videoCount": 6,
+  "floorsAdded": 32,
   "newResidents": [
     {
-      "id": "UCFKlbA0mu0HMUyWG3orzc7g",
-      "name": "@moisescaicedolover",
-      "comment": "Day 2 of asking to add american family field with the roof open and bernie's chalet",
-      "plot": 63,
-      "floors": 2
-    },
-    {
-      "id": "UC9o5frGl01cH3pn6u2VzG6Q",
-      "name": "@SEASALT-k7u",
-      "comment": "can i get a giant oak tree in my backyard",
-      "plot": 64,
-      "floors": 2
-    },
-    {
-      "id": "UC_GtnlGVIQfvWpnr-nZvefQ",
-      "name": "@MrTauntyFace",
-      "comment": "Can i get a big Mosque... Pls😊...",
-      "plot": 65,
-      "floors": 1
-    },
-    {
-      "id": "UC9cbTDy_z9slOcWs4x1n-kQ",
-      "name": "@JoelEscott-c1y",
-      "comment": "Me want corner shop",
-      "plot": 66,
-      "floors": 1
-    },
-    {
-      "id": "UCcWjOp-PQpGG_NnjJ2N3DDQ",
-      "name": "@djvitixofficial",
-      "comment": "Make a tall glass curtain modern skyscraper",
-      "plot": 67,
-      "floors": 1
-    },
-    {
-      "id": "UCimL6o3zvYKqkoLhn5eN4kg",
-      "name": "@woltex_editz",
-      "comment": "Hi I subbed and btw can you pls add a dinosaur meuisuim\nEdit: and I also liked :D",
-      "plot": 68,
-      "floors": 1
-    },
-    {
-      "id": "UCwrphSMJnuvhkSpXMIj6M7A",
-      "name": "@thetulamapping",
-      "comment": "Hello, i want to be a citizen of your city",
-      "plot": 69,
-      "floors": 1
-    },
-    {
-      "id": "UC1xeDEpXgAEpMYZ8-DzEj8Q",
-      "name": "@bittyshottoms1007",
-      "comment": "nice",
-      "plot": 70,
-      "floors": 1
-    },
-    {
-      "id": "UCbTJNxoh05YPxAUaT-xjipg",
-      "name": "@luqmanabdi8368",
-      "comment": "Add a jewelry store",
-      "plot": 71,
-      "floors": 1
-    },
-    {
-      "id": "UC3Em45knIod38GO1zzu8j0Q",
-      "name": "@og-goat1.0",
-      "comment": "Hi pls add mma gym",
-      "plot": 72,
-      "floors": 1
-    },
-    {
-      "id": "UCz_7PsYwswBWPBvUh0jCjqg",
-      "name": "@saimahmagabih7178",
-      "comment": "Hi I'm new🎉🎉",
-      "plot": 73,
-      "floors": 1
-    },
-    {
-      "id": "UC7wMDV5RN-vSsINyCRuHQ4A",
-      "name": "@batuSmile75",
-      "comment": "Add mbg or hospital free so if anyone get sick just go here its free😊😊🎉",
-      "plot": 74,
-      "floors": 1
-    },
-    {
-      "id": "UCTFf6UXQXcMuslCJiH2uTOQ",
-      "name": "@hasmask9103",
-      "comment": "Can you please add a market I have subscribed to you",
-      "plot": 75,
-      "floors": 1
-    },
-    {
-      "id": "UC0pbp9LePnIsAf1cRyxG7Kw",
-      "name": "@Appilly_MSM",
-      "comment": "My suggestion: house with apple tree",
-      "plot": 76,
-      "floors": 1
-    },
-    {
-      "id": "UCQ5Kmf2Jt6Qc_1tZRGrsiIw",
-      "name": "@MRsunglasses2.0",
-      "comment": "Can i get a house and my own mall",
-      "plot": 77,
-      "floors": 1
-    },
-    {
-      "id": "UCWiHqf7ftUXqZmJz0z3_CdA",
-      "name": "@YahyaO-t6h",
-      "comment": "Make a Lego factory, please",
-      "plot": 78,
-      "floors": 1
-    },
-    {
-      "id": "UConyzasmuGpqcUUKsdwutJA",
-      "name": "@karanchhabra6434",
-      "comment": "I request a museum",
+      "id": "UC3EbWVsoRRZmwM2zz7bbkgA",
+      "name": "@immortal_snaiI",
+      "comment": "black and gold please",
       "plot": 79,
+      "floors": 3
+    },
+    {
+      "id": "UCNozJOseq3VkW3izE6u28Qw",
+      "name": "@AlicePlayz175",
+      "comment": "Cqn you make a cute cafe for me please?❤",
+      "plot": 80,
+      "floors": 1
+    },
+    {
+      "id": "UCkY9hRGZcrVOUq4Hv9CnV-w",
+      "name": "@ElijahCrone-f4j",
+      "comment": "can you add a storm shelter please",
+      "plot": 81,
+      "floors": 2
+    },
+    {
+      "id": "UCOXkK2o1Xe-mmbNHaSd6r2g",
+      "name": "@LemonCubeDev",
+      "comment": "Please make a Lemon farm pls",
+      "plot": 82,
+      "floors": 1
+    },
+    {
+      "id": "UCcHU2bB5SkPxiu6R39KMPsg",
+      "name": "@UriahTechOfficial",
+      "comment": "Make a skyscraper where people Can live",
+      "plot": 83,
+      "floors": 2
+    },
+    {
+      "id": "UCZdoa5Ir4BiO8NK_BKoL4vw",
+      "name": "@oppavoidostyle",
+      "comment": "Give me a reactor that holds a black hole inside it that will never go undergo meltdown or freezedown, visitors have a view to look at the black hole with hi…",
+      "plot": 84,
+      "floors": 1
+    },
+    {
+      "id": "UCOdUCQ_pkaIh8sb76Aw4cgw",
+      "name": "@Jimking12goat",
+      "comment": "Hot dog stand pls",
+      "plot": 85,
+      "floors": 1
+    },
+    {
+      "id": "UCm0POPnjdHrn8FKHyVJfYGg",
+      "name": "@DaryaAnsaripour",
+      "comment": "Can I have the ETH HG building?:))",
+      "plot": 86,
+      "floors": 1
+    },
+    {
+      "id": "UCLu3a1Dtsk4PUuUWbuWCZ2Q",
+      "name": "@nexis1337",
+      "comment": "a gothic church like in prague",
+      "plot": 87,
       "floors": 1
     }
   ],
   "grew": [
     {
-      "id": "UCw-XTBd2D4HtHVOrsO_xZ0A",
-      "name": "@Lethalguyy",
-      "comment": "ADD A AIRPORT and please add me:)",
-      "from": 1,
-      "to": 3
+      "id": "UCpD3u7o7qCaDE5Hui4Xo1bQ",
+      "name": "@prabhasishbhattacharya9226",
+      "comment": "hey man. could you add a movie theater",
+      "from": 2,
+      "to": 4
     },
     {
       "id": "UCJ8vLkrMd5einlvr_L_Bpfw",
       "name": "@ЕленаИзюмова-у7ц",
-      "comment": "Im back!",
-      "from": 3,
-      "to": 4
+      "comment": "Epic.",
+      "from": 4,
+      "to": 5
     },
     {
       "id": "UCJKwj1uw3QlueW6K3N-U2gw",
       "name": "@Staypositivels",
-      "comment": "Actually, can you put a octopus inside a glass near the museum?",
-      "from": 3,
-      "to": 4
+      "comment": "Can you put an elephant near my house?",
+      "from": 4,
+      "to": 5
     },
     {
       "id": "UCVNoIdSeaoW2eEnaZ61pAEQ",
       "name": "@Get_jin_in_use",
-      "comment": "i need a red shire GATE for my CAFE SHOP AND GIVE ME MORE LAND FOR THE SHOW AS WELL AS THE HOUSE",
-      "from": 3,
-      "to": 4
-    },
-    {
-      "id": "UC3S4mJTi784UlJ04U0zCJ_g",
-      "name": "@AmirHosseinHeydarian-i3r",
-      "comment": "🎉🚘",
-      "from": 3,
-      "to": 4
+      "comment": "add a dojo nere my house and i sall be the master",
+      "from": 4,
+      "to": 5
     },
     {
       "id": "UCUh2iTRVNp77G29R_R6sM4A",
       "name": "@TwoToThePowerOf999ImSmart",
-      "comment": "Also i wanna have a modern house with white walls and a black roof.\n\nEdit: yooo 7 floors!",
-      "from": 3,
-      "to": 4
+      "comment": "Add a drone orbiting my building and a oak board next to the door saying \"in 2 towns:  seaty and subscity.\" (If text not reconizable show the text when click…",
+      "from": 4,
+      "to": 5
     },
     {
       "id": "UCv-a0knslevzeV3tfAHRhFg",
       "name": "@ShashankShekhar-o3i",
-      "comment": "Got a backyard with a cat",
-      "from": 3,
-      "to": 4
-    },
-    {
-      "id": "UC72l66Gfc4bCEQEASVG6oPQ",
-      "name": "@Fly4Ever777",
-      "comment": "Hi, can you make an airport for me?",
-      "from": 2,
-      "to": 3
+      "comment": "Living in a skyscraper",
+      "from": 4,
+      "to": 5
     },
     {
       "id": "UCn-3PuoTEOwyWSCo-89yj0A",
       "name": "@POUSALI2412",
-      "comment": "Yo man can you add a circus",
-      "from": 2,
-      "to": 3
+      "comment": "Hey man could you remake my house in a kind of cottage style?",
+      "from": 3,
+      "to": 4
     },
     {
       "id": "UCZcS07-x1ubdSIjAGrVgU-A",
       "name": "@mdsadiq4737",
-      "comment": "Hey, please add 1 floor to my house and a pet quail and like btw",
-      "from": 2,
-      "to": 3
-    },
-    {
-      "id": "UC1YmxZwrnml20qf9NvsMsKA",
-      "name": "@theel-u7g",
-      "comment": "W channel",
-      "from": 2,
-      "to": 3
+      "comment": "Bro, just pls add 3 floors to my house i've been commenting on the last videos day 2 and 3",
+      "from": 3,
+      "to": 4
     },
     {
       "id": "UCZm0diFKnMvsNQ--CtXCsNA",
       "name": "@Kirupa_49",
-      "comment": "🎉🎉",
-      "from": 2,
-      "to": 3
-    },
-    {
-      "id": "UCICnlf3KRLmhydWXl38QXUQ",
-      "name": "@markchesterajeemercado3237",
-      "comment": "New elevated railway: train type: LRTA 13000 / CAF class   line name: Seaty Rail Transit ( SRT )",
-      "from": 2,
-      "to": 3
+      "comment": "Dope 👌😎😁",
+      "from": 3,
+      "to": 4
     },
     {
       "id": "UCWkYCJOI-n0B8BB8XAE66Hg",
       "name": "@PolerGG",
-      "comment": "get ma house 1 floor and a swiming pool",
-      "from": 2,
-      "to": 3
-    },
-    {
-      "id": "UCKgB0kce7yRwStaUsMl_nZQ",
-      "name": "@AverageHuman67",
-      "comment": "can i have a pet store",
-      "from": 2,
-      "to": 3
-    },
-    {
-      "id": "UCQMGoJ1ocMTjuVtyI0RayUA",
-      "name": "@TeteaLalu",
-      "comment": "Im invested can i have a house with a lambo if its copyrighted judt add a car with a garage",
-      "from": 1,
-      "to": 2
-    },
-    {
-      "id": "UCpD3u7o7qCaDE5Hui4Xo1bQ",
-      "name": "@prabhasishbhattacharya9226",
-      "comment": "hey man. could you give my house a small outdoor football/soccer field.",
-      "from": 1,
-      "to": 2
+      "comment": "@SeatyisOurcity thanks",
+      "from": 3,
+      "to": 4
     },
     {
       "id": "UCKXWTyD95c9W96Co4VMbD4A",
       "name": "@jjk-x2r",
-      "comment": "Could you expand the nuclear power plant even more? I think it would look amazing with a huge cooling tower that can be seen from across the city. It would a…",
-      "from": 1,
-      "to": 2
-    },
-    {
-      "id": "UCx99oD4-Mg6QhEllYy57Jiw",
-      "name": "@GLITCHPROBGAMING",
-      "comment": "can i build a space center?",
-      "from": 1,
-      "to": 2
+      "comment": "give me another floor and a bunker next to it and a small dam",
+      "from": 2,
+      "to": 3
     },
     {
       "id": "UCrBakTMMz8PQAn8oIW1hp-g",
       "name": "@GamerGuy67x",
-      "comment": "Add a statue and a toy factory",
-      "from": 1,
-      "to": 2
-    },
-    {
-      "id": "UCXlhPS4fEW0F_4QiytB_zsA",
-      "name": "@builder72k",
-      "comment": "Eyy I'm here!",
-      "from": 1,
-      "to": 2
-    },
-    {
-      "id": "UCAHjDw7sioQOA8KE_CJcX-g",
-      "name": "@TheAr1yx",
-      "comment": "I got a cat!",
-      "from": 1,
-      "to": 2
+      "comment": "Can I have a spire tower?",
+      "from": 2,
+      "to": 3
     },
     {
       "id": "UCAQ5RvmzbTwByI28r0B6qgw",
       "name": "@Onni_the_furry",
-      "comment": "Do we have a school yet?",
-      "from": 1,
-      "to": 2
+      "comment": "Make a super market around there they need food too",
+      "from": 2,
+      "to": 3
     },
     {
       "id": "UCgDf7IYRCZ9MXVMjPXnZkEw",
       "name": "@ConnorLukach",
-      "comment": "Can you add more floors to my house?",
-      "from": 1,
-      "to": 2
+      "comment": "Can I have a koi pond?",
+      "from": 2,
+      "to": 3
     },
     {
       "id": "UCZYD9tjWBaJgrwaKK6DXp7g",
       "name": "@Eastonfortniteeee",
-      "comment": "Can I have a chicken pet or a pool",
+      "comment": "Yo what’s up",
+      "from": 2,
+      "to": 3
+    },
+    {
+      "id": "UC9JUSObteFHT96kE-U5WMNg",
+      "name": "@ZariGolpayegani",
+      "comment": "A beautiful clothing boutique in your city,",
       "from": 1,
       "to": 2
     },
     {
-      "id": "UCMmaqv6m-fww53sSbYdD2RQ",
-      "name": "@JackMihna",
-      "comment": "2floors",
+      "id": "UC_GtnlGVIQfvWpnr-nZvefQ",
+      "name": "@MrTauntyFace",
+      "comment": "Can u add a big statue of kasane teto holding a bagguette? Cause it we'll be so silly.😅😅",
+      "from": 1,
+      "to": 2
+    },
+    {
+      "id": "UCcWjOp-PQpGG_NnjJ2N3DDQ",
+      "name": "@djvitixofficial",
+      "comment": "Make a construction site",
+      "from": 1,
+      "to": 2
+    },
+    {
+      "id": "UConyzasmuGpqcUUKsdwutJA",
+      "name": "@karanchhabra6434",
+      "comment": "Hi can I have a museum",
       "from": 1,
       "to": 2
     }
@@ -315,199 +210,157 @@
     {
       "id": "UCJ8vLkrMd5einlvr_L_Bpfw",
       "name": "@ЕленаИзюмова-у7ц",
-      "floors": 4
+      "floors": 5
     },
     {
       "id": "UCJKwj1uw3QlueW6K3N-U2gw",
       "name": "@Staypositivels",
-      "floors": 4
+      "floors": 5
     },
     {
       "id": "UCVNoIdSeaoW2eEnaZ61pAEQ",
       "name": "@Get_jin_in_use",
-      "floors": 4
+      "floors": 5
     }
   ],
   "newSpecials": [
     {
       "kind": "landmark",
-      "id": "mosque",
-      "name": "Mosque",
+      "id": "skyscraper",
+      "name": "Skyscraper",
+      "requestedBy": "@immortal_snaiI"
+    },
+    {
+      "kind": "landmark",
+      "id": "cute-café",
+      "name": "Cute Café",
+      "requestedBy": "@AlicePlayz175"
+    },
+    {
+      "kind": "landmark",
+      "id": "lemon-farm",
+      "name": "Lemon Farm",
+      "requestedBy": "@LemonCubeDev"
+    },
+    {
+      "kind": "landmark",
+      "id": "black-hole-reactor",
+      "name": "Black Hole Reactor",
+      "requestedBy": "@oppavoidostyle"
+    },
+    {
+      "kind": "landmark",
+      "id": "hot-dog-stand",
+      "name": "Hot Dog Stand",
+      "requestedBy": "@Jimking12goat"
+    },
+    {
+      "kind": "landmark",
+      "id": "baguette-statue",
+      "name": "Baguette Statue",
       "requestedBy": "@MrTauntyFace"
     },
     {
       "kind": "landmark",
-      "id": "race-track",
-      "name": "Race Track",
-      "requestedBy": "@Kirupa_49"
+      "id": "clothing-boutique",
+      "name": "Clothing Boutique",
+      "requestedBy": "@ZariGolpayegani"
     },
     {
       "kind": "landmark",
-      "id": "circus",
-      "name": "Circus",
-      "requestedBy": "@POUSALI2412"
+      "id": "dojo",
+      "name": "Dojo",
+      "requestedBy": "@Get_jin_in_use"
     },
     {
       "kind": "landmark",
-      "id": "pet-store",
-      "name": "Pet Store",
-      "requestedBy": "@AverageHuman67"
+      "id": "movie-theater",
+      "name": "Movie Theater",
+      "requestedBy": "@prabhasishbhattacharya9226"
     },
     {
       "kind": "landmark",
-      "id": "corner-shop",
-      "name": "Corner Shop",
-      "requestedBy": "@JoelEscott-c1y"
+      "id": "university",
+      "name": "University",
+      "requestedBy": "@DaryaAnsaripour"
     },
     {
       "kind": "landmark",
-      "id": "seaty-rail-transit",
-      "name": "Seaty Rail Transit",
-      "requestedBy": "@markchesterajeemercado3237"
+      "id": "gothic-church",
+      "name": "Gothic Church",
+      "requestedBy": "@nexis1337"
     },
     {
       "kind": "landmark",
-      "id": "jewelry-store",
-      "name": "Jewelry Store",
-      "requestedBy": "@luqmanabdi8368"
+      "id": "dam",
+      "name": "Dam",
+      "requestedBy": "@jjk-x2r"
     },
     {
       "kind": "landmark",
-      "id": "octopus-aquarium",
-      "name": "Octopus Aquarium",
-      "requestedBy": "@Staypositivels"
-    },
-    {
-      "kind": "landmark",
-      "id": "airport",
-      "name": "Airport",
-      "requestedBy": "@Fly4Ever777"
-    },
-    {
-      "kind": "landmark",
-      "id": "toy-factory",
-      "name": "Toy Factory",
-      "requestedBy": "@GamerGuy67x"
-    },
-    {
-      "kind": "landmark",
-      "id": "mma-gym",
-      "name": "MMA Gym",
-      "requestedBy": "@og-goat1.0"
-    },
-    {
-      "kind": "landmark",
-      "id": "school",
-      "name": "School",
-      "requestedBy": "@Onni_the_furry"
-    },
-    {
-      "kind": "landmark",
-      "id": "hospital",
-      "name": "Hospital",
-      "requestedBy": "@batuSmile75"
-    },
-    {
-      "kind": "landmark",
-      "id": "market",
-      "name": "Market",
-      "requestedBy": "@hasmask9103"
-    },
-    {
-      "kind": "landmark",
-      "id": "mall",
-      "name": "Mall",
-      "requestedBy": "@MRsunglasses2.0"
-    },
-    {
-      "kind": "landmark",
-      "id": "space-center",
-      "name": "Space Center",
-      "requestedBy": "@GLITCHPROBGAMING"
+      "id": "construction-site",
+      "name": "Construction Site",
+      "requestedBy": "@djvitixofficial"
     },
     {
       "kind": "upgrade",
-      "id": "UC9o5frGl01cH3pn6u2VzG6Q",
-      "name": "@SEASALT-k7u",
-      "type": "giant-oak-tree"
+      "id": "UCJKwj1uw3QlueW6K3N-U2gw",
+      "name": "@Staypositivels",
+      "type": "elephant"
     },
     {
       "kind": "upgrade",
-      "id": "UCQMGoJ1ocMTjuVtyI0RayUA",
-      "name": "@TeteaLalu",
-      "type": "garage"
+      "id": "UCkY9hRGZcrVOUq4Hv9CnV-w",
+      "name": "@ElijahCrone-f4j",
+      "type": "shelter"
     },
     {
       "kind": "upgrade",
-      "id": "UCVNoIdSeaoW2eEnaZ61pAEQ",
-      "name": "@Get_jin_in_use",
-      "type": "torii"
+      "id": "UCKXWTyD95c9W96Co4VMbD4A",
+      "name": "@jjk-x2r",
+      "type": "shelter"
     },
     {
       "kind": "upgrade",
-      "id": "UCv-a0knslevzeV3tfAHRhFg",
-      "name": "@ShashankShekhar-o3i",
-      "type": "cat"
-    },
-    {
-      "kind": "upgrade",
-      "id": "UCAHjDw7sioQOA8KE_CJcX-g",
-      "name": "@TheAr1yx",
-      "type": "cat"
-    },
-    {
-      "kind": "upgrade",
-      "id": "UCZcS07-x1ubdSIjAGrVgU-A",
-      "name": "@mdsadiq4737",
-      "type": "quail"
-    },
-    {
-      "kind": "upgrade",
-      "id": "UCAQ5RvmzbTwByI28r0B6qgw",
-      "name": "@Onni_the_furry",
-      "type": "pool"
-    },
-    {
-      "kind": "upgrade",
-      "id": "UCWkYCJOI-n0B8BB8XAE66Hg",
-      "name": "@PolerGG",
-      "type": "pool"
-    },
-    {
-      "kind": "upgrade",
-      "id": "UC0pbp9LePnIsAf1cRyxG7Kw",
-      "name": "@Appilly_MSM",
-      "type": "apple-tree"
-    },
-    {
-      "kind": "upgrade",
-      "id": "UCpD3u7o7qCaDE5Hui4Xo1bQ",
-      "name": "@prabhasishbhattacharya9226",
-      "type": "soccer-field"
-    },
-    {
-      "kind": "upgrade",
-      "id": "UCZYD9tjWBaJgrwaKK6DXp7g",
-      "name": "@Eastonfortniteeee",
-      "type": "pool"
-    },
-    {
-      "kind": "upgrade",
-      "id": "UCw-XTBd2D4HtHVOrsO_xZ0A",
-      "name": "@Lethalguyy",
-      "type": "pond"
-    },
-    {
-      "kind": "house",
-      "id": "UCcWjOp-PQpGG_NnjJ2N3DDQ",
-      "name": "@djvitixofficial",
-      "title": "Glass Tower"
-    },
-    {
-      "kind": "house",
       "id": "UCUh2iTRVNp77G29R_R6sM4A",
       "name": "@TwoToThePowerOf999ImSmart",
-      "title": "Modern House"
+      "type": "drone"
+    },
+    {
+      "kind": "upgrade",
+      "id": "UCgDf7IYRCZ9MXVMjPXnZkEw",
+      "name": "@ConnorLukach",
+      "type": "koi-pond"
+    },
+    {
+      "kind": "house",
+      "id": "UC3EbWVsoRRZmwM2zz7bbkgA",
+      "name": "@immortal_snaiI",
+      "title": "Black Gold Mansion"
+    },
+    {
+      "kind": "house",
+      "id": "UCcHU2bB5SkPxiu6R39KMPsg",
+      "name": "@UriahTechOfficial",
+      "title": "Apartment Tower"
+    },
+    {
+      "kind": "house",
+      "id": "UCv-a0knslevzeV3tfAHRhFg",
+      "name": "@ShashankShekhar-o3i",
+      "title": "Sky High Tower"
+    },
+    {
+      "kind": "house",
+      "id": "UCrBakTMMz8PQAn8oIW1hp-g",
+      "name": "@GamerGuy67x",
+      "title": "Spire Tower"
+    },
+    {
+      "kind": "house",
+      "id": "UCn-3PuoTEOwyWSCo-89yj0A",
+      "name": "@POUSALI2412",
+      "title": "Cosy Cottage"
     }
   ]
 }

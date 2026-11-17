@@ -185,6 +185,10 @@ function buildTimeline(city, ch) {
     torii: (n) => [`${n}'s café now has a red shrine gate!`, 'Got a red shrine gate!'],
     quail: (n) => [`Meet ${n}'s new pet quail!`, 'Got a pet quail!'],
     'soccer-field': (n) => [`${n} has a soccer field next to the house!`, 'Got a soccer field!'],
+    elephant: (n) => [`${n} got a pet elephant!`, 'Got an elephant!'],
+    shelter: (n) => [`${n} built a storm shelter in the yard!`, 'Got a storm shelter!'],
+    drone: (n) => [`A drone now circles ${n}'s house!`, 'Got a drone!'],
+    'koi-pond': (n) => [`${n} has a koi pond!`, 'Got a koi pond!'],
   };
   const newLandmarks = newSpecials.filter((s) => s.kind === 'landmark');
   for (const sp of newLandmarks.slice(0, MAX_FEATURED_LANDMARKS)) {
@@ -314,8 +318,10 @@ function buildTimeline(city, ch) {
       case 'landmark': {
         const l = world.landmarks.get(s.sp.id);
         const target = new THREE.Vector3(l.outer.position.x, l.height * 0.45, l.outer.position.z);
-        s.az ??= clearestView(l.outer.position, l.outer.rotation.y + 0.55, target.y, 27, 30, l.outer, 8);
-        return orbit(target, 27 - 3 * k, s.az + k * 0.4, 30);
+        // big (L) and tall landmarks need the camera further back to show all of them
+        const dist = Math.max(27, l.height * 1.7, l.size === 'L' ? 44 : 0);
+        s.az ??= clearestView(l.outer.position, l.outer.rotation.y + 0.55, target.y, dist, 30, l.outer, 8);
+        return orbit(target, dist * (1 - 0.11 * k), s.az + k * 0.4, 30);
       }
       case 'upgrade':
         return upgradeShot(s, lt);

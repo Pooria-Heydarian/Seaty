@@ -363,6 +363,136 @@
         4,
         -4
       ]
+    },
+    {
+      "id": "skyscraper",
+      "type": "skyscraper",
+      "kind": "skyscraper",
+      "name": "Skyscraper",
+      "requestedBy": "@immortal_snaiI",
+      "requestedById": "UC3EbWVsoRRZmwM2zz7bbkgA",
+      "requestedIn": "Ugwn9fNlnfC4rpdqjEF4AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "id": "cute-café",
+      "type": "cafe",
+      "kind": "cafe",
+      "name": "Cute Café",
+      "requestedBy": "@AlicePlayz175",
+      "requestedById": "UCNozJOseq3VkW3izE6u28Qw",
+      "requestedIn": "Ugwy49apECltfI8BABV4AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "id": "lemon-farm",
+      "type": "lemon-farm",
+      "kind": "lemon-farm",
+      "name": "Lemon Farm",
+      "requestedBy": "@LemonCubeDev",
+      "requestedById": "UCOXkK2o1Xe-mmbNHaSd6r2g",
+      "requestedIn": "UgwwXqRKVaf6zGyvtQh4AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "id": "black-hole-reactor",
+      "type": "black-hole-reactor",
+      "kind": "black-hole-reactor",
+      "name": "Black Hole Reactor",
+      "requestedBy": "@oppavoidostyle",
+      "requestedById": "UCZdoa5Ir4BiO8NK_BKoL4vw",
+      "requestedIn": "UgyE6t7H43KYV6YOxBJ4AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "id": "hot-dog-stand",
+      "type": "hot-dog-stand",
+      "kind": "hot-dog-stand",
+      "name": "Hot Dog Stand",
+      "requestedBy": "@Jimking12goat",
+      "requestedById": "UCOdUCQ_pkaIh8sb76Aw4cgw",
+      "requestedIn": "Ugz6lGZHgMSUejsuzo94AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "id": "baguette-statue",
+      "type": "baguette-statue",
+      "kind": "statue",
+      "name": "Baguette Statue",
+      "requestedBy": "@MrTauntyFace",
+      "requestedById": "UC_GtnlGVIQfvWpnr-nZvefQ",
+      "requestedIn": "UgyH2kAUzFgL7FLTyfB4AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "id": "clothing-boutique",
+      "type": "boutique",
+      "kind": "boutique",
+      "name": "Clothing Boutique",
+      "requestedBy": "@ZariGolpayegani",
+      "requestedById": "UC9JUSObteFHT96kE-U5WMNg",
+      "requestedIn": "UgxD0--4mnCCmhlEIlJ4AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "id": "dojo",
+      "type": "dojo",
+      "kind": "dojo",
+      "name": "Dojo",
+      "requestedBy": "@Get_jin_in_use",
+      "requestedById": "UCVNoIdSeaoW2eEnaZ61pAEQ",
+      "requestedIn": "UgxrHtBdgaDHrtjE1I94AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "id": "movie-theater",
+      "type": "cinema",
+      "kind": "cinema",
+      "name": "Movie Theater",
+      "requestedBy": "@prabhasishbhattacharya9226",
+      "requestedById": "UCpD3u7o7qCaDE5Hui4Xo1bQ",
+      "requestedIn": "UgzmGPQJ9oscTOu-KLx4AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "id": "university",
+      "type": "university",
+      "kind": "university",
+      "name": "University",
+      "requestedBy": "@DaryaAnsaripour",
+      "requestedById": "UCm0POPnjdHrn8FKHyVJfYGg",
+      "requestedIn": "Ugyrx0JjppgMsJvkgFl4AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "id": "gothic-church",
+      "type": "gothic-church",
+      "kind": "church",
+      "name": "Gothic Church",
+      "requestedBy": "@nexis1337",
+      "requestedById": "UCLu3a1Dtsk4PUuUWbuWCZ2Q",
+      "requestedIn": "UgwOZW2nxIU42mL7PmJ4AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "id": "dam",
+      "type": "dam",
+      "kind": "dam",
+      "name": "Dam",
+      "requestedBy": "@jjk-x2r",
+      "requestedById": "UCKXWTyD95c9W96Co4VMbD4A",
+      "requestedIn": "UgzTanC06WOSsZbrR-h4AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "id": "construction-site",
+      "type": "construction-site",
+      "kind": "construction-site",
+      "name": "Construction Site",
+      "requestedBy": "@djvitixofficial",
+      "requestedById": "UCcWjOp-PQpGG_NnjJ2N3DDQ",
+      "requestedIn": "UgzeOxgJxeFl4q1W2NF4AaABAg",
+      "added": "2026-11-17"
     }
   ],
   "upgrades": [
@@ -582,6 +712,41 @@
       "type": "pond",
       "requestedIn": "UgwSlSX45DKOfwcLDUd4AaABAg",
       "added": "2026-11-16"
+    },
+    {
+      "resident": "UCJKwj1uw3QlueW6K3N-U2gw",
+      "name": "@Staypositivels",
+      "type": "elephant",
+      "requestedIn": "Ugxm74BS5nw4qBAmvON4AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "resident": "UCkY9hRGZcrVOUq4Hv9CnV-w",
+      "name": "@ElijahCrone-f4j",
+      "type": "shelter",
+      "requestedIn": "UgzLumgYjmxfm6t7gS94AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "resident": "UCKXWTyD95c9W96Co4VMbD4A",
+      "name": "@jjk-x2r",
+      "type": "shelter",
+      "requestedIn": "UgzTanC06WOSsZbrR-h4AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "resident": "UCUh2iTRVNp77G29R_R6sM4A",
+      "name": "@TwoToThePowerOf999ImSmart",
+      "type": "drone",
+      "requestedIn": "Ugxd0FEkVV1kXyv3u3d4AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "resident": "UCgDf7IYRCZ9MXVMjPXnZkEw",
+      "name": "@ConnorLukach",
+      "type": "koi-pond",
+      "requestedIn": "Ugw1u5chamMD-X37PM54AaABAg",
+      "added": "2026-11-17"
     }
   ],
   "houses": [
@@ -952,6 +1117,100 @@
       },
       "requestedIn": "UgwiVNww-8Rf1kr3HUN4AaABAg",
       "added": "2026-11-16"
+    },
+    {
+      "resident": "UC3EbWVsoRRZmwM2zz7bbkgA",
+      "name": "@immortal_snaiI",
+      "title": "Black Gold Mansion",
+      "recipe": {
+        "shape": "mansion",
+        "roof": "pointed",
+        "wall": "#1c1c22",
+        "roofColor": "#d4af37",
+        "door": "#d4af37",
+        "accent": "#f5c542",
+        "extras": [
+          "fairy-lights",
+          "statue",
+          "star"
+        ]
+      },
+      "requestedIn": "UgxUow9Z-T2wHoGzSAh4AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "resident": "UCcHU2bB5SkPxiu6R39KMPsg",
+      "name": "@UriahTechOfficial",
+      "title": "Apartment Tower",
+      "recipe": {
+        "shape": "glass",
+        "roof": "flat",
+        "wall": "#7fb5e0",
+        "roofColor": "#3b4552",
+        "door": "#2b2d42",
+        "accent": "#ffffff",
+        "extras": [
+          "solar-panels"
+        ]
+      },
+      "requestedIn": "UgzxpgiQWkv7usP2pc54AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "resident": "UCv-a0knslevzeV3tfAHRhFg",
+      "name": "@ShashankShekhar-o3i",
+      "title": "Sky High Tower",
+      "recipe": {
+        "shape": "glass",
+        "roof": "flat",
+        "wall": "#3d5a80",
+        "roofColor": "#293241",
+        "door": "#293241",
+        "accent": "#e0fbfc",
+        "extras": [
+          "satellite-dish"
+        ]
+      },
+      "requestedIn": "Ugws5fA5atWbuBYZOqR4AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "resident": "UCrBakTMMz8PQAn8oIW1hp-g",
+      "name": "@GamerGuy67x",
+      "title": "Spire Tower",
+      "recipe": {
+        "shape": "tower",
+        "roof": "spire",
+        "wall": "#ece6f7",
+        "roofColor": "#5b3e96",
+        "door": "#3b2a1f",
+        "accent": "#f5b82e",
+        "extras": [
+          "flag"
+        ]
+      },
+      "requestedIn": "Ugwgxu5EBjc_HOXeP8x4AaABAg",
+      "added": "2026-11-17"
+    },
+    {
+      "resident": "UCn-3PuoTEOwyWSCo-89yj0A",
+      "name": "@POUSALI2412",
+      "title": "Cosy Cottage",
+      "recipe": {
+        "shape": "cottage",
+        "roof": "gable",
+        "wall": "#f3e3c3",
+        "roofColor": "#8a4b2f",
+        "door": "#5b3a24",
+        "accent": "#e76f51",
+        "extras": [
+          "flowers",
+          "smoke",
+          "fence"
+        ]
+      },
+      "requestedIn": "Ugws00p9egpbTdDDTn94AaABAg",
+      "added": "2026-11-17"
     }
   ]
 }
