@@ -237,6 +237,17 @@ function buildTimeline(city, ch) {
     text: pick([`${say(g.name)} commented again. Their building now has ${g.to} floors.`, `${say(g.name)} added ${g.to - g.from === 1 ? 'a floor' : `${g.to - g.from} floors`}, now ${g.to} in total.`, `Look at ${say(g.name)}'s building grow, to ${g.to} floors!`], i),
     at: 0.5,
   }));
+  // Invites: new Ambassadors and new villages
+  for (const n of (ch.invites || []).slice(0, 2)) {
+    const entry = world.entries.get(n.id);
+    if (!entry) continue;
+    add('invite', 4.6, { inv: n, entry, village: (world.villages || []).find((v) => v.name === n.village) }, {
+      text: n.type === 'village'
+        ? `${say(n.name)} invited ${n.friends} friends to Seaty, so they all get their own village: ${n.village}! Invite your friends too. Five friends get a village.`
+        : `${say(n.name)} invited ${n.friends} friends to Seaty and is now an Ambassador! Invite five friends and you get your own village.`,
+      at: 0.4,
+    });
+  }
   // Weekly challenge: a new week starts (the winner is shown by their trophy upgrade scene)
   if (ch.challenge?.type === 'new') {
     const c = ch.challenge;
@@ -352,6 +363,12 @@ function buildTimeline(city, ch) {
       }
       case 'outro':
         return orbit(new THREE.Vector3(0, 0, 0), overviewDist() * (0.95 - 0.1 * k), 2.2 + k * 0.45, 40);
+      case 'invite': {
+        const v = s.village;
+        const p = v ? new THREE.Vector3(v.sign.x, 2.5, v.sign.z) : s.entry.outer.position.clone().setY((s.entry.height || 3) * 0.6);
+        s.az ??= Math.atan2(p.x, p.z) + 0.6;
+        return orbit(p, v ? 30 - 4 * k : 18 - 2 * k, s.az + k * 0.35, 32);
+      }
       case 'challenge':
         return orbit(new THREE.Vector3(0, 0, 0), overviewDist() * (0.75 - 0.08 * k), 0.9 + k * 0.6, 34);
     }
@@ -493,6 +510,15 @@ function buildTimeline(city, ch) {
         $('c-avatar').style.background = '#f5b82e';
       }
       cardOn = fade(lt, 1.6, s.dur - 0.35);
+    } else if (s.type === 'invite') {
+      if (lastCard !== s) {
+        const v = s.inv.type === 'village';
+        fillCard(s.inv.name, v ? 'New village' : 'Ambassador', v ? `${s.inv.village}: ${s.inv.friends} friends moved in together` : `Invited ${s.inv.friends} friends to Seaty`, '');
+        $('c-avatar').textContent = v ? '🏘️' : '🎖️';
+        $('c-avatar').style.background = '#f5b82e';
+      }
+      cardOn = fade(lt, 0.9, s.dur - 0.35);
+      labels.set(s.inv.id, { cls: 'vlabel new', text: `@${s.inv.name.replace(/^@/, '')}` });
     } else if (s.type === 'challenge') {
       if (lastCard !== s) {
         fillCard('Weekly challenge', `Find the ${s.chal.name}`, `Clue: ${s.chal.clue}`, '');
@@ -535,8 +561,8 @@ function buildTimeline(city, ch) {
       $('cta-url').style.display = '';
       ctaOn = fade(lt, 0.45, s.dur + 10);
     }
-    lastCard = ['newcomer', 'grow', 'landmark', 'upgrade', 'house', 'challenge'].includes(s.type) ? s : null;
-    $('card').classList.toggle('plain', ['landmark', 'upgrade', 'house', 'challenge'].includes(s.type));
+    lastCard = ['newcomer', 'grow', 'landmark', 'upgrade', 'house', 'challenge', 'invite'].includes(s.type) ? s : null;
+    $('card').classList.toggle('plain', ['landmark', 'upgrade', 'house', 'challenge', 'invite'].includes(s.type));
     setOverlay($('card'), cardOn, 60);
     setOverlay($('montage'), montageOn, 40);
     setOverlay($('board'), boardOn, 60);

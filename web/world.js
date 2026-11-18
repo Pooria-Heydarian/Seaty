@@ -962,12 +962,15 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     const L = createCityLayout(
       city.residents.map((r) => ({ id: r.id, recipe: design.get(r.id)?.recipe || null, styleSince: design.get(r.id)?.since || '' })),
       specials?.landmarks || [],
+      // invite villages: the owner first, then the friends they brought
+      (specials?.villages || []).map((v) => ({ id: v.id, name: v.name, members: [v.ownerId, ...(specials.invites || []).filter((i) => i.byId === v.ownerId).map((i) => i.friendId)] })),
     );
     world.layout = L;
     world.radius = (L.cityR + 1.5) * PITCH; // the city itself (camera framing)
     world.extent = (L.outerR + 1) * PITCH; // city + green belt + outskirts (ground, shadows)
 
     buildGround(L);
+    buildVillages(L);
     buildCars();
     buildTownHall();
 
@@ -980,7 +983,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       outer.position.set(home.x, 0, home.z);
       outer.rotation.y = home.rot; // every house faces its street
       scene.add(outer);
-      const entry = { resident, plot: i + 1, rank: rankOf.get(resident.id), hash, outer, neighbourhood: NEIGHBOURHOODS[home.style] };
+      const entry = { resident, plot: i + 1, rank: rankOf.get(resident.id), hash, outer, neighbourhood: NEIGHBOURHOODS[home.style] || home.village };
       world.setFloors(entry, resident.floors);
       world.entries.set(resident.id, entry);
       world.list.push(entry);
@@ -1028,6 +1031,44 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     for (const f of world.upgradeTicks) f(seconds);
     world.airship?.tick(seconds);
   };
+
+  /** Invite villages: a wooden gate with the village's name over the road into it, and a little village green. */
+  function buildVillages(L) {
+    for (const v of L.villages || []) {
+      const g = new THREE.Group();
+      const wood = new THREE.MeshStandardMaterial({ color: '#7b5a3c', roughness: 0.8 });
+      for (const x of [-2.6, 2.6]) {
+        g.add(new THREE.Mesh(new THREE.BoxGeometry(0.4, 4.2, 0.4).translate(x, 2.1, 0), wood));
+        g.add(new THREE.Mesh(new THREE.ConeGeometry(0.4, 0.6, 4).rotateY(Math.PI / 4).translate(x, 4.5, 0), new THREE.MeshStandardMaterial({ color: '#c0392b' })));
+      }
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(6.0, 0.3, 0.35).translate(0, 3.9, 0), wood));
+      const cv = document.createElement('canvas');
+      cv.width = 1024; cv.height = 200;
+      const c = cv.getContext('2d');
+      c.fillStyle = '#fbf3e4'; c.fillRect(0, 0, 1024, 200);
+      c.strokeStyle = '#7b5a3c'; c.lineWidth = 18; c.strokeRect(9, 9, 1006, 182);
+      c.fillStyle = '#3b2a1f'; c.textAlign = 'center'; c.textBaseline = 'middle';
+      let px = 110;
+      do { c.font = `900 ${px}px Inter, "Segoe UI", system-ui, sans-serif`; px -= 6; } while (c.measureText(v.name).width > 940 && px > 40);
+      c.fillText(v.name, 512, 106);
+      const tex = new THREE.CanvasTexture(cv);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      const signMat = new THREE.MeshStandardMaterial({ map: tex, emissive: '#ffffff', emissiveMap: tex, emissiveIntensity: world.night ? 0.6 : 0.15 });
+      nightMats.push({ m: signMat, day: 0.15, night: 0.6 });
+      for (const side of [1, -1]) {
+        const p = new THREE.Mesh(new THREE.PlaneGeometry(5.2, 1.0), signMat);
+        p.position.set(0, 3.2, side * 0.2);
+        if (side < 0) p.rotation.y = Math.PI;
+        g.add(p);
+      }
+      g.position.set(v.sign.x, 0.02, v.sign.z);
+      g.rotation.y = v.sign.rot;
+      g.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+      g.userData.village = v;
+      scene.add(g);
+      (world.villages ||= []).push({ ...v, group: g });
+    }
+  }
 
   /** Pylons and cables carrying power from the dam to the power plant (requested by @jjk-x2r, Day 6). */
   function buildPowerLine() {

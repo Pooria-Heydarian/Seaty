@@ -28,8 +28,9 @@
         <div><b id="stat-residents">–</b><span>residents</span></div>
         <div><b id="stat-floors">–</b><span>floors</span></div>
         <div><b id="stat-videos">–</b><span>videos</span></div>
+        <div id="stat-tourists-box" hidden><b id="stat-tourists">–</b><span>tourists</span></div>
       </div>
-      <p class="how">Comment on a video to get a house.<br />Comment on each new video to add a floor.</p>
+      <p class="how">Comment on a video to get a house.<br />Comment on each new video to add a floor.<br />Invite 5 friends and get <b>your own village</b>.</p>
     </header>
 
     <div class="card search">
@@ -38,7 +39,8 @@
     </div>
 
     <aside class="card board" id="board">
-      <button class="board-toggle" id="board-toggle" aria-expanded="true">Tallest towers</button>
+      <button class="board-toggle" id="board-toggle" aria-expanded="true">Leaderboard</button>
+      <div class="board-tabs" role="tablist"><button id="tab-tall" class="on" role="tab">🏙️ Tallest</button><button id="tab-invite" role="tab">🤝 Inviters</button></div>
       <ol id="leaderboard"></ol>
     </aside>
 
@@ -58,6 +60,7 @@
       </div>
       <div class="info-actions">
         <button id="info-share">Copy link</button>
+        <button id="info-invite" title="Copy an invitation to send to a friend">Invite friends</button>
         <a id="info-channel" target="_blank" rel="noopener">Channel ↗</a>
       </div>
     </div>

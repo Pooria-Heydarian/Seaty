@@ -21,7 +21,8 @@
     "finish": "node scripts/daily-report.mjs && node scripts/render-video.mjs",
     "tour": "node scripts/render-video.mjs --page tour.html --name seaty-city-tour --width 1920 --height 1080",
     "podcast": "node scripts/render-video.mjs --page podcast.html --name seaty-weekly --width 1920 --height 1080",
-    "challenge": "node scripts/challenge.mjs"
+    "challenge": "node scripts/challenge.mjs",
+    "invite": "node scripts/invite.mjs"
   },
   "engines": {
     "node": ">=18"

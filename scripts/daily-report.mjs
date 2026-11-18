@@ -66,6 +66,21 @@ for (const h of specials.houses || []) {
 }
 writeJSON(SEEN_FILE, seenAll);
 
+// Invite news for the Short: a new Ambassador (3 friends) or a new village (5 friends).
+const inviteNews = [];
+{
+  const counts = new Map();
+  for (const i of specials.invites || []) counts.set(i.byId, (counts.get(i.byId) || 0) + 1);
+  for (const [id, n] of counts) {
+    const r = findResident(id);
+    if (!r) continue;
+    const v = (specials.villages || []).find((x) => x.ownerId === id);
+    const key = v ? `invite:village:${id}` : n >= 3 ? `invite:ambassador:${id}` : null;
+    if (key && isNew(key)) { inviteNews.push({ type: v ? 'village' : 'ambassador', id, name: r.name, friends: n, village: v?.name || '' }); seen[key] = date; }
+  }
+  writeJSON(SEEN_FILE, seenAll);
+}
+
 // Weekly challenge news for the Short: a new week starting, or a winner.
 const challenge = readJSON(path.join(ROOT, 'web', 'data', 'challenge.json'))?.current;
 let challengeNews = null;
@@ -154,6 +169,7 @@ writeJSON(CHANGES_FILE, {
   top: ranked.slice(0, 3).map((r) => ({ id: r.id, name: r.name, floors: r.floors })),
   newSpecials,
   challenge: challengeNews,
+  invites: inviteNews,
 });
 
 console.log(lines.join('\n'));

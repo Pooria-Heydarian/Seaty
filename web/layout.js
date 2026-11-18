@@ -67,7 +67,10 @@ const CIVIC_SLOTS = [[0, -1], [-1, 0], [0, 1], [1, -1], [-1, -1], [-1, 1], [1, 1
  * @param {Array<{id:string, recipe?:object, styleSince?:string}>} residents  in join order
  * @param {Array<object>} landmarks  specials.landmarks, in the order they were added
  */
-export function createCityLayout(residents = [], landmarks = []) {
+export function createCityLayout(residents = [], landmarks = [], villages = []) {
+  // invite villages: the owner and the friends they invited live together on the ring between the belt and the outskirts
+  const villageOf = new Map();
+  for (const v of villages) for (const id of v.members) if (!villageOf.has(id)) villageOf.set(id, v);
   const blocks = new Map(); // "x,z" -> { x, z, kind, lots: [kind|null x4], style?, landmark? }
   const homes = new Map(); // resident id -> { x, z, rot, style }
   const spots = new Map(); // landmark id -> { x, z, rot, scale, size, district }
@@ -81,6 +84,7 @@ export function createCityLayout(residents = [], landmarks = []) {
   // ---- Neighbourhoods: lots per style, every 4th block a pocket park ----
   const byStyle = { classic: [], tower: [], villa: [], old: [], fantasy: [] };
   residents.forEach((r, i) => {
+    if (villageOf.has(r.id)) return; // lives in their village (a classic slot stays a garden)
     const style = houseStyle(r.recipe);
     if (style === 'classic') byStyle.classic.push({ id: r.id, slot: i }); // join order, with gaps for people who moved
     else byStyle[style].push({ id: r.id, since: r.styleSince || '', i });
@@ -109,7 +113,7 @@ export function createCityLayout(residents = [], landmarks = []) {
   }
 
   // ---- Landmarks ----
-  const ownerStyle = (def) => homes.get(def.requestedById)?.style || 'classic';
+  const ownerStyle = (def) => { const st = homes.get(def.requestedById)?.style; return byStyle[st] ? st : 'classic'; };
   const faceCentre = (x, z) => Math.round(Math.atan2(-x, -z) / (Math.PI / 2)) * (Math.PI / 2);
   const civic = [], main = [], local = [], belt = [], outskirts = [], station = [];
   for (const def of landmarks) {
@@ -191,6 +195,37 @@ export function createCityLayout(residents = [], landmarks = []) {
   });
   const beltR1 = cityR + 1, beltR2 = cityR + 2 + Math.floor(belt.length / 12) * 2;
   place(belt, beltR1, beltR2, 'Green belt', Math.PI * 0.75); // first venue south-east, then spread round
+  // ---- Invite villages: a run of blocks on the meadow ring between the belt and the outskirts ----
+  const villageInfo = [];
+  {
+    const rv = beltR2 + 1;
+    const ringList = [];
+    for (let x = -rv; x <= rv; x++) for (let z = -rv; z <= rv; z++) if (ring(x, z) === rv) ringList.push([x, z]);
+    ringList.sort((a, b) => angle(...a) - angle(...b));
+    const n = ringList.length;
+    villages.forEach((v, k) => {
+      const members = v.members.filter((id) => residents.some((r) => r.id === id));
+      if (!members.length) return;
+      const need = Math.ceil(members.length / 4);
+      const target = (Math.PI * 0.25 + k * 2.4) % (Math.PI * 2);
+      const gap = (a) => { const d = Math.abs(a - target) % (Math.PI * 2); return Math.min(d, Math.PI * 2 - d); };
+      const starts = [...Array(n).keys()].sort((a, b) => gap(angle(...ringList[a])) - gap(angle(...ringList[b])));
+      const start = starts.find((i0) => [...Array(need).keys()].every((j) => !taken.has(key(...ringList[(i0 + j) % n]))));
+      if (start === undefined) return;
+      const cells = [...Array(need).keys()].map((j) => ringList[(start + j) % n]);
+      cells.forEach(([x, z]) => { taken.add(key(x, z)); Object.assign(block(x, z), { kind: 'homes', style: 'village', village: v.id }); });
+      members.forEach((id, m) => {
+        const [x, z] = cells[Math.floor(m / 4)];
+        block(x, z).lots[m % 4] = 'house';
+        homes.set(id, { ...lotPos(x, z, m % 4), style: 'village', village: v.name });
+      });
+      for (const [x, z] of cells) block(x, z).lots = block(x, z).lots.map((l) => l || 'garden');
+      // the gate and name sign stand on the side of the first block that faces the city
+      const [fx, fz] = cells[0];
+      const len = Math.hypot(fx, fz) || 1;
+      villageInfo.push({ id: v.id, name: v.name, members, blocks: cells, sign: { x: fx * PITCH - (fx / len) * (BLOCK / 2 + 0.8), z: fz * PITCH - (fz / len) * (BLOCK / 2 + 0.8), rot: Math.atan2(-fx, -fz) } });
+    });
+  }
   const outR1 = beltR2 + 2, outR2 = outR1 + 1 + Math.floor(outskirts.length / 14) * 2;
   place(outskirts, outR1, outR2, 'Outskirts', Math.PI); // industry starts south, away from the homes in the north
 
@@ -210,7 +245,7 @@ export function createCityLayout(residents = [], landmarks = []) {
     else if (r < outR1) b.kind = 'meadow';
     else b.kind = 'outskirts';
   }
-  return { blocks: [...blocks.values()], homes, spots, cityR, beltR: beltR2, outerR };
+  return { blocks: [...blocks.values()], homes, spots, cityR, beltR: beltR2, outerR, villages: villageInfo };
 }
 
 const NAMES = { classic: 'Classic Homes', tower: 'Tower Row', villa: 'Villa Hills', old: 'Old Town', fantasy: 'Fantasy Lane' };

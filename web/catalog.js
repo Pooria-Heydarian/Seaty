@@ -3,6 +3,10 @@
 // No dependencies, so Node (scripts/ai-specials.mjs) can import it directly.
 
 /** House upgrades: one of each type per house. */
+/** Invite friends: a citizen with this many invited friends is an Ambassador / gets their own village. */
+export const AMBASSADOR_INVITES = 3;
+export const VILLAGE_INVITES = 5;
+
 export const UPGRADE_TYPES = {
   pool: 'a swimming pool in the yard next to the house',
   'apple-tree': 'an apple tree with red apples in the backyard',

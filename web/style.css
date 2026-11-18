@@ -45,7 +45,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .logo { font-weight: 800; font-size: 26px; letter-spacing: -0.02em; }
 .logo::after { content: ''; display: inline-block; width: 8px; height: 8px; margin-left: 4px; border-radius: 50%; background: var(--accent); }
 .sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
-.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(62px, 1fr)); gap: 6px; margin-top: 12px; }
 .stats div, .info-grid div { display: flex; flex-direction: column; background: var(--accent-soft); border-radius: 10px; padding: 8px 10px; }
 .stats b, .info-grid b { font-size: 18px; font-variant-numeric: tabular-nums; }
 .stats span, .info-grid span { font-size: 11px; color: var(--muted); }
@@ -116,3 +116,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .toolbar { left: 16px; right: 16px; justify-content: space-between; }
   .toolbar button { padding: 8px 6px; font-size: 12px; }
 }
+
+/* Leaderboard tabs (tallest towers / top inviters) */
+.board-tabs { display: flex; gap: 4px; padding: 0 6px 6px; }
+.board-tabs button { flex: 1; background: none; border: 1px solid var(--accent-soft); border-radius: 8px; padding: 5px 6px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.board-tabs button.on { background: var(--accent-soft); color: inherit; }
+.board.collapsed .board-tabs { display: none; }
+.badge { display: inline-block; background: var(--accent-soft); border-radius: 999px; padding: 2px 8px; font-size: 11px; font-weight: 700; margin: 6px 4px 0 0; }
+
+.stats [hidden] { display: none; }

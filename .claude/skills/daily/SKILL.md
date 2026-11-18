@@ -26,6 +26,8 @@ If the fetch fails, show the error. A quota or key problem is the owner's to fix
 
 **Weekly challenge:** if `today.md` starts with a 🏆 section and someone commented the secret word before the deadline, the first one wins: `npm run challenge -- winner @name --comment <id>` (gives them the trophy; tomorrow's Short shows it). Reply to the winner with congratulations; don't confirm or deny the word to anyone else.
 
+**Invites:** if `today.md` has a 🤝 Invites section, check each one is a real new citizen (not spam, not an obvious second account of the inviter) and run the command it shows. When someone reaches 5 friends the script creates their village ("<name>'s Village"); if they asked for a village name in a comment, `npm run invite -- rename @owner "<name>"` (generic, friendly, no brands). Thank the inviter in the replies.
+
 ## 3. Decide every request
 
 For each comment decide one of: **build**, **partly build**, **impossible** (with a short reason), **inappropriate**, or **no request**.

@@ -55,6 +55,22 @@ if (challenge && !challenge.winner) {
   });
   md.push('');
 }
+// Invites: new citizens who say who invited them ("invited by @name", "@name invited me").
+{
+  const credited = new Set((specials.invites || []).map((i) => i.friendId));
+  const weekAgo = new Date(Date.now() - 8 * 86400000).toISOString();
+  const found = [];
+  for (const c of input.comments) {
+    const r = byId.get(c.authorId);
+    if (!r || credited.has(r.id) || r.joined < weekAgo) continue;
+    const m = c.text.match(/invit\w*\s+(?:me\s+)?(?:by|from)\s+@?([\p{L}\p{N}._-]{3,})/iu) || c.text.match(/@([\p{L}\p{N}._-]{3,})\s+(?:has\s+)?invited\s+me/iu);
+    if (!m) continue;
+    const inviter = city.residents.find((x) => norm(x.name) === norm(m[1]));
+    found.push(`- ${c.author} says **invited by @${m[1]}**${inviter ? '' : ' (⚠ no citizen with that name: check the spelling)'} · comment \`${c.id}\`${inviter && inviter.id !== r.id ? ` → \`npm run invite -- add ${c.author} --by ${inviter.name} --comment ${c.id}\`` : ''}`);
+    credited.add(r.id);
+  }
+  if (found.length) md.push('## 🤝 Invites (new citizens who say a friend invited them)', ...found, '');
+}
 for (const [id, list] of people) {
   const r = byId.get(id);
   md.push(`## ${list[0].author}  \`${id}\``);

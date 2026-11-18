@@ -37,7 +37,7 @@ Episode shape (keep the chapter names; they become YouTube chapters):
 4. **Funniest comments**: 3–5, each read from a `card` with the real text, then a kind, funny reaction. Laugh *with* people, never *at* them. Skip anything rude, sad, or that could embarrass someone.
 5. **Citizen stories**: 2–3 real citizens, only from what they wrote and built here. Never invent details about their lives.
 6. **Weekly challenge**: last week's winner (focus on their house and trophy) and this week's challenge, rules `panel`, the clue `card`, "don't post where it is, just the word".
-7. **City Hall**: rules, and any rule change the owner decided this week.
+7. **City Hall**: rules, and any rule change the owner decided this week. Remind people about invites: write "invited by @friend" in your first comment; 3 friends = Ambassador, 5 friends = your own village. Shout out the week's top inviters (`npm run invite -- list`) and any new village.
 8. **Coming soon**: only things the owner has approved. Ask the owner if unsure; never promise features or dates on your own.
 9. **See you next week**: comment to become a citizen, the website, goodbye.
 

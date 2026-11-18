@@ -19,6 +19,9 @@ controls.minDistance = 8;
 controls.autoRotateSpeed = 0.6;
 
 let city = null;
+let invites = []; // specials.invites: { friend, friendId, by, byId }
+let villages = []; // specials.villages: { id, name, owner, ownerId }
+const AMBASSADOR = 3, VILLAGE = 5;
 let selected = null;
 let selectedLandmark = null;
 let selectionOutline = null;
@@ -65,7 +68,18 @@ function select(entry, { fly = true, updateUrl = true } = {}) {
   $('info-name').textContent = r.name;
   const UPGRADE_NAMES = { pool: '🏊 Pool', 'apple-tree': '🍎 Apple tree', capybara: '🦫 Capybara', cat: '🐈 Cat', dog: '🐕 Dog', gems: '💎 Ruby & Sapphire', 'flower-tree': '🌸 Blossom tree', pond: '🪷 Pond', campfire: '🔥 Campfire', chickens: '🐔 Chickens', 'giant-apple-tree': '🍎 Giant apple tree', 'giant-oak-tree': '🌳 Giant oak', garage: '🏎️ Garage', torii: '⛩️ Shrine gate', quail: '🐦 Quail', 'soccer-field': '⚽ Soccer field', elephant: '🐘 Elephant', shelter: '🛖 Storm shelter', drone: '🛸 Drone', 'koi-pond': '🎏 Koi pond', trophy: '🏆 Challenge winner', 'capybara-pen': '🦫 Capybara pen', 'xmas-hats': '🎅 Christmas hats', 'big-cats': '🦁 Lion & tiger' };
   const ups = [...(entry.recipe ? [`🏰 ${entry.houseTitle || 'Dream house'}`] : []), ...[...(entry.upgrades || [])].map((u) => UPGRADE_NAMES[u] || u)];
-  $('info-meta').textContent = `${entry.neighbourhood ? `${entry.neighbourhood} · ` : ''}Resident since ${new Date(r.joined).toLocaleDateString()}${ups.length ? ` · ${ups.join(' · ')}` : ''}`;
+  const friends = invites.filter((i) => i.byId === r.id).length;
+  const invitedBy = invites.find((i) => i.friendId === r.id)?.by;
+  const ownVillage = villages.find((v) => v.ownerId === r.id);
+  const social = [
+    ownVillage ? `🏘️ Founder of ${ownVillage.name}` : friends >= AMBASSADOR ? '🎖️ Ambassador' : '',
+    friends ? `🤝 ${friends} friend${friends === 1 ? '' : 's'} invited` : '',
+    invitedBy ? `invited by ${invitedBy}` : '',
+  ].filter(Boolean);
+  $('info-meta').textContent = `${entry.neighbourhood ? `${entry.neighbourhood} · ` : ''}Resident since ${new Date(r.joined).toLocaleDateString()}${[...social, ...ups].length ? ` · ${[...social, ...ups].join(' · ')}` : ''}`;
+  $('info-invite').hidden = false;
+  $('info-invite').dataset.name = r.name;
+  $('info-invite').dataset.id = r.id;
   $('info-floors').textContent = r.floors;
   $('info-rank').textContent = `#${entry.rank}`;
   $('info-plot').textContent = entry.plot;
@@ -100,6 +114,7 @@ function selectLandmark(lm, { fly = true, updateUrl = true } = {}) {
   selectionOutline = edges;
   const d = lm.def;
   $('info-name').textContent = d.name;
+  $('info-invite').hidden = true;
   $('info-meta').textContent = `Landmark${d.requestedBy ? ` · requested by ${d.requestedBy}` : ''}${d.added ? ` · opened ${new Date(d.added).toLocaleDateString()}` : ''}`;
   $('info-floors').textContent = lm.floors;
   $('info-rank').textContent = '★';
@@ -134,19 +149,31 @@ function fillUi() {
   $('stat-videos').textContent = (city.videoCount || 0).toLocaleString();
 
   const board = $('leaderboard');
-  [...world.list].sort((a, b) => a.rank - b.rank).slice(0, 10).forEach((b) => {
-    const li = document.createElement('li');
-    const n = document.createElement('span'); n.className = 'n'; n.textContent = b.resident.name;
-    const f = document.createElement('span'); f.className = 'f'; f.textContent = b.resident.floors;
-    li.append(n, f);
-    li.onclick = () => select(b);
-    board.appendChild(li);
-  });
-  if (!world.list.length) {
-    const li = document.createElement('li');
-    li.textContent = 'No residents yet. Be the first!';
-    board.appendChild(li);
-  }
+  const showBoard = (kind) => {
+    board.innerHTML = '';
+    $('tab-tall').classList.toggle('on', kind === 'tall');
+    $('tab-invite').classList.toggle('on', kind === 'invite');
+    const rows = kind === 'tall'
+      ? [...world.list].sort((a, b) => a.rank - b.rank).slice(0, 10).map((b) => [b, b.resident.floors])
+      : [...invites.reduce((m, i) => m.set(i.byId, (m.get(i.byId) || 0) + 1), new Map())]
+          .sort((a, b) => b[1] - a[1]).slice(0, 10).map(([id, n]) => [world.entries.get(id), n]).filter(([e]) => e);
+    for (const [b, val] of rows) {
+      const li = document.createElement('li');
+      const n = document.createElement('span'); n.className = 'n'; n.textContent = b.resident.name;
+      const f = document.createElement('span'); f.className = 'f'; f.textContent = kind === 'tall' ? val : `${val >= VILLAGE ? '🏘️' : val >= AMBASSADOR ? '🎖️' : ''} ${val}`;
+      li.append(n, f);
+      li.onclick = () => select(b);
+      board.appendChild(li);
+    }
+    if (!rows.length) {
+      const li = document.createElement('li');
+      li.textContent = kind === 'tall' ? 'No residents yet. Be the first!' : 'Invite a friend: they write "invited by @you" in their comment. 5 friends = your own village!';
+      board.appendChild(li);
+    }
+  };
+  showBoard('tall');
+  $('tab-tall').onclick = () => showBoard('tall');
+  $('tab-invite').onclick = () => showBoard('invite');
   if (innerWidth < 760) $('board').classList.add('collapsed');
   $('board-toggle').onclick = () => {
     const c = $('board').classList.toggle('collapsed');
@@ -198,6 +225,13 @@ function fillUi() {
   });
 
   $('info-close').onclick = () => select(null);
+  $('info-invite').onclick = async () => {
+    const b = $('info-invite');
+    const link = `${location.origin}${location.pathname}?u=${encodeURIComponent(b.dataset.id)}`;
+    const text = `Come and live next to me in Seaty, a city built by YouTube comments! 🏙️ Comment on any of the channel's videos and write "invited by ${b.dataset.name}", and you get a house. Here's mine: ${link}`;
+    try { await navigator.clipboard.writeText(text); b.textContent = 'Invitation copied!'; } catch { b.textContent = 'Copy failed'; }
+    setTimeout(() => (b.textContent = 'Invite friends'), 1800);
+  };
   $('info-share').onclick = async () => {
     try {
       await navigator.clipboard.writeText(location.href);
@@ -338,6 +372,23 @@ function tick(now) {
 }
 
 // ---------- Boot ----------
+/** Tourist counter: GoatCounter (no cookies, no personal data) counts website visits; the total shows in the header. */
+async function loadTourists() {
+  const site = await fetch(`data/site.json?t=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  const code = site?.goatcounter;
+  if (!code || !/^[a-z0-9-]+$/.test(code)) return;
+  const sc = document.createElement('script');
+  sc.async = true;
+  sc.dataset.goatcounter = `https://${code}.goatcounter.com/count`;
+  sc.src = 'https://gc.zgo.at/count.js';
+  document.head.appendChild(sc);
+  const total = await fetch(`https://${code}.goatcounter.com/counter/TOTAL.json`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  if (total?.count) {
+    $('stat-tourists').textContent = String(total.count).replace(/\u202f|\s/g, ',');
+    $('stat-tourists-box').hidden = false;
+  }
+}
+
 async function boot() {
   try {
     const res = await fetch(`data/city.json?t=${Date.now()}`);
@@ -350,7 +401,10 @@ async function boot() {
   }
 
   const specials = await fetch(`data/specials.json?t=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  invites = specials?.invites || [];
+  villages = specials?.villages || [];
   world.build(city, { labelTop: 0, specials });
+  loadTourists();
   // weekly challenge: the hidden object shows from the start date until someone has won
   const challenge = await fetch(`data/challenge.json?t=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   const ch = challenge?.current;

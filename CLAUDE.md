@@ -10,6 +10,11 @@ The owner comes here once a day and asks for the daily update ("daily", "/daily"
 
 Every weekend the owner asks for "weekly" / "weekly episode" / "Seaty Weekly". Follow `.claude/skills/weekly/SKILL.md`: a two-host landscape episode (`web/podcast.html` + `web/podcast.js`, script in `web/data/episode.json`, `npm run podcast`) and the weekly challenge (`npm run challenge`, `web/data/challenge.json`: a golden object hidden on the website, the first comment with its secret word wins a trophy upgrade).
 
+## Invite friends & tourists
+
+- **Invites:** a new citizen writes "invited by @name" in their first comment; the daily `today.md` lists these with the command `npm run invite -- add @friend --by @inviter --comment <id>` (`scripts/invite.mjs`, stored in `specials.invites` / `specials.villages`). 3 friends = 🎖️ Ambassador, 5 friends = their own **village** on the ring between the green belt and the outskirts (`web/layout.js`), where the inviter and their friends live, with a gate and name sign. Only new citizens count; never reward subscribes or likes.
+- **Tourist counter:** GoatCounter. Put the owner's site code in `web/data/site.json` (`{"goatcounter": "<code>"}`) and turn on "Allow adding visitor counts on your website" in GoatCounter's settings; the header then shows the total visits.
+
 ## Where things are
 
 - `web/world.js`: the 3D town (shared by the site, the daily Short and the trailer). `web/houses.js`: custom house kit; `web/house-models.js`: one-off models made for requests; `web/model.html?u=<channelId>`: one house alone, to check a model from every side. `web/catalog.js`: what can be built (keep it in sync with the models). `web/layout.js`: the city plan (downtown, Main Street, style neighbourhoods with pocket parks, green belt, outskirts); `landmarkPlan` / `houseStyle` in `web/catalog.js` decide where each landmark and house goes.
