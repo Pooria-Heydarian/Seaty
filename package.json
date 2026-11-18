@@ -7,11 +7,11 @@
   "type": "module",
   "scripts": {
     "demo": "node scripts/demo-data.mjs",
-    "fetch": "node scripts/fetch-comments.mjs && node scripts/latest-video.mjs",
+    "fetch": "node scripts/fetch-comments.mjs && node scripts/latest-video.mjs && node scripts/tourists.mjs",
     "report": "node scripts/daily-report.mjs",
     "lottery": "node scripts/lottery.mjs",
     "serve": "node scripts/serve.mjs",
-    "daily": "node scripts/fetch-comments.mjs && node scripts/latest-video.mjs && node scripts/requests.mjs",
+    "daily": "node scripts/fetch-comments.mjs && node scripts/latest-video.mjs && node scripts/tourists.mjs && node scripts/requests.mjs",
     "video": "node scripts/render-video.mjs",
     "upload": "node scripts/upload-youtube.mjs",
     "youtube-auth": "node scripts/youtube-auth.mjs",
@@ -22,7 +22,8 @@
     "tour": "node scripts/render-video.mjs --page tour.html --name seaty-city-tour --width 1920 --height 1080",
     "podcast": "node scripts/render-video.mjs --page podcast.html --name seaty-weekly --width 1920 --height 1080",
     "challenge": "node scripts/challenge.mjs",
-    "invite": "node scripts/invite.mjs"
+    "invite": "node scripts/invite.mjs",
+    "tourists": "node scripts/tourists.mjs"
   },
   "engines": {
     "node": ">=18"

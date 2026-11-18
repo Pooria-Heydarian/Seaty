@@ -384,12 +384,17 @@ async function loadTourists() {
   sc.dataset.goatcounter = `https://${code}.goatcounter.com/count`;
   sc.src = 'https://gc.zgo.at/count.js';
   document.head.appendChild(sc);
-  // GoatCounter's TOTAL is only updated now and then; the page counter is live. Show whichever is higher.
+  // The real total comes from GoatCounter's API in the daily update (data/tourists.json); the public counters are
+  // cached for hours, so they only help when they happen to be higher. Show the highest number we have.
   const get = (p) => fetch(`https://${code}.goatcounter.com/counter/${p}.json`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   const num = (c) => Number(String(c?.count ?? '0').replace(/[^0-9]/g, '')) || 0;
-  const [total, page] = await Promise.all([get('TOTAL'), get(encodeURIComponent(location.pathname))]);
-  if (total || page) {
-    $('stat-tourists').textContent = Math.max(num(total), num(page)).toLocaleString();
+  const [saved, total, page] = await Promise.all([
+    fetch(`data/tourists.json?t=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+    get('TOTAL'),
+    get(encodeURIComponent(location.pathname)),
+  ]);
+  if (saved || total || page) {
+    $('stat-tourists').textContent = Math.max(Number(saved?.total) || 0, num(total), num(page)).toLocaleString();
     $('stat-tourists-box').hidden = false;
   }
 }
