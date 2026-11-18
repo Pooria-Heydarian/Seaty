@@ -377,14 +377,19 @@ async function loadTourists() {
   const site = await fetch(`data/site.json?t=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   const code = site?.goatcounter;
   if (!code || !/^[a-z0-9-]+$/.test(code)) return;
+  // every house link (?u=\u2026, ?l=\u2026) counts as a visit to the same page, so that page's counter is the site total
+  window.goatcounter = { path: () => location.pathname };
   const sc = document.createElement('script');
   sc.async = true;
   sc.dataset.goatcounter = `https://${code}.goatcounter.com/count`;
   sc.src = 'https://gc.zgo.at/count.js';
   document.head.appendChild(sc);
-  const total = await fetch(`https://${code}.goatcounter.com/counter/TOTAL.json`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-  if (total?.count) {
-    $('stat-tourists').textContent = String(total.count).replace(/\u202f|\s/g, ',');
+  // GoatCounter's TOTAL is only updated now and then; the page counter is live. Show whichever is higher.
+  const get = (p) => fetch(`https://${code}.goatcounter.com/counter/${p}.json`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  const num = (c) => Number(String(c?.count ?? '0').replace(/[^0-9]/g, '')) || 0;
+  const [total, page] = await Promise.all([get('TOTAL'), get(encodeURIComponent(location.pathname))]);
+  if (total || page) {
+    $('stat-tourists').textContent = Math.max(num(total), num(page)).toLocaleString();
     $('stat-tourists-box').hidden = false;
   }
 }
