@@ -16,7 +16,7 @@ try {
   if (!code) throw new Error('no GoatCounter code in web/data/site.json');
   if (!TOKEN) throw new Error('no GOATCOUNTER_TOKEN in .env');
   const url = new URL(`https://${code}.goatcounter.com/api/v0/stats/total`);
-  url.searchParams.set('start', '2020-01-01T00:00:00Z');
+  url.searchParams.set('start', '2026-11-01T00:00:00Z'); // Seaty's counter started in November 2026 (a much earlier start is refused)
   url.searchParams.set('end', new Date(Date.now() + 86400000).toISOString().slice(0, 19) + 'Z');
   const res = await fetch(url, { headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' } });
   const body = await res.json().catch(() => null);
