@@ -63,7 +63,7 @@ function select(entry, { fly = true, updateUrl = true } = {}) {
 
   const r = entry.resident;
   $('info-name').textContent = r.name;
-  const UPGRADE_NAMES = { pool: '🏊 Pool', 'apple-tree': '🍎 Apple tree', capybara: '🦫 Capybara', cat: '🐈 Cat', dog: '🐕 Dog', gems: '💎 Ruby & Sapphire', 'flower-tree': '🌸 Blossom tree', pond: '🪷 Pond', campfire: '🔥 Campfire', chickens: '🐔 Chickens', 'giant-apple-tree': '🍎 Giant apple tree', 'giant-oak-tree': '🌳 Giant oak', garage: '🏎️ Garage', torii: '⛩️ Shrine gate', quail: '🐦 Quail', 'soccer-field': '⚽ Soccer field', elephant: '🐘 Elephant', shelter: '🛖 Storm shelter', drone: '🛸 Drone', 'koi-pond': '🎏 Koi pond' };
+  const UPGRADE_NAMES = { pool: '🏊 Pool', 'apple-tree': '🍎 Apple tree', capybara: '🦫 Capybara', cat: '🐈 Cat', dog: '🐕 Dog', gems: '💎 Ruby & Sapphire', 'flower-tree': '🌸 Blossom tree', pond: '🪷 Pond', campfire: '🔥 Campfire', chickens: '🐔 Chickens', 'giant-apple-tree': '🍎 Giant apple tree', 'giant-oak-tree': '🌳 Giant oak', garage: '🏎️ Garage', torii: '⛩️ Shrine gate', quail: '🐦 Quail', 'soccer-field': '⚽ Soccer field', elephant: '🐘 Elephant', shelter: '🛖 Storm shelter', drone: '🛸 Drone', 'koi-pond': '🎏 Koi pond', trophy: '🏆 Challenge winner', 'capybara-pen': '🦫 Capybara pen', 'xmas-hats': '🎅 Christmas hats', 'big-cats': '🦁 Lion & tiger' };
   const ups = [...(entry.recipe ? [`🏰 ${entry.houseTitle || 'Dream house'}`] : []), ...[...(entry.upgrades || [])].map((u) => UPGRADE_NAMES[u] || u)];
   $('info-meta').textContent = `${entry.neighbourhood ? `${entry.neighbourhood} · ` : ''}Resident since ${new Date(r.joined).toLocaleDateString()}${ups.length ? ` · ${ups.join(' · ')}` : ''}`;
   $('info-floors').textContent = r.floors;
@@ -254,10 +254,30 @@ function pick(e) {
   pointer.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
   raycaster.setFromCamera(pointer, camera);
   const d = raycaster.intersectObjects(world.pickables, false)[0]?.object.userData;
-  return d?.entry || d?.landmark || d?.airship || null;
+  return d?.entry || d?.landmark || d?.airship || d?.challenge || null;
 }
 const isLandmark = (x) => Boolean(x?.def);
 const isBillboard = (x) => x === world.airship?.info;
+const isChallenge = (x) => Boolean(x?.code);
+function showFound(ch) {
+  let box = document.getElementById('found');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'found';
+    box.style.cssText = 'position:fixed;inset:0;display:grid;place-items:center;background:rgba(10,16,30,.55);z-index:50;font-family:Inter,system-ui,sans-serif';
+    box.onclick = (e) => { if (e.target === box) box.remove(); };
+    document.body.appendChild(box);
+  }
+  let word = '';
+  try { word = atob(ch.code); } catch { word = ch.code; }
+  box.innerHTML = `<div style="background:#fff;border-radius:24px;padding:28px 32px;max-width:440px;margin:16px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.4)">
+    <div style="font-size:56px">🏆</div>
+    <div style="font-weight:900;font-size:26px;color:#14202f;margin:6px 0">You found the ${ch.name}!</div>
+    <div style="font-size:16px;color:#4a5a70;line-height:1.45">To win, comment this secret word under my newest video:</div>
+    <div style="font-weight:900;font-size:34px;letter-spacing:4px;color:#ff7a45;margin:14px 0;user-select:all">${word}</div>
+    <div style="font-size:14px;color:#6a7a90;line-height:1.4">The first correct comment wins and gets a golden trophy for their house. Keep it secret!</div>
+    <button style="margin-top:18px;background:#ff7a45;color:#fff;border:0;border-radius:999px;padding:10px 22px;font:700 15px Inter,system-ui;cursor:pointer" onclick="this.closest('#found').remove()">Got it</button></div>`;
+}
 const tooltip = $('tooltip');
 let hoverQueued = false;
 renderer.domElement.addEventListener('pointermove', (e) => {
@@ -268,7 +288,7 @@ renderer.domElement.addEventListener('pointermove', (e) => {
     const hit = pick(e);
     renderer.domElement.style.cursor = hit ? 'pointer' : '';
     if (!hit || document.body.classList.contains('recording')) { tooltip.hidden = true; return; }
-    tooltip.textContent = isBillboard(hit)
+    tooltip.textContent = isChallenge(hit) ? '✨ What is this?' : isBillboard(hit)
       ? (hit.url ? `▶ New video: ${hit.title} · click to watch` : 'Seaty airship')
       : isLandmark(hit)
       ? `${hit.def.name}${hit.def.requestedBy ? ` · by ${hit.def.requestedBy}` : ''} · ${hit.floors} floor${hit.floors === 1 ? '' : 's'}`
@@ -283,7 +303,8 @@ renderer.domElement.addEventListener('pointerdown', (e) => { downAt = [e.clientX
 renderer.domElement.addEventListener('pointerup', (e) => {
   if (!downAt || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 5) return;
   const hit = pick(e);
-  if (isBillboard(hit)) { if (hit.url) open(hit.url, '_blank', 'noopener'); }
+  if (isChallenge(hit)) showFound(hit);
+  else if (isBillboard(hit)) { if (hit.url) open(hit.url, '_blank', 'noopener'); }
   else if (isLandmark(hit)) selectLandmark(hit);
   else if (hit) select(hit);
 });
@@ -330,6 +351,10 @@ async function boot() {
 
   const specials = await fetch(`data/specials.json?t=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   world.build(city, { labelTop: 0, specials });
+  // weekly challenge: the hidden object shows from the start date until someone has won
+  const challenge = await fetch(`data/challenge.json?t=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  const ch = challenge?.current;
+  if (ch && !ch.winner && Date.now() >= Date.parse(ch.start || 0)) world.addChallenge(ch);
   const hallLabel = document.createElement('div');
   hallLabel.className = 'label hall';
   hallLabel.textContent = `${city.channel?.title || 'Town Hall'} · ${city.videoCount} video${city.videoCount === 1 ? "" : "s"}`;

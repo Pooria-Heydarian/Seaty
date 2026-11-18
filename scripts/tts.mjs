@@ -50,7 +50,7 @@ export function readWavMono(file) {
  * Speaks every line in a separate Node process and returns the clips.
  * The speech engine (WebAssembly) can throw on its own during clean-up, which would kill a long
  * video render, so it never lives in the renderer's process.
- * @param {string[]} texts
+ * @param {Array<string | {text: string, voice?: string}>} texts
  * @param {string} dir  working folder for the WAV files
  * @returns {Promise<Array<{samples: Float32Array, rate: number} | null>>}
  */
@@ -74,9 +74,10 @@ export async function speakAll(texts, dir) {
 // CLI used by speakAll:  node scripts/tts.mjs <lines.json> <outDir>   -> <outDir>/<i>.wav
 if (process.argv[1]?.endsWith('tts.mjs') && process.argv[2]) {
   const texts = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
-  for (const [i, text] of texts.entries()) {
-    if (!text) continue;
-    const clip = await speak(text);
+  for (const [i, line] of texts.entries()) {
+    if (!line) continue;
+    // a line is "text" (default voice) or { text, voice } (the podcast's two hosts)
+    const clip = typeof line === 'string' ? await speak(line) : await speak(line.text, line.voice || VOICE);
     writeWavMono(`${process.argv[3]}/${i}.wav`, clip.samples, clip.rate);
   }
   process.exit(0); // exit before the speech engine's clean-up can run

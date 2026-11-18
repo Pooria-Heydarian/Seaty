@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seaty Weekly</title>
+  <!-- The weekly two-host show (1920x1080), script in data/episode.json. Preview here; render with: npm run podcast -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&display=block" rel="stylesheet" />
+  <script type="importmap">
+    { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    } }
+  </script>
+  <style>
+    :root { --ink: #14202f; --paper: #fff; --accent: #ff7a45; --gold: #f5b82e; --a: #ff7a45; --b: #3fb6e8; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: #0d1117; overflow: hidden; font-family: Inter, system-ui, sans-serif; }
+    body.preview { display: grid; place-items: center; height: 100vh; }
+    #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #111a2b; transform-origin: center; }
+    #scene { position: absolute; inset: 0; }
+    .label { display: none !important; }
+    .ov { position: absolute; opacity: 0; visibility: hidden; z-index: 2; will-change: transform, opacity; }
+
+    #bug { left: 56px; top: 48px; display: flex; align-items: center; gap: 14px; background: rgba(15,22,36,.88); color: #fff; padding: 12px 24px 12px 14px; border-radius: 999px; font-weight: 900; font-size: 28px; letter-spacing: .5px; }
+    #bug .dot { width: 18px; height: 18px; border-radius: 50%; background: #ff3b3b; box-shadow: 0 0 14px #ff3b3b; }
+    #bug .ep { color: var(--gold); font-weight: 800; }
+    #chapter { left: 56px; top: 118px; background: var(--gold); color: var(--ink); padding: 8px 20px; border-radius: 999px; font-weight: 900; font-size: 24px; letter-spacing: 1px; text-transform: uppercase; }
+
+    #speaker { left: 56px; bottom: 56px; display: flex; align-items: stretch; border-radius: 22px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+    #speaker .bar { width: 14px; background: var(--a); }
+    #speaker .txt { background: var(--paper); padding: 14px 28px 14px 22px; }
+    #speaker .name { font-weight: 900; font-size: 40px; color: var(--ink); line-height: 1.05; }
+    #speaker .role { font-weight: 700; font-size: 20px; color: #6a7a90; letter-spacing: 2px; text-transform: uppercase; }
+
+    #card { right: 72px; top: 50%; width: 820px; margin-top: -170px; background: var(--paper); border-radius: 30px; padding: 34px 40px 36px; box-shadow: 0 30px 90px rgba(0,0,0,.45); }
+    #card .head { display: flex; align-items: center; gap: 18px; }
+    #card .av { width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 900; font-size: 36px; background: var(--accent); flex: none; }
+    #card .who { font-weight: 900; font-size: 34px; color: var(--ink); }
+    #card .meta { font-weight: 700; font-size: 20px; color: #8090a5; }
+    #card .text { font-weight: 700; font-size: 44px; color: var(--ink); line-height: 1.25; margin-top: 20px; }
+    #card .text::before { content: '“'; color: var(--accent); }
+    #card .text::after { content: '”'; color: var(--accent); }
+    #card .tag { display: inline-block; margin-top: 18px; background: #fff1ea; color: var(--accent); font-weight: 900; font-size: 22px; padding: 8px 16px; border-radius: 12px; letter-spacing: 1px; text-transform: uppercase; }
+
+    #caption { right: 72px; bottom: 56px; background: rgba(255,255,255,.96); border-radius: 24px; padding: 20px 30px; box-shadow: 0 24px 70px rgba(10,20,40,.35); max-width: 900px; }
+    #caption .tag { font-weight: 800; font-size: 20px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; }
+    #caption .name { font-weight: 900; font-size: 46px; color: var(--ink); line-height: 1.05; margin-top: 4px; }
+    #caption .sub { font-weight: 600; font-size: 26px; color: #4a5a70; margin-top: 6px; }
+
+    #panel { right: 72px; top: 50%; width: 760px; background: rgba(255,255,255,.97); border-radius: 30px; padding: 36px 44px; box-shadow: 0 30px 80px rgba(0,0,0,.4); transform-origin: right center; }
+    #panel h2 { margin: 0 0 14px; font-size: 40px; font-weight: 900; color: var(--ink); }
+    #panel ul { list-style: none; margin: 0; padding: 0; }
+    #panel li { display: flex; gap: 18px; align-items: center; font-size: 32px; font-weight: 700; color: var(--ink); margin: 14px 0; }
+    #panel li b { color: var(--accent); font-weight: 900; }
+    #panel li .ic { flex: none; width: 54px; height: 54px; border-radius: 16px; background: #fff1ea; display: grid; place-items: center; font-size: 30px; }
+
+    #title { left: 0; right: 0; top: 0; bottom: 0; display: grid; place-items: center; text-align: center; color: #fff; background: radial-gradient(ellipse at center, rgba(10,16,30,.55), rgba(10,16,30,.85)); }
+    #title .kicker { font-weight: 800; font-size: 36px; letter-spacing: 10px; color: var(--gold); }
+    #title .big { font-weight: 900; font-size: 170px; line-height: .95; letter-spacing: -5px; margin-top: 10px; }
+    #title .big span { color: var(--accent); }
+    #title .sub { font-weight: 700; font-size: 44px; margin-top: 26px; }
+
+    #cta { left: 0; right: 0; top: 220px; text-align: center; color: #fff; text-shadow: 0 8px 40px rgba(0,0,0,.6); }
+    #cta .big { font-weight: 900; font-size: 110px; line-height: 1; letter-spacing: -3px; }
+    #cta .big span { color: var(--gold); }
+    #cta .small { font-weight: 700; font-size: 42px; margin-top: 28px; }
+    #cta .row { display: flex; gap: 24px; justify-content: center; margin-top: 46px; text-shadow: none; }
+    #cta .pill { font-weight: 800; font-size: 34px; background: var(--paper); color: var(--ink); padding: 18px 34px; border-radius: 999px; }
+    #cta .pill.red { background: #e63946; color: #fff; }
+    #shade { position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0; background: rgba(8,12,22,.55); }
+    #flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; z-index: 3; }
+
+    #controls { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; gap: 10px; align-items: center; background: #1c2430; color: #fff; padding: 8px 14px; border-radius: 999px; font: 13px system-ui; z-index: 10; }
+    #controls input { width: 420px; }
+    #controls button { background: #ff7a45; color: #fff; border: 0; border-radius: 999px; padding: 6px 14px; font: inherit; cursor: pointer; }
+    body.render #controls { display: none; }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <div id="scene"></div>
+    <div id="shade"></div>
+    <div class="ov" id="bug"><span class="dot"></span><span>SEATY WEEKLY</span><span class="ep" id="ep"></span></div>
+    <div class="ov" id="chapter"></div>
+    <div class="ov" id="speaker"><div class="bar" id="s-bar"></div><div class="txt"><div class="name" id="s-name"></div><div class="role" id="s-role"></div></div></div>
+    <div class="ov" id="card"><div class="head"><div class="av" id="k-av"></div><div><div class="who" id="k-who"></div><div class="meta" id="k-meta"></div></div></div><div class="text" id="k-text"></div><div class="tag" id="k-tag"></div></div>
+    <div class="ov" id="caption"><div class="tag" id="c-tag"></div><div class="name" id="c-name"></div><div class="sub" id="c-sub"></div></div>
+    <div class="ov" id="panel"><h2 id="p-title"></h2><ul id="p-list"></ul></div>
+    <div class="ov" id="title"><div><div class="kicker" id="t-kicker"></div><div class="big" id="t-big"></div><div class="sub" id="t-sub"></div></div></div>
+    <div class="ov" id="cta"><div class="big" id="cta-big"></div><div class="small" id="cta-small"></div><div class="row"><div class="pill" id="cta-url"></div><div class="pill red">Subscribe</div></div></div>
+    <div id="flash"></div>
+  </div>
+  <div id="controls"><button id="play">Pause</button><input id="scrub" type="range" min="0" max="1000" value="0" /><span id="time">0.0s</span></div>
+  <script type="module" src="podcast.js"></script>
+</body>
+</html>

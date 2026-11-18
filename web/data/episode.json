@@ -1,0 +1,118 @@
+{
+  "number": 1,
+  "date": "2026-11-21",
+  "title": "The week Seaty got a skyscraper",
+  "hosts": {
+    "A": { "name": "Mia", "voice": "af_heart", "role": "Host", "color": "#ff7a45" },
+    "B": { "name": "Leo", "voice": "am_michael", "role": "Host", "color": "#3fb6e8" }
+  },
+  "segments": [
+    {
+      "chapter": "Cold open",
+      "lines": [
+        { "who": "B", "text": "Okay, so I have to ask. Who looked at our city and thought: you know what this place needs? A black hole.", "shot": "screen", "focus": { "landmark": "Black Hole Reactor" } },
+        { "who": "A", "text": "With bulletproof glass, Leo. Safety first.", "shot": "A" },
+        { "who": "B", "text": "Oh, well, then it's totally fine.", "shot": "B", "pause": 0.5 }
+      ]
+    },
+    {
+      "chapter": "Welcome",
+      "lines": [
+        { "who": "A", "text": "Hi everyone, and welcome to the very first Seaty Weekly! I'm Mia.", "shot": "wide" },
+        { "who": "B", "text": "And I'm Leo. Every weekend we sit down and talk about the city that you, the commenters, are building.", "shot": "wide" },
+        { "who": "A", "text": "And what a week it was. Leo, give them the numbers.", "shot": "A" },
+        { "who": "B", "text": "Eighty seven citizens. One hundred and sixty nine floors. And forty two landmarks, from a hospital to a hot dog stand.", "shot": "screen", "focus": { "overview": true }, "panel": { "title": "This week in Seaty", "items": [["🏠", "<b>87</b> citizens"], ["🏗️", "<b>169</b> floors"], ["⭐", "<b>42</b> landmarks"]] } },
+        { "who": "A", "text": "Five days ago this was an empty field. I still can't believe it.", "shot": "city", "focus": { "overview": true } },
+        { "who": "B", "text": "Today we've got the big stories, your funniest comments, some real citizen stories, and... a brand new challenge.", "shot": "B" },
+        { "who": "A", "text": "With a prize! Stay until the end.", "shot": "A" }
+      ]
+    },
+    {
+      "chapter": "Top stories",
+      "lines": [
+        { "who": "B", "text": "Biggest story of the week, and I mean biggest. We have a skyscraper!", "shot": "screen", "focus": { "landmark": "Skyscraper" } },
+        { "who": "A", "text": "Black and gold, right on Main Street. Immortal Snail asked for the first skyscraper three times. Three!", "shot": "city", "focus": { "landmark": "Skyscraper" }, "card": { "who": "@immortal_snaiI", "text": "can i have the first skyscraper please", "meta": "Day 2 video" } },
+        { "who": "B", "text": "And it worked. Persistence pays off in Seaty.", "shot": "B" },
+        { "who": "A", "text": "Then there's the black hole reactor. A glass dome, a glowing disk, and a viewing gallery so visitors can watch.", "shot": "city", "focus": { "landmark": "Black Hole Reactor" }, "caption": { "tag": "Outskirts", "name": "Black Hole Reactor", "sub": "Built for @oppavoidostyle" } },
+        { "who": "B", "text": "It will never melt down. Or freeze down. That was in the request. I checked.", "shot": "B" },
+        { "who": "A", "text": "My personal favourite: Darya asked for a famous university building from Zurich. With the dome!", "shot": "city", "focus": { "landmark": "University" }, "caption": { "tag": "Downtown", "name": "University", "sub": "Built for @DaryaAnsaripour" } },
+        { "who": "B", "text": "Right next to a gothic church, inspired by Prague. Downtown is starting to look like a real European city.", "shot": "city", "focus": { "landmark": "Gothic Church" }, "caption": { "tag": "Downtown", "name": "Gothic Church", "sub": "Built for @nexis1337" } },
+        { "who": "A", "text": "And then, out in the green belt... the baguette statue.", "shot": "screen", "focus": { "landmark": "Baguette Statue" } },
+        { "who": "B", "text": "A giant girl with red drill pigtails, holding up a baguette like a trophy. Mister Taunty Face said it would be silly.", "shot": "city", "focus": { "landmark": "Baguette Statue" } },
+        { "who": "A", "text": "It is very silly. It's also my new favourite landmark.", "shot": "A" }
+      ]
+    },
+    {
+      "chapter": "Funniest comments",
+      "lines": [
+        { "who": "A", "text": "Okay, my favourite part. The funniest comments of the week.", "shot": "wide" },
+        { "who": "B", "text": "Number one. Someone wrote, in capital letters, with fire emojis...", "shot": "wide", "card": { "who": "@Ihatewatermelonseeds", "text": "HOW HAVE YOU NOT YET MADE AN ANTI WATERMELON SEEDS FACTORY?!", "meta": "Day 2 video", "tag": "Built ✔" } },
+        { "who": "A", "text": "And we did! The Seedless Watermelon Factory. With a no seeds sign on the roof.", "shot": "city", "focus": { "landmark": "Seedless Watermelon Factory" } },
+        { "who": "B", "text": "Justice for everyone who ever bit into a seed.", "shot": "B" },
+        { "who": "A", "text": "Number two. Railey asked to move in, and said...", "shot": "wide", "card": { "who": "@Railey_508", "text": "Hey landlord, can i move in i only have 50 cents but, meh", "meta": "Channel trailer" } },
+        { "who": "B", "text": "Fifty cents! Good news, Railey. Moving to Seaty is free. Keep the fifty cents.", "shot": "B" },
+        { "who": "A", "text": "Number three. Gamer Guy asked for twenty large apartments. And a theme park.", "shot": "wide", "card": { "who": "@GamerGuy67x", "text": "Add 20 large apartments and a theme park", "meta": "Day 2 video", "tag": "Got the theme park" } },
+        { "who": "B", "text": "One house per citizen, sorry. But the theme park? That one's real.", "shot": "screen", "focus": { "landmark": "Theme Park" } },
+        { "who": "A", "text": "And number four. Jin asked for a red shrine gate, in all capital letters, and then added...", "shot": "wide", "card": { "who": "@Get_jin_in_use", "text": "GIVE ME MORE LAND FOR THE SHOW AS WELL AS THE HOUSE", "meta": "Day 3 video", "tag": "Got the gate" } },
+        { "who": "B", "text": "No extra land, but this week Jin got a whole dojo. And says he's the master now.", "shot": "B" },
+        { "who": "A", "text": "Respect the sensei, Leo.", "shot": "A", "pause": 0.5 }
+      ]
+    },
+    {
+      "chapter": "Citizen stories",
+      "lines": [
+        { "who": "B", "text": "Now, some real citizen stories. Mia, who's at the top of the city right now?", "shot": "wide" },
+        { "who": "A", "text": "That's Elena. On day one she wrote just three words. Add a mansion!", "shot": "city", "focus": { "resident": "@ЕленаИзюмова-у7ц" }, "card": { "who": "@ЕленаИзюмова-у7ц", "text": "Add a mansion!", "meta": "Day 1 video" } },
+        { "who": "B", "text": "And the next day: hooray, my mansion is here.", "shot": "city", "focus": { "resident": "@ЕленаИзюмова-у7ц" }, "card": { "who": "@ЕленаИзюмова-у7ц", "text": "horray my mansion is here", "meta": "Channel trailer" } },
+        { "who": "A", "text": "She kept coming back to every video, and now her Grand Mansion has five floors. Number one in Seaty.", "shot": "screen", "focus": { "resident": "@ЕленаИзюмова-у7ц" } },
+        { "who": "B", "text": "Then there's Stay Positive. Honestly, this person built half the city.", "shot": "B" },
+        { "who": "A", "text": "A white dome house with a pool. Then a bakery. Then an octopus aquarium. And this week... an elephant in the front yard.", "shot": "city", "focus": { "resident": "@Staypositivels" }, "caption": { "tag": "Citizen story", "name": "@Staypositivels", "sub": "5 floors · bakery · aquarium · elephant" } },
+        { "who": "B", "text": "Stay positive, and keep building. Good motto.", "shot": "B" },
+        { "who": "A", "text": "And Mark. Mark didn't just ask for a train. He sent us the train model, the line name, everything.", "shot": "screen", "focus": { "landmark": "Seaty Rail Transit" }, "card": { "who": "@markchesterajeemercado3237", "text": "Im moving in bye Greenville hello seaty", "meta": "Channel trailer" } },
+        { "who": "B", "text": "Bye Greenville, hello Seaty. Now we have the Seaty Rail Transit, running round the end of Main Street.", "shot": "city", "focus": { "landmark": "Seaty Rail Transit" } },
+        { "who": "A", "text": "That's what I love about this city. Every building has a person behind it.", "shot": "A", "pause": 0.5 }
+      ]
+    },
+    {
+      "chapter": "Weekly challenge",
+      "lines": [
+        { "who": "B", "text": "Okay Mia. Tell them about the challenge.", "shot": "wide" },
+        { "who": "A", "text": "Starting this week, every week, something is hidden somewhere in Seaty. This week it's a Golden Capybara.", "shot": "screen", "focus": { "overview": true }, "panel": { "title": "Weekly challenge #1", "items": [["🔍", "Find the <b>Golden Capybara</b> on the website"], ["🖱️", "Click it to see the <b>secret word</b>"], ["💬", "Comment the word under my <b>newest video</b>"], ["🏆", "First correct comment <b>wins</b>"]] } },
+        { "who": "B", "text": "Go to the website, find it, and click it. It shows you a secret word.", "shot": "screen", "focus": { "overview": true }, "panel": { "title": "Weekly challenge #1", "items": [["🔍", "Find the <b>Golden Capybara</b> on the website"], ["🖱️", "Click it to see the <b>secret word</b>"], ["💬", "Comment the word under my <b>newest video</b>"], ["🏆", "First correct comment <b>wins</b>"]] } },
+        { "who": "A", "text": "Comment that word under the newest video. The first correct comment wins.", "shot": "screen", "focus": { "overview": true }, "panel": { "title": "Weekly challenge #1", "items": [["🔍", "Find the <b>Golden Capybara</b> on the website"], ["🖱️", "Click it to see the <b>secret word</b>"], ["💬", "Comment the word under my <b>newest video</b>"], ["🏆", "First correct comment <b>wins</b>"]] } },
+        { "who": "B", "text": "And the prize is a golden trophy, standing in front of your house. Forever.", "shot": "B" },
+        { "who": "A", "text": "Here's your clue.", "shot": "A" },
+        { "who": "B", "text": "Old Town. Behind a cottage with flowers, a little fence, and a smoking chimney.", "shot": "wide", "card": { "who": "Seaty", "text": "Old Town, behind a cottage with flowers, a little fence and a smoking chimney.", "meta": "Clue for week 1", "tag": "Ends Friday" } },
+        { "who": "A", "text": "You have until Friday night. And please, don't post where it is. Just the word.", "shot": "A" },
+        { "who": "B", "text": "We'll announce the winner in the daily Short.", "shot": "B", "pause": 0.5 }
+      ]
+    },
+    {
+      "chapter": "City Hall",
+      "lines": [
+        { "who": "A", "text": "Quick visit to City Hall. A lot of new citizens joined this week, so here are the rules.", "shot": "screen", "focus": { "overview": true }, "panel": { "title": "Seaty's rules", "items": [["🏠", "<b>One house</b> per citizen"], ["🏗️", "<b>+1 floor</b> for each different video you comment on"], ["⭐", "Up to <b>two landmarks</b> each"], ["1️⃣", "Each kind of landmark <b>only once</b>"]] } },
+        { "who": "B", "text": "One house per citizen. If you ask for a new design, it replaces the old one.", "shot": "screen", "focus": { "overview": true }, "panel": { "title": "Seaty's rules", "items": [["🏠", "<b>One house</b> per citizen"], ["🏗️", "<b>+1 floor</b> for each different video you comment on"], ["⭐", "Up to <b>two landmarks</b> each"], ["1️⃣", "Each kind of landmark <b>only once</b>"]] } },
+        { "who": "A", "text": "Floors can't be bought. Every different video you comment on adds one floor.", "shot": "screen", "focus": { "overview": true }, "panel": { "title": "Seaty's rules", "items": [["🏠", "<b>One house</b> per citizen"], ["🏗️", "<b>+1 floor</b> for each different video you comment on"], ["⭐", "Up to <b>two landmarks</b> each"], ["1️⃣", "Each kind of landmark <b>only once</b>"]] } },
+        { "who": "B", "text": "You can own two landmarks. And each kind exists only once. One airport, one museum, one skyscraper.", "shot": "screen", "focus": { "overview": true }, "panel": { "title": "Seaty's rules", "items": [["🏠", "<b>One house</b> per citizen"], ["🏗️", "<b>+1 floor</b> for each different video you comment on"], ["⭐", "Up to <b>two landmarks</b> each"], ["1️⃣", "Each kind of landmark <b>only once</b>"]] } },
+        { "who": "A", "text": "So if there's something the city doesn't have yet, be quick!", "shot": "A" }
+      ]
+    },
+    {
+      "chapter": "Coming soon",
+      "lines": [
+        { "who": "B", "text": "So what's next for Seaty?", "shot": "wide" },
+        { "who": "A", "text": "Every weekend, a new episode of this show. Every week, a new challenge.", "shot": "A" },
+        { "who": "B", "text": "And every single day, a new Short with everyone who moved in and every building we made.", "shot": "B" },
+        { "who": "A", "text": "Main Street keeps getting longer, the outskirts keep growing, and your requests decide what comes next.", "shot": "city", "focus": { "overview": true } }
+      ]
+    },
+    {
+      "chapter": "See you next week",
+      "lines": [
+        { "who": "B", "text": "That's it for episode one. Want to be a citizen too? Just comment on any video.", "shot": "wide" },
+        { "who": "A", "text": "Find your house on the website, go hunt that Golden Capybara, and we'll see you next weekend!", "shot": "wide" },
+        { "who": "B", "text": "Bye everyone!", "shot": "wide", "pause": 0.6 }
+      ]
+    }
+  ]
+}

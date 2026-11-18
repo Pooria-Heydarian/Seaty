@@ -24,6 +24,10 @@ export const UPGRADE_TYPES = {
   shelter: 'a storm shelter / backyard bunker: grassy mound with slanted steel doors',
   drone: 'a camera drone circling over the house',
   'koi-pond': 'a koi pond with orange and white fish and a stone lantern',
+  trophy: 'a golden trophy in the front yard (only for weekly challenge winners)',
+  'capybara-pen': 'a fenced capybara pen with three capybaras and a little pool (back yard)',
+  'xmas-hats': 'Christmas hats on the chickens (needs the chicken coop)',
+  'big-cats': 'a pet lion and tiger in the back yard',
 };
 
 /** Landmarks with their own 3D model. Any other landmark is built as a generic gold-domed hall with a name sign. */
@@ -59,6 +63,12 @@ export const LANDMARK_TYPES = {
   'gothic-church': 'a gothic church with twin dark spired towers and a rose window',
   dam: 'a small dam between two hills with a reservoir, waterfall spillway and power house',
   'construction-site': 'a construction site with a tower crane, steel frame and cement mixer',
+  pizzeria: 'a pizza place with a giant pizza slice on the roof',
+  'capybara-adoption': 'a capybara adoption centre with a giant capybara head on the roof and a yard of capybaras',
+  castle: 'a big stone castle: walls, corner towers, gatehouse, keep, moat',
+  'game-store': 'a game store with a neon sign, arcade cabinets and a giant controller on the roof',
+  motel: 'a two-storey motel with a pool, parked cars and a tall neon sign',
+  'bus-depot': 'a bus depot: garage hall, parked buses and one driving its loop',
   museum: 'a museum: classical columns, triangle pediment, steps and banners',
   bakery: 'a bakery with a striped awning and a giant croissant on the roof',
   'fire-station': 'a fire station: red brick, garage doors, hose tower, fire truck',
@@ -103,6 +113,7 @@ const SHAPE_STYLE = {
   cottage: 'old', medieval: 'old', 'japanese-cafe': 'old',
   mushroom: 'fantasy', rocket: 'fantasy', igloo: 'fantasy', treehouse: 'fantasy', pyramid: 'fantasy', lighthouse: 'fantasy',
   'gem-head': 'fantasy', 'chess-knight': 'fantasy', bunker: 'fantasy', caravan: 'fantasy',
+  'white-house': 'villa', rainbow: 'fantasy', 'space-station': 'fantasy', 'glass-spire': 'tower',
 };
 /** The neighbourhood of a house recipe (no recipe = classic). A classic shape with a flat roof counts as modern (Tower Row). */
 export function houseStyle(recipe) {
@@ -121,12 +132,12 @@ export function houseStyle(recipe) {
 const LANDMARK_PLAN = {
   museum: ['civic', 'M'], school: ['civic', 'M'], hospital: ['civic', 'M'], 'fire-station': ['civic', 'M'], mosque: ['civic', 'M'],
   library: ['civic', 'M'], university: ['civic', 'M'], 'gothic-church': ['civic', 'M'], 'police-station': ['civic', 'M'], church: ['civic', 'M'], temple: ['civic', 'M'], 'post-office': ['civic', 'M'],
-  'jewelry-store': ['main', 'M'], 'pet-store': ['main', 'M'], 'mma-gym': ['main', 'M'], skyscraper: ['main', 'M'], boutique: ['main', 'M'], cinema: ['main', 'M'], 'construction-site': ['main', 'M'], gym: ['main', 'M'], 'car-show': ['main', 'M'], mall: ['main', 'M'],
-  bakery: ['local', 'S'], 'corner-shop': ['local', 'S'], market: ['local', 'S'], cafe: ['local', 'S'], 'hot-dog-stand': ['local', 'S'], dojo: ['local', 'S'], pharmacy: ['local', 'S'], florist: ['local', 'S'],
+  'jewelry-store': ['main', 'M'], 'pet-store': ['main', 'M'], 'mma-gym': ['main', 'M'], skyscraper: ['main', 'M'], boutique: ['main', 'M'], cinema: ['main', 'M'], 'construction-site': ['main', 'M'], 'game-store': ['main', 'M'], motel: ['main', 'M'], gym: ['main', 'M'], 'car-show': ['main', 'M'], mall: ['main', 'M'],
+  bakery: ['local', 'S'], 'corner-shop': ['local', 'S'], market: ['local', 'S'], cafe: ['local', 'S'], 'hot-dog-stand': ['local', 'S'], pizzeria: ['local', 'S'], dojo: ['local', 'S'], pharmacy: ['local', 'S'], florist: ['local', 'S'],
   stadium: ['belt', 'L'], ballpark: ['belt', 'L'], 'theme-park': ['belt', 'L'], 'race-track': ['belt', 'L'], circus: ['belt', 'M'], aquarium: ['belt', 'M'],
-  park: ['belt', 'L'], farm: ['belt', 'L'], zoo: ['belt', 'L'], 'lemon-farm': ['belt', 'L'], 'baguette-statue': ['belt', 'M'], statue: ['belt', 'M'],
+  park: ['belt', 'L'], farm: ['belt', 'L'], zoo: ['belt', 'L'], 'lemon-farm': ['belt', 'L'], 'baguette-statue': ['belt', 'M'], 'capybara-adoption': ['belt', 'M'], castle: ['belt', 'L'], statue: ['belt', 'M'],
   'power-plant': ['outskirts', 'L'], 'spaghetti-factory': ['outskirts', 'L'], 'watermelon-factory': ['outskirts', 'L'], 'toy-factory': ['outskirts', 'L'],
-  airport: ['outskirts', 'L'], 'space-center': ['outskirts', 'L'], 'black-hole-reactor': ['outskirts', 'L'], dam: ['outskirts', 'L'],
+  airport: ['outskirts', 'L'], 'space-center': ['outskirts', 'L'], 'black-hole-reactor': ['outskirts', 'L'], dam: ['outskirts', 'L'], 'bus-depot': ['outskirts', 'M'],
   rail: ['station', 'L'], railway: ['station', 'L'],
 };
 export function landmarkPlan(def) {
@@ -163,6 +174,10 @@ export const HOUSE_SHAPES = {
   medieval: 'a medieval house: stone ground floor, half-timbered upper floors, steep roof (wall = plaster)',
   bunker: 'a concrete bunker in a grassy mound with slit windows and a heavy door (wall = concrete, accent = hazard stripes)',
   caravan: 'a camper caravan with an awning; extra floors add a pop-top level (wall = shell, accent = stripe and awning)',
+  'white-house': 'a white presidential mansion: columned portico with pediment, two wings, roof balustrade, flag (accent = flag)',
+  rainbow: 'a rainbow-striped house (one colour per floor band) with a rainbow arching over the roof',
+  'space-station': 'a round grey space-station sphere with a trench and a big dish (wall = shell, accent = dish light)',
+  'glass-spire': 'a sleek tapering glass skyscraper with a tall lit spire (wall = glass, accent = spire light)',
   'japanese-cafe': 'a Japanese house / café: paper screens, tiled roofs with upturned corners (one tier per floor), noren curtain, red lanterns (wall = wood, accent = curtain)',
 };
 

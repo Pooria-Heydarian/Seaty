@@ -493,6 +493,66 @@
       "requestedById": "UCcWjOp-PQpGG_NnjJ2N3DDQ",
       "requestedIn": "UgzeOxgJxeFl4q1W2NF4AaABAg",
       "added": "2026-11-17"
+    },
+    {
+      "id": "pizza-place",
+      "type": "pizzeria",
+      "kind": "pizzeria",
+      "name": "Pizza Place",
+      "requestedBy": "@POUSALI2412",
+      "requestedById": "UCn-3PuoTEOwyWSCo-89yj0A",
+      "requestedIn": "Ugzr1pJl66ZKXQF_Io94AaABAg",
+      "added": "2026-11-18"
+    },
+    {
+      "id": "capybara-adoption-center",
+      "type": "capybara-adoption",
+      "kind": "capybara-adoption",
+      "name": "Capybara Adoption Center",
+      "requestedBy": "@ChristinneeeXD",
+      "requestedById": "UCX6wVTHYXPiW7mS_UD_leoQ",
+      "requestedIn": "Ugxv0136V7pedGW9oKZ4AaABAg",
+      "added": "2026-11-18"
+    },
+    {
+      "id": "castle",
+      "type": "castle",
+      "kind": "castle",
+      "name": "Castle",
+      "requestedBy": "@karanchhabra6434",
+      "requestedById": "UConyzasmuGpqcUUKsdwutJA",
+      "requestedIn": "Ugyx2M4ZuWZ16SXkOpt4AaABAg",
+      "added": "2026-11-18"
+    },
+    {
+      "id": "game-store",
+      "type": "game-store",
+      "kind": "game-store",
+      "name": "Game Store",
+      "requestedBy": "@PolerGG",
+      "requestedById": "UCWkYCJOI-n0B8BB8XAE66Hg",
+      "requestedIn": "UgzmvywrUHFMOTQBB914AaABAg",
+      "added": "2026-11-18"
+    },
+    {
+      "id": "motel",
+      "type": "motel",
+      "kind": "motel",
+      "name": "Motel",
+      "requestedBy": "@AURABLOX-HQ",
+      "requestedById": "UCSPBwDEWtAP6dMdwOAE94uQ",
+      "requestedIn": "Ugx90u7UoNNy6O3672x4AaABAg",
+      "added": "2026-11-18"
+    },
+    {
+      "id": "bus-depot",
+      "type": "bus-depot",
+      "kind": "bus-depot",
+      "name": "Bus Depot",
+      "requestedBy": "@markchesterajeemercado3237",
+      "requestedById": "UCICnlf3KRLmhydWXl38QXUQ",
+      "requestedIn": "UgwzQtWET6Dzq_HZid54AaABAg",
+      "added": "2026-11-18"
     }
   ],
   "upgrades": [
@@ -747,6 +807,62 @@
       "type": "koi-pond",
       "requestedIn": "Ugw1u5chamMD-X37PM54AaABAg",
       "added": "2026-11-17"
+    },
+    {
+      "resident": "UCFKlbA0mu0HMUyWG3orzc7g",
+      "name": "@moisescaicedolover",
+      "type": "dog",
+      "requestedIn": "UgzX4YsLoOl4NPJFjfF4AaABAg",
+      "added": "2026-11-18"
+    },
+    {
+      "resident": "UC1nwHOUj7poip83gnhJ46BQ",
+      "name": "@KetchupPac",
+      "type": "garage",
+      "requestedIn": "Ugzjy6s6l0kyEellZxB4AaABAg",
+      "added": "2026-11-18"
+    },
+    {
+      "resident": "UCv-a0knslevzeV3tfAHRhFg",
+      "name": "@ShashankShekhar-o3i",
+      "type": "pool",
+      "requestedIn": "UgyGDI2FxEN-VnywvgF4AaABAg",
+      "added": "2026-11-18"
+    },
+    {
+      "resident": "UCv-a0knslevzeV3tfAHRhFg",
+      "name": "@ShashankShekhar-o3i",
+      "type": "drone",
+      "requestedIn": "UgyGDI2FxEN-VnywvgF4AaABAg",
+      "added": "2026-11-18"
+    },
+    {
+      "resident": "UCv-a0knslevzeV3tfAHRhFg",
+      "name": "@ShashankShekhar-o3i",
+      "type": "garage",
+      "requestedIn": "UgyGDI2FxEN-VnywvgF4AaABAg",
+      "added": "2026-11-18"
+    },
+    {
+      "resident": "UCX6wVTHYXPiW7mS_UD_leoQ",
+      "name": "@ChristinneeeXD",
+      "type": "capybara-pen",
+      "requestedIn": "Ugxv0136V7pedGW9oKZ4AaABAg.AdJM9dY4r65AdJMGtRwvzX",
+      "added": "2026-11-18"
+    },
+    {
+      "resident": "UCZYD9tjWBaJgrwaKK6DXp7g",
+      "name": "@Eastonfortniteeee",
+      "type": "xmas-hats",
+      "requestedIn": "UgzeArK4z3g8ks2Vav54AaABAg",
+      "added": "2026-11-18"
+    },
+    {
+      "resident": "UCpD3u7o7qCaDE5Hui4Xo1bQ",
+      "name": "@prabhasishbhattacharya9226",
+      "type": "big-cats",
+      "requestedIn": "UgygmRTcSnhALFkqnHF4AaABAg",
+      "added": "2026-11-18"
     }
   ],
   "houses": [
@@ -783,22 +899,6 @@
         "extras": []
       },
       "requestedIn": "Ugw8GDsjThuieYlqKjF4AaABAg",
-      "added": "2026-11-14"
-    },
-    {
-      "resident": "UCJKwj1uw3QlueW6K3N-U2gw",
-      "name": "@Staypositivels",
-      "title": "White Dome House",
-      "recipe": {
-        "shape": "classic",
-        "roof": "dome",
-        "wall": "#ffffff",
-        "roofColor": "#8fc1e3",
-        "door": "#2f6690",
-        "accent": "#8fc1e3",
-        "extras": []
-      },
-      "requestedIn": "Ugw0YjL_sJIPcf5vi-V4AaABAg",
       "added": "2026-11-14"
     },
     {
@@ -1211,6 +1311,105 @@
       },
       "requestedIn": "Ugws00p9egpbTdDDTn94AaABAg",
       "added": "2026-11-17"
+    },
+    {
+      "resident": "UCDgiH80X9SHLgHukBy-XzkQ",
+      "name": "@JacksonGross-q4b",
+      "title": "White House",
+      "recipe": {
+        "shape": "white-house",
+        "roof": "pointed",
+        "wall": "#f7f5ef",
+        "roofColor": "#c9ccd1",
+        "door": "#3b2a1f",
+        "accent": "#e63946",
+        "extras": []
+      },
+      "requestedIn": "UgxDaTVIT82t7ozMbIV4AaABAg",
+      "added": "2026-11-18"
+    },
+    {
+      "resident": "UC1nwHOUj7poip83gnhJ46BQ",
+      "name": "@KetchupPac",
+      "title": "Penthouse Tower",
+      "recipe": {
+        "shape": "glass",
+        "roof": "flat",
+        "wall": "#2f3e52",
+        "roofColor": "#d4af37",
+        "door": "#1f1f24",
+        "accent": "#f5c542",
+        "extras": [
+          "fairy-lights",
+          "star"
+        ]
+      },
+      "requestedIn": "UgwACnKHPV-HlnXfq6h4AaABAg",
+      "added": "2026-11-18"
+    },
+    {
+      "resident": "UCKgB0kce7yRwStaUsMl_nZQ",
+      "name": "@AverageHuman67",
+      "title": "Rainbow House",
+      "recipe": {
+        "shape": "rainbow",
+        "roof": "pointed",
+        "wall": "#ffffff",
+        "roofColor": "#ffffff",
+        "door": "#ffffff",
+        "accent": "#ff8c42",
+        "extras": []
+      },
+      "requestedIn": "UgzVK1yl_h539CWeQqt4AaABAg",
+      "added": "2026-11-18"
+    },
+    {
+      "resident": "UCJKwj1uw3QlueW6K3N-U2gw",
+      "name": "@Staypositivels",
+      "title": "White Sky Tower",
+      "recipe": {
+        "shape": "glass",
+        "roof": "flat",
+        "wall": "#e8f1f8",
+        "roofColor": "#8fc1e3",
+        "door": "#2f6690",
+        "accent": "#8fc1e3",
+        "extras": []
+      },
+      "requestedIn": "UgztTPVDsB9Cjz2qgKh4AaABAg",
+      "added": "2026-11-18"
+    },
+    {
+      "resident": "UCMmaqv6m-fww53sSbYdD2RQ",
+      "name": "@JackMihna",
+      "title": "Space Station House",
+      "recipe": {
+        "shape": "space-station",
+        "roof": "pointed",
+        "wall": "#9aa0a8",
+        "roofColor": "#b5523b",
+        "door": "#3b4552",
+        "accent": "#5cc55a",
+        "extras": []
+      },
+      "requestedIn": "UgwledTTPp8rLZKfdCp4AaABAg",
+      "added": "2026-11-18"
+    },
+    {
+      "resident": "UC-Kcqoiyqx-UnJiJgjtCWbg",
+      "name": "@Owen_B13",
+      "title": "Glass Spire Tower",
+      "recipe": {
+        "shape": "glass-spire",
+        "roof": "pointed",
+        "wall": "#8fb8d8",
+        "roofColor": "#b5523b",
+        "door": "#2b2d42",
+        "accent": "#ff3b3b",
+        "extras": []
+      },
+      "requestedIn": "Ugy2xwlT436L1qi65LV4AaABAg",
+      "added": "2026-11-18"
     }
   ]
 }

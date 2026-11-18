@@ -493,6 +493,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       }
       world.landmarks.set(def.id, lm);
     });
+    buildPowerLine();
     for (const up of specials?.upgrades || []) {
       const who = norm(up.resident);
       const entry = world.list.find((e) => e.resident.id === up.resident || norm(e.resident.name) === who);
@@ -1028,7 +1029,83 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     world.airship?.tick(seconds);
   };
 
+  /** Pylons and cables carrying power from the dam to the power plant (requested by @jjk-x2r, Day 6). */
+  function buildPowerLine() {
+    const all = [...world.landmarks.values()];
+    const dam = all.find((l) => l.def.type === 'dam');
+    const plant = all.find((l) => l.def.type === 'power-plant');
+    if (!dam || !plant) return;
+    const a = dam.outer.position.clone().setY(0), b = plant.outer.position.clone().setY(0);
+    const len = a.distanceTo(b);
+    if (len < 10) return;
+    const n = Math.max(2, Math.round(len / 18));
+    const steel = new THREE.MeshStandardMaterial({ color: '#8a939c', metalness: 0.4, roughness: 0.5 });
+    const cableM = new THREE.MeshStandardMaterial({ color: '#2b3340' });
+    const dir = b.clone().sub(a).normalize();
+    const yaw = Math.atan2(dir.x, dir.z);
+    const tops = [];
+    const group = new THREE.Group();
+    for (let i = 0; i <= n; i++) {
+      // skip the very ends, which stand inside the two landmarks' blocks
+      const p = a.clone().lerp(b, 0.12 + (0.76 * i) / n);
+      const t = new THREE.Group();
+      for (const [dx, dz] of [[-0.6, -0.6], [0.6, -0.6], [-0.6, 0.6], [0.6, 0.6]]) {
+        const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.09, 8.2, 5), steel);
+        leg.position.set(dx * 0.6, 4.1, dz * 0.6);
+        leg.rotation.set(dz * -0.07, 0, dx * 0.07);
+        t.add(leg);
+      }
+      for (const y of [5.6, 7.0]) t.add(new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.15, 0.15).translate(0, y, 0), steel));
+      t.add(new THREE.Mesh(new THREE.ConeGeometry(0.35, 1.0, 4).translate(0, 8.6, 0), steel));
+      t.position.copy(p);
+      t.rotation.y = yaw + Math.PI / 2;
+      group.add(t);
+      tops.push(t);
+    }
+    // three sagging cables between neighbouring pylons
+    for (let i = 0; i < tops.length - 1; i++) {
+      for (const [off, y] of [[-1.6, 5.5], [1.6, 5.5], [0, 6.9]]) {
+        const side = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw)).multiplyScalar(off);
+        const p0 = tops[i].position.clone().add(side).setY(y), p1 = tops[i + 1].position.clone().add(side).setY(y);
+        const mid = p0.clone().lerp(p1, 0.5).setY(y - 1.2);
+        const curve = new THREE.QuadraticBezierCurve3(p0, mid, p1);
+        group.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 16, 0.04, 4), cableM));
+      }
+    }
+    group.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+    scene.add(group);
+    world.powerLine = group;
+  }
+
+  /** The weekly challenge's hidden object (the website only): a small golden capybara somewhere in town. */
+  world.addChallenge = (ch) => {
+    if (!ch?.at) return null;
+    let pos = null, rotY = 0;
+    if (ch.at.resident) {
+      const e = world.entries.get(ch.at.resident);
+      if (e) { e.outer.updateMatrixWorld(true); pos = e.outer.localToWorld(new THREE.Vector3(-2.55, 0.27, -2.55)); rotY = e.outer.rotation.y; }
+    } else if (ch.at.landmark) {
+      const l = world.landmarks.get(ch.at.landmark);
+      if (l) pos = l.outer.position.clone().add(new THREE.Vector3(5.3, 0.27 - l.outer.position.y, 5.3));
+    }
+    if (!pos) return null;
+    const g = capybara();
+    g.traverse((o) => { if (o.isMesh) { o.material = mat.gold; o.userData.challenge = ch; world.pickables.push(o); } });
+    g.scale.setScalar(0.45);
+    g.position.copy(pos);
+    g.rotation.y = rotY + 2.3;
+    scene.add(g);
+    world.challengeObject = g;
+    return g;
+  };
+
+  /** Hide the airship when a camera flies right past it (it would fill the frame). */
+  world.clearAirship = (cam) => {
+    if (world.airship) world.airship.group.visible = cam.position.distanceTo(world.airship.group.position) > 30;
+  };
+
   world.render = () => {
+    world.clearAirship(camera);
     renderer.render(scene, camera);
     labelRenderer.render(scene, camera);
   };

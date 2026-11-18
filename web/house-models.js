@@ -242,4 +242,113 @@ export const HOUSE_MODELS = {
     }
     return { body, top: y + 0.6, eave: y - 0.35, front: 1.9, width: 4.6 };
   },
+
+  /** A white presidential mansion: a columned portico with a pediment, two lower wings, a balustrade on the roof, chimneys and a flag (requested by @JacksonGross-q4b, Day 6). */
+  'white-house'(g, r, h, k) {
+    const { THREE, plain } = k;
+    const H = 2.1 + h * 0.55; // stays wide and low: 2.8 at 1 floor, +0.66 per floor
+    const wall = plain(r.wall);
+    const trim = plain('#ffffff');
+    const body = new THREE.Mesh(k.box(2.6, H, 2.6, 0), wall);
+    g.add(body);
+    for (const s of [-1, 1]) g.add(new THREE.Mesh(k.box(1.2, H * 0.78, 2.2, 0).translate(s * 1.9, 0, -0.1), wall));
+    // roof balustrade and low roof
+    g.add(new THREE.Mesh(k.box(2.8, 0.18, 2.8, H), trim), new THREE.Mesh(k.box(2.5, 0.35, 2.5, H + 0.18), plain(r.roofColor)));
+    for (const s of [-1, 1]) {
+      g.add(new THREE.Mesh(k.box(1.3, 0.15, 2.3, H * 0.78).translate(s * 1.9, 0, -0.1), trim));
+      g.add(new THREE.Mesh(k.box(0.25, 0.6, 0.25, H + 0.2).translate(s * 0.8, 0, -0.6), plain('#e9e4dc')));
+    }
+    // portico: four columns, a triangular pediment, steps
+    for (let i = 0; i < 4; i++) g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, H - 0.35, 12).translate(-0.75 + i * 0.5, (H - 0.35) / 2 + 0.2, 1.65), trim));
+    g.add(new THREE.Mesh(k.box(2.0, 0.2, 0.9, H - 0.15).translate(0, 0, 1.55), trim));
+    const tri = new THREE.Shape([new THREE.Vector2(-1.05, 0), new THREE.Vector2(1.05, 0), new THREE.Vector2(0, 0.6)]);
+    g.add(new THREE.Mesh(new THREE.ExtrudeGeometry(tri, { depth: 0.9, bevelEnabled: false }).translate(0, H + 0.05, 1.1), trim));
+    for (let i = 0; i < 2; i++) g.add(new THREE.Mesh(k.box(2.2 - i * 0.3, 0.1, 0.4, i * 0.1).translate(0, 0, 2.2 - i * 0.2), trim));
+    // windows on every floor
+    const win = plain('#3d4a5c');
+    const rowsW = Math.max(1, Math.floor((H - 0.6) / 1.0));
+    for (let f = 0; f < rowsW; f++) for (const x of [-2.2, -1.6, 1.6, 2.2]) {
+      if (Math.abs(x) > 1.4 && 0.45 + f * 1.0 + 0.6 > H * 0.78) continue;
+      g.add(new THREE.Mesh(k.box(0.3, 0.5, 0.05, 0.45 + f * 1.0).translate(x, 0, Math.abs(x) > 1.4 ? 1.02 : 1.31), win));
+    }
+    g.add(k.door(r.door, 1.32, 0.9));
+    // flag on the roof
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 1.4, 6).translate(0, H + 1.2, -0.3), k.DARK));
+    g.add(new THREE.Mesh(k.box(0.7, 0.4, 0.03, H + 1.45).translate(0.37, 0, -0.3), plain(r.accent)));
+    return { body, top: H + 1.9, eave: H, front: 2.4, width: 4.6 };
+  },
+
+  /** A rainbow house: every floor band in the next rainbow colour, a white gable roof and a rainbow arching over it (requested by @AverageHuman67, Day 6). */
+  rainbow(g, r, h, k) {
+    const { THREE, plain } = k;
+    const H = 2.4 + h;
+    const colors = ['#e63946', '#ff8c42', '#ffd23f', '#5cc55a', '#3a86ff', '#7a5cff'];
+    const body = new THREE.Mesh(k.box(3.2, H, 3.0, 0), plain('#ffffff'));
+    g.add(body);
+    const band = H / Math.ceil(H / 0.6);
+    for (let i = 0, y = 0; y < H - 0.01; i++, y += band) g.add(new THREE.Mesh(k.box(3.24, band, 3.04, y), plain(colors[i % colors.length])));
+    const win = plain('#ffffff');
+    for (let f = 0; f * k.FLOOR_H + 1.0 < H; f++) for (const x of [-0.9, 0.9]) g.add(new THREE.Mesh(k.box(0.5, 0.5, 0.05, 0.7 + f * k.FLOOR_H).translate(x, 0, 1.53), win));
+    g.add(k.door(r.door || '#ffffff', 1.52));
+    const top = k.roof(g, 'gable', r.roofColor || '#ffffff', 3.2, 3.0, H);
+    const arc = new THREE.Group();
+    colors.forEach((c, i) => arc.add(new THREE.Mesh(new THREE.TorusGeometry(2.3 - i * 0.14, 0.07, 6, 32, Math.PI), plain(c, { emissive: c, emissiveIntensity: 0.25 }))));
+    arc.position.set(0, top - 0.6, -0.4);
+    g.add(arc);
+    return { body, top: top + 1.8, eave: H, front: 1.5, width: 4.6 };
+  },
+
+  /** A round space-station house: a grey sphere with an equator trench, panel lines and a big round dish, on a landing pad (requested by @JackMihna, Day 6). */
+  'space-station'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const R = 1.5 + h * 0.32; // the sphere grows with every floor
+    const shell = plain(r.wall, { roughness: 0.55, flatShading: true });
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.7, 0.4, 24).translate(0, 0.2, 0), k.DARK));
+    const cy = 0.4 + R;
+    const body = new THREE.Mesh(new THREE.SphereGeometry(R, 28, 20).translate(0, cy, 0), shell);
+    g.add(body);
+    g.add(new THREE.Mesh(new THREE.TorusGeometry(R * 1.0, R * 0.05, 6, 40).rotateX(Math.PI / 2).translate(0, cy, 0), plain('#5c636e')));
+    for (const lat of [-0.55, -0.3, 0.3, 0.55]) {
+      const rr = R * Math.cos(lat);
+      g.add(new THREE.Mesh(new THREE.TorusGeometry(rr * 1.005, 0.02, 4, 40).rotateX(Math.PI / 2).translate(0, cy + R * Math.sin(lat), 0), plain('#8a919c')));
+    }
+    // the dish: a dark bowl on the upper front with a glowing centre
+    const dish = new THREE.Group();
+    dish.add(new THREE.Mesh(new THREE.CircleGeometry(R * 0.32, 24), plain('#5c636e')));
+    dish.add(new THREE.Mesh(new THREE.TorusGeometry(R * 0.32, 0.04, 6, 24), plain('#3b4552')));
+    dish.add(new THREE.Mesh(new THREE.CircleGeometry(R * 0.07, 12).translate(0, 0, 0.01), glowing(r.accent, 0.8, 2.5)));
+    const a = 0.55, b = 0.5; // up and to the side
+    dish.position.set(Math.sin(b) * Math.cos(a) * R * 1.0, cy + Math.sin(a) * R, Math.cos(b) * Math.cos(a) * R * 1.0);
+    dish.lookAt(new THREE.Vector3(dish.position.x * 2, cy + (dish.position.y - cy) * 2, dish.position.z * 2));
+    g.add(dish);
+    // little lit windows along the trench
+    for (let i = 0; i < 10; i++) {
+      const t = -0.9 + i * 0.2;
+      g.add(new THREE.Mesh(k.box(0.12, 0.08, 0.04, cy - 0.04).translate(Math.sin(t) * R * 1.01, 0, Math.cos(t) * R * 1.01), glowing('#ffe7a8', 0.3, 2)));
+    }
+    g.add(k.door(r.door, 1.62, 0.8));
+    return { body, top: cy + R + 0.2, eave: cy, front: R, width: R * 2 };
+  },
+
+  /** A glass spire tower: a sleek tapering glass skyscraper on a solid base, with a parapet and a tall lit spire (requested by @Owen_B13, Day 6). */
+  'glass-spire'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const H = 5.0 + h * 1.4;
+    g.add(new THREE.Mesh(k.box(3.4, 1.0, 3.4, 0), plain('#c9ccd1')));
+    const glass = plain(r.wall, { roughness: 0.12, metalness: 0.55 });
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.75, H, 4, 1).rotateY(Math.PI / 4).translate(0, 1.0 + H / 2, 0), glass);
+    g.add(body);
+    // vertical edge lines and floor bands
+    for (let i = 0; i < Math.floor(H / 1.2); i++) {
+      const y = 1.0 + (i + 0.5) * (H / Math.floor(H / 1.2));
+      const s = 1.75 - (0.7 * (y - 1.0)) / H;
+      g.add(new THREE.Mesh(new THREE.CylinderGeometry(s + 0.01, s + 0.01, 0.05, 4, 1, true).rotateY(Math.PI / 4).translate(0, y, 0), glowing('#dff3ff', 0.15, 1.2)));
+    }
+    g.add(new THREE.Mesh(k.box(1.6, 0.4, 1.6, 1.0 + H), plain('#e9edf2')));
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.12, 2.6, 8).translate(0, 1.4 + H + 1.3, 0), plain('#e9edf2')));
+    g.add(new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 6).translate(0, 1.4 + H + 2.7, 0), glowing(r.accent, 1, 3)));
+    g.add(k.door(r.door, 1.72, 1.0));
+    return { body, top: 1.4 + H + 2.9, eave: 1.0 + H, front: 1.75, width: 3.5 };
+  },
+
 };

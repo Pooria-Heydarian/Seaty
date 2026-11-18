@@ -24,6 +24,8 @@ This fetches every comment (needs `YOUTUBE_API_KEY` and `YOUTUBE_CHANNEL_ID` in 
 
 If the fetch fails, show the error. A quota or key problem is the owner's to fix in Google Cloud Console.
 
+**Weekly challenge:** if `today.md` starts with a 🏆 section and someone commented the secret word before the deadline, the first one wins: `npm run challenge -- winner @name --comment <id>` (gives them the trophy; tomorrow's Short shows it). Reply to the winner with congratulations; don't confirm or deny the word to anyone else.
+
 ## 3. Decide every request
 
 For each comment decide one of: **build**, **partly build**, **impossible** (with a short reason), **inappropriate**, or **no request**.

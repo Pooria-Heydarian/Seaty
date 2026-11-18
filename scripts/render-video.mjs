@@ -1,6 +1,7 @@
 // Renders web/video.html into a vertical 1080x1920 MP4 Short, frame by frame.
 // Other timeline pages: --page trailer.html --name trailer, or the landscape city tour:
 //   npm run tour   (= --page tour.html --name seaty-city-tour --width 1920 --height 1080)
+// The weekend show (two hosts, script in web/data/episode.json): npm run podcast
 //
 //   npm run video                       -> video/<date>.mp4 (+ <date>.json with title/description)
 //   npm run video -- --seconds 6        -> quick test: only the first 6 seconds
@@ -46,23 +47,32 @@ await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const port = server.address().port;
 
 // ---- browser ----
-const browser = await puppeteer.launch({
-  headless: true,
-  args: [
-    '--no-sandbox',
-    '--ignore-gpu-blocklist',
-    '--hide-scrollbars',
-    // GitHub's servers have no GPU: render WebGL on the CPU.
-    ...(process.env.CI ? ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] : []),
-  ],
-});
-const page = await browser.newPage();
-page.on('pageerror', (e) => console.error('page error:', e.message));
-page.on('console', (m) => m.type() === 'error' && console.error('page console:', m.text()));
-// --width 1920 --height 1080 for a landscape video (the page must be laid out for that size)
-await page.setViewport({ width: Number(args.width || 1080), height: Number(args.height || 1920), deviceScaleFactor: 1 });
 const url = `http://127.0.0.1:${port}/${pageName}?render=1${site ? `&site=${encodeURIComponent(site)}` : ''}`;
-await page.goto(url, { waitUntil: 'networkidle0', timeout: 120000 });
+let browser, page;
+let injected = null; // voice lengths + mouth envelopes, given to every (re)opened page
+// Opens the timeline page. Long renders sometimes lose the headless browser; the frame loop then
+// opens a new one and carries on from the same frame.
+async function openPage() {
+  browser = await puppeteer.launch({
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--ignore-gpu-blocklist',
+      '--hide-scrollbars',
+      // GitHub's servers have no GPU: render WebGL on the CPU.
+      ...(process.env.CI ? ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] : []),
+    ],
+  });
+  page = await browser.newPage();
+  page.on('pageerror', (e) => console.error('page error:', e.message));
+  page.on('console', (m) => m.type() === 'error' && console.error('page console:', m.text()));
+  // --width 1920 --height 1080 for a landscape video (the page must be laid out for that size)
+  await page.setViewport({ width: Number(args.width || 1080), height: Number(args.height || 1920), deviceScaleFactor: 1 });
+  if (injected) await page.evaluateOnNewDocument((d, e) => { window.SEATY_VO = d; window.SEATY_VO_ENV = e; }, ...injected);
+  await page.goto(url, { waitUntil: 'networkidle0', timeout: 120000 });
+  return page.evaluate(() => window.seaty.ready);
+}
+await openPage();
 let info = await page.evaluate(() => window.seaty.ready);
 
 // ---- voiceover: speak each scene's line, then reload so scenes stretch to fit ----
@@ -71,17 +81,28 @@ const clips = new Map();
 if (useVoice) {
   const { speakAll, VOICE } = await import('./tts.mjs');
   console.log(`Voiceover (${VOICE})…`);
-  const spoken = await speakAll(info.scenes.map((s) => s.vo?.text || ''), path.join(VIDEO_DIR, `voice-${baseName}`));
+  const lines = info.scenes.map((s) => (s.vo?.text ? (s.vo.voice ? { text: s.vo.text, voice: s.vo.voice } : s.vo.text) : ''));
+  const spoken = await speakAll(lines, path.join(VIDEO_DIR, `voice-${baseName}`));
   for (const [i, s] of info.scenes.entries()) {
     const clip = spoken[i];
     if (!clip) continue;
     clips.set(i, clip);
-    console.log(`  ${s.type.padEnd(10)} ${(clip.samples.length / clip.rate).toFixed(1)}s  "${s.vo.text}"`);
+    console.log(`  ${s.type.padEnd(10)} ${(clip.samples.length / clip.rate).toFixed(1)}s ${s.vo.voice ? `[${s.vo.voice}] ` : ''} "${s.vo.text}"`);
   }
   const lengths = Object.fromEntries([...clips].map(([i, c]) => [i, c.samples.length / c.rate]));
-  await page.evaluateOnNewDocument((d) => { window.SEATY_VO = d; }, lengths);
-  await page.goto(url, { waitUntil: 'networkidle0', timeout: 120000 });
-  info = await page.evaluate(() => window.seaty.ready);
+  // loudness of each line per video frame (0..1), so a page can move its speakers' mouths
+  const envelopes = Object.fromEntries([...clips].map(([i, c]) => {
+    const per = Math.round(c.rate / info.fps), env = [];
+    for (let a = 0; a < c.samples.length; a += per) {
+      let sum = 0;
+      for (let k = a; k < Math.min(a + per, c.samples.length); k++) sum += c.samples[k] * c.samples[k];
+      env.push(Math.round(Math.min(1, Math.sqrt(sum / per) * 6) * 100) / 100);
+    }
+    return [i, env];
+  }));
+  injected = [lengths, envelopes];
+  try { await browser.close(); } catch { /* the old browser may already be gone */ }
+  info = await openPage();
 }
 const duration = limitSeconds ? Math.min(limitSeconds, info.duration) : info.duration;
 const frames = Math.round(duration * info.fps);
@@ -128,9 +149,20 @@ const ff = spawn(ffmpegPath, [
 const ffDone = new Promise((resolve, reject) => ff.on('close', (code) => (code === 0 ? resolve() : reject(new Error(`ffmpeg exited ${code}`)))));
 
 const t0 = Date.now();
+let restarts = 0;
 for (let f = 0; f < frames; f++) {
-  await page.evaluate((t) => window.seaty.frame(t), f / info.fps);
-  const jpg = await page.screenshot({ type: 'jpeg', quality: 92, optimizeForSpeed: true });
+  let jpg;
+  try {
+    await page.evaluate((t) => window.seaty.frame(t), f / info.fps);
+    jpg = await page.screenshot({ type: 'jpeg', quality: 92, optimizeForSpeed: true });
+  } catch (e) {
+    if (++restarts > 5) throw e;
+    console.warn(`\n  the browser stopped at frame ${f} (${e.message.split('\n')[0]}); reopening it and going on…`);
+    try { await browser.close(); } catch { /* already gone */ }
+    await openPage();
+    f--;
+    continue;
+  }
   if (!ff.stdin.write(jpg)) await new Promise((r) => ff.stdin.once('drain', r));
   if (f % 30 === 29 || f === frames - 1) {
     const per = (Date.now() - t0) / (f + 1);

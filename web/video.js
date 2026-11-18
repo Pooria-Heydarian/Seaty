@@ -189,6 +189,10 @@ function buildTimeline(city, ch) {
     shelter: (n) => [`${n} built a storm shelter in the yard!`, 'Got a storm shelter!'],
     drone: (n) => [`A drone now circles ${n}'s house!`, 'Got a drone!'],
     'koi-pond': (n) => [`${n} has a koi pond!`, 'Got a koi pond!'],
+    'capybara-pen': (n) => [`${n} now has a whole capybara pen in the yard!`, 'Got a capybara pen!'],
+    'xmas-hats': (n) => [`${n}'s chickens are ready for Christmas!`, 'Christmas hats for the chickens!'],
+    'big-cats': (n) => [`${n} adopted a lion and a tiger!`, 'Got a lion and a tiger!'],
+    trophy: (n) => [`${n} won the weekly challenge! A golden trophy now stands in the front yard.`, 'Weekly challenge winner!'],
   };
   const newLandmarks = newSpecials.filter((s) => s.kind === 'landmark');
   for (const sp of newLandmarks.slice(0, MAX_FEATURED_LANDMARKS)) {
@@ -233,6 +237,11 @@ function buildTimeline(city, ch) {
     text: pick([`${say(g.name)} commented again. Their building now has ${g.to} floors.`, `${say(g.name)} added ${g.to - g.from === 1 ? 'a floor' : `${g.to - g.from} floors`}, now ${g.to} in total.`, `Look at ${say(g.name)}'s building grow, to ${g.to} floors!`], i),
     at: 0.5,
   }));
+  // Weekly challenge: a new week starts (the winner is shown by their trophy upgrade scene)
+  if (ch.challenge?.type === 'new') {
+    const c = ch.challenge;
+    add('challenge', 5, { chal: c }, { text: `New weekly challenge! A ${c.name} is hidden somewhere in Seaty. Find it on the website and comment the secret word to win a golden trophy. Here's your clue: ${c.clue}`, at: 0.4 });
+  }
   if (city.residents.length) {
     const t1 = [...world.list].sort((a, b) => a.rank - b.rank)[0];
     const f = t1.resident.floors;
@@ -343,6 +352,8 @@ function buildTimeline(city, ch) {
       }
       case 'outro':
         return orbit(new THREE.Vector3(0, 0, 0), overviewDist() * (0.95 - 0.1 * k), 2.2 + k * 0.45, 40);
+      case 'challenge':
+        return orbit(new THREE.Vector3(0, 0, 0), overviewDist() * (0.75 - 0.08 * k), 0.9 + k * 0.6, 34);
     }
   }
   const endPose = scenes.map((s) => rawPose(s, s.dur));
@@ -482,6 +493,14 @@ function buildTimeline(city, ch) {
         $('c-avatar').style.background = '#f5b82e';
       }
       cardOn = fade(lt, 1.6, s.dur - 0.35);
+    } else if (s.type === 'challenge') {
+      if (lastCard !== s) {
+        fillCard('Weekly challenge', `Find the ${s.chal.name}`, `Clue: ${s.chal.clue}`, '');
+        $('c-name').textContent = 'Weekly challenge';
+        $('c-avatar').textContent = '🏆';
+        $('c-avatar').style.background = '#f5b82e';
+      }
+      cardOn = fade(lt, 0.8, s.dur - 0.35);
     } else if (s.type === 'upgrade') {
       if (lastCard !== s) fillCard(s.sp.name, 'House upgrade', s.caption, '');
       cardOn = fade(lt, 1.4, s.dur - 0.35);
@@ -516,8 +535,8 @@ function buildTimeline(city, ch) {
       $('cta-url').style.display = '';
       ctaOn = fade(lt, 0.45, s.dur + 10);
     }
-    lastCard = ['newcomer', 'grow', 'landmark', 'upgrade', 'house'].includes(s.type) ? s : null;
-    $('card').classList.toggle('plain', ['landmark', 'upgrade', 'house'].includes(s.type));
+    lastCard = ['newcomer', 'grow', 'landmark', 'upgrade', 'house', 'challenge'].includes(s.type) ? s : null;
+    $('card').classList.toggle('plain', ['landmark', 'upgrade', 'house', 'challenge'].includes(s.type));
     setOverlay($('card'), cardOn, 60);
     setOverlay($('montage'), montageOn, 40);
     setOverlay($('board'), boardOn, 60);

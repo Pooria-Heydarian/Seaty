@@ -40,6 +40,21 @@ const md = [
   `**Landmarks already in the city** (kind · name · owner): ${(specials.landmarks || []).map((l) => `${landmarkKind(l)} · ${l.name} · ${l.requestedBy || 'city'}`).join(' | ') || 'none'}`,
   '',
 ];
+// Weekly challenge: who commented the secret word (earliest first)? The first one in the week wins.
+const challenge = readJSON(path.join(ROOT, 'web', 'data', 'challenge.json'))?.current;
+if (challenge && !challenge.winner) {
+  const secret = Buffer.from(challenge.code, 'base64').toString().toLowerCase();
+  const hits = input.comments
+    .filter((c) => c.text.toLowerCase().includes(secret) && c.at >= challenge.start && c.at <= challenge.deadline)
+    .sort((a, b) => a.at.localeCompare(b.at));
+  md.push(`## 🏆 Weekly challenge ${challenge.week}: ${challenge.name} (secret word "${secret.toUpperCase()}", until ${challenge.deadline.slice(0, 16).replace('T', ' ')} UTC)`);
+  if (!hits.length) md.push('Nobody has found it yet (no new comment with the secret word).');
+  hits.forEach((c, i) => {
+    const first = i === 0 ? ` · **first = the winner** → \`npm run challenge -- winner ${c.author} --comment ${c.id}\`` : '';
+    md.push(`${i + 1}. ${c.author} · ${c.at.slice(0, 16).replace('T', ' ')} UTC · comment \`${c.id}\`${first}`);
+  });
+  md.push('');
+}
 for (const [id, list] of people) {
   const r = byId.get(id);
   md.push(`## ${list[0].author}  \`${id}\``);

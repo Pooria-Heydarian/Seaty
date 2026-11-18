@@ -19,7 +19,9 @@
     "requests": "node scripts/requests.mjs",
     "special": "node scripts/add-special.mjs",
     "finish": "node scripts/daily-report.mjs && node scripts/render-video.mjs",
-    "tour": "node scripts/render-video.mjs --page tour.html --name seaty-city-tour --width 1920 --height 1080"
+    "tour": "node scripts/render-video.mjs --page tour.html --name seaty-city-tour --width 1920 --height 1080",
+    "podcast": "node scripts/render-video.mjs --page podcast.html --name seaty-weekly --width 1920 --height 1080",
+    "challenge": "node scripts/challenge.mjs"
   },
   "engines": {
     "node": ">=18"

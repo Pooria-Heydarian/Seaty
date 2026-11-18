@@ -66,6 +66,22 @@ for (const h of specials.houses || []) {
 }
 writeJSON(SEEN_FILE, seenAll);
 
+// Weekly challenge news for the Short: a new week starting, or a winner.
+const challenge = readJSON(path.join(ROOT, 'web', 'data', 'challenge.json'))?.current;
+let challengeNews = null;
+if (challenge && city.mode === 'live') {
+  const key = challenge.winner ? `challenge:${challenge.week}:winner` : `challenge:${challenge.week}:start`;
+  const started = challenge.start.slice(0, 10) <= date;
+  if (started && isNew(key)) {
+    const r = challenge.winner ? findResident(challenge.winner) : null;
+    challengeNews = challenge.winner
+      ? { type: 'winner', week: challenge.week, name: challenge.name, winner: challenge.winner, id: r?.id || null }
+      : { type: 'new', week: challenge.week, name: challenge.name, clue: challenge.clue, deadline: challenge.deadline };
+    seen[key] = date;
+    writeJSON(SEEN_FILE, seenAll);
+  }
+}
+
 const lines = [];
 lines.push(`# Seaty town report: ${date}`, '');
 lines.push(`**${city.residentCount.toLocaleString()} residents · ${city.totalFloors.toLocaleString()} floors · ${city.videoCount} video${city.videoCount === 1 ? "" : "s"}**`, '');
@@ -76,7 +92,7 @@ if (prev) {
 }
 
 if (newSpecials.length) {
-  const UP = { pool: 'a swimming pool', 'apple-tree': 'an apple tree', capybara: 'a capybara', cat: 'a pet cat', dog: 'a pet dog', gems: 'a ruby and a sapphire', 'flower-tree': 'a blossom tree', pond: 'a pond', campfire: 'a campfire patio', chickens: 'a chicken coop', 'giant-apple-tree': 'a giant apple tree', 'giant-oak-tree': 'a giant oak tree', garage: 'a garage and a sports car', torii: 'a red shrine gate', quail: 'a pet quail', 'soccer-field': 'a soccer field', elephant: 'a pet elephant', shelter: 'a storm shelter', drone: 'a drone', 'koi-pond': 'a koi pond' };
+  const UP = { pool: 'a swimming pool', 'apple-tree': 'an apple tree', capybara: 'a capybara', cat: 'a pet cat', dog: 'a pet dog', gems: 'a ruby and a sapphire', 'flower-tree': 'a blossom tree', pond: 'a pond', campfire: 'a campfire patio', chickens: 'a chicken coop', 'giant-apple-tree': 'a giant apple tree', 'giant-oak-tree': 'a giant oak tree', garage: 'a garage and a sports car', torii: 'a red shrine gate', quail: 'a pet quail', 'soccer-field': 'a soccer field', elephant: 'a pet elephant', shelter: 'a storm shelter', drone: 'a drone', 'koi-pond': 'a koi pond', trophy: 'the weekly challenge trophy', 'capybara-pen': 'a capybara pen', 'xmas-hats': 'Christmas hats for the chickens', 'big-cats': 'a lion and a tiger' };
   lines.push('## ✨ New in town');
   for (const s of newSpecials) {
     lines.push(s.kind === 'landmark'
@@ -137,6 +153,7 @@ writeJSON(CHANGES_FILE, {
   grew: grew.map((r) => ({ id: r.id, name: r.name, comment: r.comment || '', from: r.floors - r.added, to: r.floors })),
   top: ranked.slice(0, 3).map((r) => ({ id: r.id, name: r.name, floors: r.floors })),
   newSpecials,
+  challenge: challengeNews,
 });
 
 console.log(lines.join('\n'));

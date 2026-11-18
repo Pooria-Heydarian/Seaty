@@ -6,6 +6,10 @@ A 3D city built by YouTube commenters: one comment = a house, each different vid
 
 The owner comes here once a day and asks for the daily update ("daily", "/daily", "new specials", "update the city"). Follow `.claude/skills/daily/SKILL.md`. There is no Anthropic API key: reading the comments and deciding the special buildings is done in that session, not by a script.
 
+## Weekend show
+
+Every weekend the owner asks for "weekly" / "weekly episode" / "Seaty Weekly". Follow `.claude/skills/weekly/SKILL.md`: a two-host landscape episode (`web/podcast.html` + `web/podcast.js`, script in `web/data/episode.json`, `npm run podcast`) and the weekly challenge (`npm run challenge`, `web/data/challenge.json`: a golden object hidden on the website, the first comment with its secret word wins a trophy upgrade).
+
 ## Where things are
 
 - `web/world.js`: the 3D town (shared by the site, the daily Short and the trailer). `web/houses.js`: custom house kit; `web/house-models.js`: one-off models made for requests; `web/model.html?u=<channelId>`: one house alone, to check a model from every side. `web/catalog.js`: what can be built (keep it in sync with the models). `web/layout.js`: the city plan (downtown, Main Street, style neighbourhoods with pocket parks, green belt, outskirts); `landmarkPlan` / `houseStyle` in `web/catalog.js` decide where each landmark and house goes.
