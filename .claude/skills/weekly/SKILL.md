@@ -62,6 +62,7 @@ Check before handing it over: no `page error` in the log; pull frames from every
 ## 5. Hand over
 
 - Rename to `video/seaty-weekly-ep<N>.mp4`.
-- Write `video/seaty-weekly-ep<N>.txt`: a title ("Seaty Weekly #N: <headline>"), a description with the challenge, how to join, the website, and **chapters** with timestamps (each chapter's first line start time: the render log lists the lines in order; or compute starts the way `podcast.js` does).
+- Write `video/seaty-weekly-ep<N>.txt`: a title ("Seaty Weekly #N: <headline>"), a description that only teases the challenge ("a new challenge is coming, watch the episode to find out how to play": the rules, object and prize are told in the video only), how to join, the website, and **chapters** with timestamps (each chapter's first line start time: the render log lists the lines in order; or compute starts the way `podcast.js` does).
 - A 1280×720 thumbnail (the city or the studio + a bold headline).
+- On episode day, rewrite that day's `comments/replies-<date>.md` so every reply (each worded differently) also invites the person to watch the new Seaty Weekly and join its challenge, without the secret word or any hint of where the object hides.
 - Commit and push `web/data` (episode script, challenge) and any code changes. Never commit `video/` or `comments/`.
