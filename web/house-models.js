@@ -351,4 +351,67 @@ export const HOUSE_MODELS = {
     return { body, top: 1.4 + H + 2.9, eave: 1.0 + H, front: 1.75, width: 3.5 };
   },
 
+
+  /** A giant donut house standing on its edge: pink icing, sprinkles, a round window in the hole and a door at the bottom (Day 7, @KetchupPac). */
+  donut(g, r, h, k) {
+    const { THREE, plain } = k;
+    const R = 1.25 + h * 0.22; // the donut grows with every floor
+    const tube = R * 0.55;
+    const cy = R + tube + 0.25;
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(R * 1.2, R * 1.3, 0.25, 32).translate(0, 0.125, 0), plain('#f7f4ee')));
+    const body = new THREE.Mesh(new THREE.TorusGeometry(R, tube, 18, 40).translate(0, cy, 0), plain(r.wall, { roughness: 0.7 }));
+    g.add(body);
+    // icing on the front half, a little bigger than the dough
+    const icing = new THREE.Mesh(new THREE.TorusGeometry(R, tube * 1.04, 14, 40, Math.PI * 2).translate(0, cy, 0.05), plain(r.roofColor, { roughness: 0.4 }));
+    icing.scale.set(1, 1, 0.75);
+    g.add(icing);
+    const cols = ['#ffffff', '#3a86ff', '#ffd23f', '#5cc55a', '#e63946'];
+    for (let n = 0; n < 46; n++) {
+      const a = (n / 46) * Math.PI * 2 + (n % 3) * 0.05;
+      const off = (((n * 7) % 5) / 5 - 0.5) * tube * 1.2;
+      const s = new THREE.Mesh(new THREE.CapsuleGeometry(0.035, 0.12, 2, 4), plain(cols[n % cols.length]));
+      s.position.set(Math.cos(a) * (R + off), cy + Math.sin(a) * (R + off), tube * 0.82);
+      s.rotation.z = n * 1.3;
+      g.add(s);
+    }
+    // window in the hole and a door at the bottom
+    g.add(new THREE.Mesh(new THREE.CircleGeometry(R - tube * 0.95, 24).translate(0, cy, 0), plain('#bfe3ff', { transparent: true, opacity: 0.7 })));
+    g.add(k.door(r.door, tube * 0.95, 0.85, 0.25));
+    return { body, top: cy + R + tube, eave: cy, front: tube, width: (R + tube) * 2 };
+  },
+
+  /** An airplane house: a white fuselage with a row of windows, wings, engines, a tall tail and a stair door (Day 7, @Fly4Ever777). */
+  airplane(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const L = 3.6 + h * 0.35; // longer with every floor
+    const Rf = 0.75 + h * 0.06;
+    const cy = 1.1 + Rf;
+    const skin = plain(r.wall, { roughness: 0.45 });
+    const stripe = plain(r.accent);
+    // the plane points along x, so its side (windows, door) faces the street
+    const body = new THREE.Mesh(new THREE.CapsuleGeometry(Rf, L, 8, 20).rotateZ(Math.PI / 2).translate(0, cy, 0), skin);
+    g.add(body);
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(Rf * 1.01, Rf * 1.01, L * 0.95, 20, 1, true, 0, Math.PI * 0.28).rotateZ(Math.PI / 2).translate(0, cy, 0), stripe));
+    g.add(new THREE.Mesh(new THREE.SphereGeometry(Rf * 0.6, 12, 8, 0, Math.PI).rotateY(Math.PI / 2).translate(L / 2 + Rf * 0.55, cy + Rf * 0.25, 0), plain('#2b3440')));
+    for (let x = -L / 2 + 0.3; x < L / 2 - 0.2; x += 0.42) g.add(new THREE.Mesh(k.box(0.22, 0.26, 0.04, cy + Rf * 0.12).translate(x, 0, Rf * 0.98), glowing('#cfe9ff', 0.2, 1.8)));
+    // wings and engines
+    for (const s of [-1, 1]) {
+      const wing = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.1, 2.4).translate(0, 0, s * 1.2), skin);
+      wing.position.set(-0.2, cy - Rf * 0.4, s * Rf * 0.6);
+      wing.rotation.y = s * 0.35;
+      g.add(wing);
+      g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.24, 0.8, 12).rotateZ(Math.PI / 2).translate(0.1, cy - Rf * 0.8, s * (Rf + 0.9)), plain('#c9ccd1')));
+    }
+    // tail
+    const fin = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.4, 0.1).translate(0, 0.7, 0), stripe);
+    fin.position.set(-L / 2 - Rf * 0.3, cy + Rf * 0.6, 0);
+    fin.rotation.z = 0.35;
+    g.add(fin);
+    for (const s of [-1, 1]) g.add(new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.08, 1.0).translate(-L / 2 - Rf * 0.3, cy + 0.2, s * 0.55), skin));
+    // landing gear and the stair to the door
+    for (const x of [L / 2 - 0.2, -0.3]) g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.1, 6).translate(x, 0.55, 0), k.DARK));
+    g.add(k.door(r.door, Rf * 1.0, 0.75, cy - Rf * 0.75).translateX(L / 2 - 0.55));
+    for (let n = 0; n < 5; n++) g.add(new THREE.Mesh(k.box(0.6, 0.06, 0.25, n * (cy - Rf * 0.75) / 5).translate(L / 2 - 0.55, 0, Rf + 0.25 + (4 - n) * 0.22), plain('#f7f4ee')));
+    return { body, top: cy + Rf + 1.6, eave: cy, front: Rf + 1.3, width: L + Rf * 2 };
+  },
 };

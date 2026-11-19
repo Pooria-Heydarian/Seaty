@@ -863,6 +863,20 @@
       "type": "big-cats",
       "requestedIn": "UgygmRTcSnhALFkqnHF4AaABAg",
       "added": "2026-11-18"
+    },
+    {
+      "resident": "UCv-a0knslevzeV3tfAHRhFg",
+      "name": "@ShashankShekhar-o3i",
+      "type": "mango-tree",
+      "requestedIn": "Ugx9mo6arSeYIyr2-Tp4AaABAg",
+      "added": "2026-11-19"
+    },
+    {
+      "resident": "UCWkYCJOI-n0B8BB8XAE66Hg",
+      "name": "@PolerGG",
+      "type": "capybara",
+      "requestedIn": "UgzNmEtn9-I4yi6Lfbd4AaABAg",
+      "added": "2026-11-19"
     }
   ],
   "houses": [
@@ -883,22 +897,6 @@
         ]
       },
       "requestedIn": "UgzJyQnNDSXgH-VHF554AaABAg",
-      "added": "2026-11-14"
-    },
-    {
-      "resident": "UCZm0diFKnMvsNQ--CtXCsNA",
-      "name": "@Kirupa_49",
-      "title": "Modern House",
-      "recipe": {
-        "shape": "classic",
-        "roof": "flat",
-        "wall": "#f5f5f2",
-        "roofColor": "#3b4552",
-        "door": "#2b2d42",
-        "accent": "#4cc9f0",
-        "extras": []
-      },
-      "requestedIn": "Ugw8GDsjThuieYlqKjF4AaABAg",
       "added": "2026-11-14"
     },
     {
@@ -1329,25 +1327,6 @@
       "added": "2026-11-18"
     },
     {
-      "resident": "UC1nwHOUj7poip83gnhJ46BQ",
-      "name": "@KetchupPac",
-      "title": "Penthouse Tower",
-      "recipe": {
-        "shape": "glass",
-        "roof": "flat",
-        "wall": "#2f3e52",
-        "roofColor": "#d4af37",
-        "door": "#1f1f24",
-        "accent": "#f5c542",
-        "extras": [
-          "fairy-lights",
-          "star"
-        ]
-      },
-      "requestedIn": "UgwACnKHPV-HlnXfq6h4AaABAg",
-      "added": "2026-11-18"
-    },
-    {
       "resident": "UCKgB0kce7yRwStaUsMl_nZQ",
       "name": "@AverageHuman67",
       "title": "Rainbow House",
@@ -1410,6 +1389,77 @@
       },
       "requestedIn": "Ugy2xwlT436L1qi65LV4AaABAg",
       "added": "2026-11-18"
+    },
+    {
+      "resident": "UC1nwHOUj7poip83gnhJ46BQ",
+      "name": "@KetchupPac",
+      "title": "Donut House",
+      "recipe": {
+        "shape": "donut",
+        "roof": "pointed",
+        "wall": "#e0a252",
+        "roofColor": "#ff8fb8",
+        "door": "#6b4630",
+        "accent": "#ffffff",
+        "extras": []
+      },
+      "requestedIn": "UgyrJNkLAjxhbdnFP6h4AaABAg",
+      "added": "2026-11-19"
+    },
+    {
+      "resident": "UC72l66Gfc4bCEQEASVG6oPQ",
+      "name": "@Fly4Ever777",
+      "title": "Airplane House",
+      "recipe": {
+        "shape": "airplane",
+        "roof": "pointed",
+        "wall": "#f7f7f5",
+        "roofColor": "#b5523b",
+        "door": "#3b4552",
+        "accent": "#3a86ff",
+        "extras": []
+      },
+      "requestedIn": "Ugx7_rlsIFfCIPapLTR4AaABAg",
+      "added": "2026-11-19"
+    },
+    {
+      "resident": "UCZm0diFKnMvsNQ--CtXCsNA",
+      "name": "@Kirupa_49",
+      "title": "Classy Mansion",
+      "recipe": {
+        "shape": "mansion",
+        "roof": "pointed",
+        "wall": "#f7f5ef",
+        "roofColor": "#1d3557",
+        "door": "#1d3557",
+        "accent": "#d4af37",
+        "extras": [
+          "fountain",
+          "flowers",
+          "fence"
+        ]
+      },
+      "requestedIn": "Ugy4VLOIVzwUxKduezJ4AaABAg",
+      "added": "2026-11-19"
+    },
+    {
+      "resident": "UCWkYCJOI-n0B8BB8XAE66Hg",
+      "name": "@PolerGG",
+      "title": "Farm Villa",
+      "recipe": {
+        "shape": "mansion",
+        "roof": "gable",
+        "wall": "#f3ead7",
+        "roofColor": "#2f7d4a",
+        "door": "#6b4630",
+        "accent": "#ffd23f",
+        "extras": [
+          "flowers",
+          "windmill"
+        ]
+      },
+      "requestedIn": "UgzNmEtn9-I4yi6Lfbd4AaABAg",
+      "added": "2026-11-19"
     }
   ]
 }

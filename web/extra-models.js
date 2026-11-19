@@ -1451,6 +1451,24 @@ export function createExtraModels({ THREE, M, mat, FLOOR_H, glow, shadowAll }) {
     },
   });
 
+  /** A mango tree in the back yard, hung with orange-yellow mangoes (Day 7, @ShashankShekhar-o3i). */
+  upgrades['mango-tree'] = () => {
+    const g = new THREE.Group();
+    g.add(mesh(new THREE.CylinderGeometry(0.16, 0.24, 1.4, 7).translate(0, 0.7, 0), TRUNK));
+    const crown = M('#2f7d32', { flatShading: true });
+    for (const [x, y, z, r] of [[0, 2.0, 0, 1.0], [-0.55, 1.75, 0.3, 0.7], [0.5, 1.8, -0.25, 0.72]]) g.add(mesh(new THREE.IcosahedronGeometry(r, 0).translate(x, y, z), crown));
+    for (let i = 0; i < 9; i++) {
+      const a = i * 0.7, rr = 0.85 + (i % 3) * 0.12;
+      const m = mesh(new THREE.SphereGeometry(0.12, 8, 6), M(i % 2 ? '#ffb31a' : '#f08a24'));
+      m.scale.set(0.8, 1.2, 0.8);
+      m.position.set(Math.cos(a) * rr, 1.35 + (i % 3) * 0.2, Math.sin(a) * rr);
+      g.add(m);
+    }
+    shadowAll(g);
+    g.position.set(-1.3, 0.27, -2.5);
+    return g;
+  };
+
   /** Weekly challenge prize: a golden trophy cup on a little stone plinth in the front yard, slowly turning and sparkling. */
   upgrades.trophy = () => {
     const g = new THREE.Group();
@@ -1698,6 +1716,25 @@ export function createExtraModels({ THREE, M, mat, FLOOR_H, glow, shadowAll }) {
     hanger.add(mesh(new THREE.BoxGeometry(2.9, 0.12, 0.12).translate(0, 0.1, 0.06), gold));
     hanger.position.set(0, H + 0.3, 0);
     g.add(hanger);
+    // bridal floor: white wedding gowns in the upper windows, and a big black SUV parked in front (Day 7, @ZariGolpayegani)
+    for (const x of [-2.4, 0, 2.4]) {
+      const y0 = 2.62; // on a little balcony in front of the first-floor windows
+      g.add(mesh(new THREE.ConeGeometry(0.34, 0.9, 12).translate(x, y0 + 0.45, front + 0.3), M('#fbfbf7', { roughness: 0.4 })));
+      g.add(mesh(new THREE.SphereGeometry(0.11, 8, 6).translate(x, y0 + 1.0, front + 0.3), M('#f3e3d3')));
+      g.add(mesh(new THREE.ConeGeometry(0.18, 0.5, 8, 1, true).translate(x, y0 + 1.05, front + 0.22), M('#ffffff', { transparent: true, opacity: 0.6, side: THREE.DoubleSide })));
+    }
+    g.add(mesh(box(8.2, 0.1, 0.7, 0, 2.52, front + 0.3), WHITE));
+    const suv = new THREE.Group();
+    const paint = M('#14161a', { metalness: 0.5, roughness: 0.3 });
+    suv.add(mesh(box(1.5, 0.75, 3.2, 0, 0.3), paint), mesh(box(1.4, 0.6, 2.0, 0, 1.05, -0.3), paint));
+    suv.add(mesh(box(1.42, 0.42, 1.9, 0, 1.12, -0.3), M('#2b3440', { roughness: 0.15 })));
+    for (const z of [-1.05, 1.05]) for (const x of [-0.72, 0.72]) suv.add(mesh(new THREE.CylinderGeometry(0.33, 0.33, 0.25, 12).rotateZ(Math.PI / 2).translate(x, 0.33, z), DARK));
+    suv.add(mesh(box(1.3, 0.12, 0.04, 0, 0.75, 1.61), M('#c9ccd1', { metalness: 0.8 })));
+    suv.add(mesh(box(0.4, 0.4, 0.15, 0, 0.75, -1.65), DARK)); // spare wheel
+    for (const x of [-0.5, 0.5]) suv.add(mesh(box(0.25, 0.12, 0.05, x, 0.82, 1.61), glow('#fff3c4', 0.4, 2)));
+    suv.position.set(1.8, 0, front + 2.2);
+    suv.rotation.y = Math.PI / 2;
+    g.add(suv);
     shadowAll(g);
     g.userData.tick = (t) => { hanger.rotation.y = Math.sin(t * 0.7) * 0.35; };
     return { group: g, body, height: H + 2.4 };
@@ -1734,6 +1771,30 @@ export function createExtraModels({ THREE, M, mat, FLOOR_H, glow, shadowAll }) {
     dummy.position.set(-3.6, 0.6, 3.2);
     g.add(dummy);
     for (let i = 0; i < 5; i++) g.add(mesh(new THREE.CylinderGeometry(0.08, 0.08, 3 + (i % 3) * 0.6, 6).translate(3.4 + (i % 3) * 0.35, 0.6 + 1.6, 3.0 + Math.floor(i / 3) * 0.4), M('#7cb342')));
+    // kitsune shrine beside the dojo: a little red shrine with a torii and two white fox guardians (Day 7, @Get_jin_in_use)
+    {
+      const red = M('#c0392b');
+      const sx = -3.4, sz = 1.2, sy = 0.6;
+      g.add(mesh(box(1.4, 0.15, 1.2, sx, sy, sz), STONE));
+      g.add(mesh(box(0.9, 0.8, 0.7, sx, sy + 0.15, sz - 0.1), red));
+      const sr = mesh(new THREE.ConeGeometry(0.85, 0.45, 4).rotateY(Math.PI / 4).translate(sx, sy + 1.17, sz - 0.1), M('#2f3640', { flatShading: true }));
+      sr.scale.set(1, 1, 0.85);
+      g.add(sr);
+      for (const x of [-0.75, 0.75]) g.add(mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.5, 6).translate(sx + x, sy + 0.75, sz + 1.0), red));
+      g.add(mesh(box(1.9, 0.12, 0.14, sx, sy + 1.45, sz + 1.0), red), mesh(box(1.6, 0.08, 0.1, sx, sy + 1.2, sz + 1.0), red));
+      for (const s of [-1, 1]) {
+        const fox = new THREE.Group();
+        const fur = M('#f7f4ee');
+        fox.add(mesh(box(0.3, 0.12, 0.3, 0, 0, 0), STONE));
+        fox.add(mesh(new THREE.ConeGeometry(0.13, 0.4, 8).translate(0, 0.32, 0), fur));
+        fox.add(mesh(new THREE.ConeGeometry(0.09, 0.2, 6).rotateX(Math.PI / 2).translate(0, 0.55, 0.08), fur));
+        for (const e of [-0.05, 0.05]) fox.add(mesh(new THREE.ConeGeometry(0.035, 0.1, 4).translate(e, 0.66, -0.01), fur));
+        fox.add(mesh(new THREE.ConeGeometry(0.08, 0.32, 6).rotateX(-0.9).translate(s * 0.08, 0.3, -0.18), fur));
+        fox.add(mesh(new THREE.BoxGeometry(0.2, 0.06, 0.04).translate(0, 0.42, 0.11), red)); // red bib
+        fox.position.set(sx + s * 0.55, sy + 0.12, sz + 0.55);
+        g.add(fox);
+      }
+    }
     // koi pond in front of the dojo (added for @Get_jin_in_use, Day 6)
     const pondShape = new THREE.Shape();
     pondShape.absellipse(0, 0, 2.2, 1.0, 0, Math.PI * 2);

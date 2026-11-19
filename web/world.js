@@ -1075,8 +1075,14 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     const all = [...world.landmarks.values()];
     const dam = all.find((l) => l.def.type === 'dam');
     const plant = all.find((l) => l.def.type === 'power-plant');
-    if (!dam || !plant) return;
-    const a = dam.outer.position.clone().setY(0), b = plant.outer.position.clone().setY(0);
+    if (!plant) return;
+    if (dam) powerLine(dam.outer.position.clone().setY(0), plant.outer.position.clone().setY(0));
+    // and on into town: the plant powers the city (Day 7, @jjk-x2r)
+    const p = plant.outer.position.clone().setY(0);
+    const edge = p.clone().setLength(world.radius + 4);
+    powerLine(p, edge, 0.12, 1.0);
+  }
+  function powerLine(a, b, from = 0.12, to = 0.88) {
     const len = a.distanceTo(b);
     if (len < 10) return;
     const n = Math.max(2, Math.round(len / 18));
@@ -1088,7 +1094,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     const group = new THREE.Group();
     for (let i = 0; i <= n; i++) {
       // skip the very ends, which stand inside the two landmarks' blocks
-      const p = a.clone().lerp(b, 0.12 + (0.76 * i) / n);
+      const p = a.clone().lerp(b, from + ((to - from) * i) / n);
       const t = new THREE.Group();
       for (const [dx, dz] of [[-0.6, -0.6], [0.6, -0.6], [-0.6, 0.6], [0.6, 0.6]]) {
         const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.09, 8.2, 5), steel);
@@ -1115,7 +1121,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     }
     group.traverse((o) => { if (o.isMesh) o.castShadow = true; });
     scene.add(group);
-    world.powerLine = group;
+    (world.powerLines ||= []).push(group);
   }
 
   /** The weekly challenge's hidden object (the website only): a small golden capybara somewhere in town. */

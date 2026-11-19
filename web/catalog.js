@@ -32,6 +32,7 @@ export const UPGRADE_TYPES = {
   'capybara-pen': 'a fenced capybara pen with three capybaras and a little pool (back yard)',
   'xmas-hats': 'Christmas hats on the chickens (needs the chicken coop)',
   'big-cats': 'a pet lion and tiger in the back yard',
+  'mango-tree': 'a mango tree with ripe mangoes in the back yard',
 };
 
 /** Landmarks with their own 3D model. Any other landmark is built as a generic gold-domed hall with a name sign. */
@@ -117,7 +118,7 @@ const SHAPE_STYLE = {
   cottage: 'old', medieval: 'old', 'japanese-cafe': 'old',
   mushroom: 'fantasy', rocket: 'fantasy', igloo: 'fantasy', treehouse: 'fantasy', pyramid: 'fantasy', lighthouse: 'fantasy',
   'gem-head': 'fantasy', 'chess-knight': 'fantasy', bunker: 'fantasy', caravan: 'fantasy',
-  'white-house': 'villa', rainbow: 'fantasy', 'space-station': 'fantasy', 'glass-spire': 'tower',
+  'white-house': 'villa', rainbow: 'fantasy', 'space-station': 'fantasy', 'glass-spire': 'tower', donut: 'fantasy', airplane: 'fantasy',
 };
 /** The neighbourhood of a house recipe (no recipe = classic). A classic shape with a flat roof counts as modern (Tower Row). */
 export function houseStyle(recipe) {
@@ -182,6 +183,8 @@ export const HOUSE_SHAPES = {
   rainbow: 'a rainbow-striped house (one colour per floor band) with a rainbow arching over the roof',
   'space-station': 'a round grey space-station sphere with a trench and a big dish (wall = shell, accent = dish light)',
   'glass-spire': 'a sleek tapering glass skyscraper with a tall lit spire (wall = glass, accent = spire light)',
+  donut: 'a giant donut house standing on its edge with icing and sprinkles (wall = dough, roofColor = icing)',
+  airplane: 'an airplane house: fuselage with windows, wings, engines and tail (wall = body, accent = stripe and tail)',
   'japanese-cafe': 'a Japanese house / café: paper screens, tiled roofs with upturned corners (one tier per floor), noren curtain, red lanterns (wall = wood, accent = curtain)',
 };
 

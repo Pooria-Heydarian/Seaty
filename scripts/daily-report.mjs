@@ -107,7 +107,7 @@ if (prev) {
 }
 
 if (newSpecials.length) {
-  const UP = { pool: 'a swimming pool', 'apple-tree': 'an apple tree', capybara: 'a capybara', cat: 'a pet cat', dog: 'a pet dog', gems: 'a ruby and a sapphire', 'flower-tree': 'a blossom tree', pond: 'a pond', campfire: 'a campfire patio', chickens: 'a chicken coop', 'giant-apple-tree': 'a giant apple tree', 'giant-oak-tree': 'a giant oak tree', garage: 'a garage and a sports car', torii: 'a red shrine gate', quail: 'a pet quail', 'soccer-field': 'a soccer field', elephant: 'a pet elephant', shelter: 'a storm shelter', drone: 'a drone', 'koi-pond': 'a koi pond', trophy: 'the weekly challenge trophy', 'capybara-pen': 'a capybara pen', 'xmas-hats': 'Christmas hats for the chickens', 'big-cats': 'a lion and a tiger' };
+  const UP = { pool: 'a swimming pool', 'apple-tree': 'an apple tree', capybara: 'a capybara', cat: 'a pet cat', dog: 'a pet dog', gems: 'a ruby and a sapphire', 'flower-tree': 'a blossom tree', pond: 'a pond', campfire: 'a campfire patio', chickens: 'a chicken coop', 'giant-apple-tree': 'a giant apple tree', 'giant-oak-tree': 'a giant oak tree', garage: 'a garage and a sports car', torii: 'a red shrine gate', quail: 'a pet quail', 'soccer-field': 'a soccer field', elephant: 'a pet elephant', shelter: 'a storm shelter', drone: 'a drone', 'koi-pond': 'a koi pond', trophy: 'the weekly challenge trophy', 'capybara-pen': 'a capybara pen', 'xmas-hats': 'Christmas hats for the chickens', 'big-cats': 'a lion and a tiger', 'mango-tree': 'a mango tree' };
   lines.push('## ✨ New in town');
   for (const s of newSpecials) {
     lines.push(s.kind === 'landmark'

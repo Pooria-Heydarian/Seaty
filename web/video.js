@@ -191,6 +191,7 @@ function buildTimeline(city, ch) {
     'koi-pond': (n) => [`${n} has a koi pond!`, 'Got a koi pond!'],
     'capybara-pen': (n) => [`${n} now has a whole capybara pen in the yard!`, 'Got a capybara pen!'],
     'xmas-hats': (n) => [`${n}'s chickens are ready for Christmas!`, 'Christmas hats for the chickens!'],
+    'mango-tree': (n) => [`${n} has a mango tree full of mangoes!`, 'Got a mango tree!'],
     'big-cats': (n) => [`${n} adopted a lion and a tiger!`, 'Got a lion and a tiger!'],
     trophy: (n) => [`${n} won the weekly challenge! A golden trophy now stands in the front yard.`, 'Weekly challenge winner!'],
   };

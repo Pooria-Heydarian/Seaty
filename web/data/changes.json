@@ -1,348 +1,181 @@
 {
-  "date": "2026-11-18",
-  "day": 6,
+  "date": "2026-11-19",
+  "day": 7,
   "firstReport": false,
   "residentCount": 87,
-  "totalFloors": 211,
-  "videoCount": 7,
-  "floorsAdded": 42,
+  "totalFloors": 231,
+  "videoCount": 8,
+  "floorsAdded": 20,
   "newResidents": [],
   "grew": [
     {
-      "id": "UCX6wVTHYXPiW7mS_UD_leoQ",
-      "name": "@ChristinneeeXD",
-      "comment": "Can u make me an capybara farm as well In my yard?",
-      "from": 1,
-      "to": 6
-    },
-    {
-      "id": "UC1nwHOUj7poip83gnhJ46BQ",
-      "name": "@KetchupPac",
-      "comment": "cAN I HAVE A PENTHOUSE",
-      "from": 2,
-      "to": 5
-    },
-    {
-      "id": "UC-Kcqoiyqx-UnJiJgjtCWbg",
-      "name": "@Owen_B13",
-      "comment": "Can i live in the one World Trade Center",
-      "from": 2,
-      "to": 5
-    },
-    {
-      "id": "UCOXkK2o1Xe-mmbNHaSd6r2g",
-      "name": "@LemonCubeDev",
-      "comment": "Crazy how Claude Code makes this whole thing!",
-      "from": 1,
-      "to": 4
-    },
-    {
-      "id": "UCn-3PuoTEOwyWSCo-89yj0A",
-      "name": "@POUSALI2412",
-      "comment": "Hey could you open a pizza place?",
-      "from": 4,
-      "to": 6
-    },
-    {
-      "id": "UCKgB0kce7yRwStaUsMl_nZQ",
-      "name": "@AverageHuman67",
-      "comment": "make my house rainbow",
+      "id": "UC72l66Gfc4bCEQEASVG6oPQ",
+      "name": "@Fly4Ever777",
+      "comment": "Hi!",
       "from": 3,
-      "to": 5
-    },
-    {
-      "id": "UCFKlbA0mu0HMUyWG3orzc7g",
-      "name": "@moisescaicedolover",
-      "comment": "Can i have more floor",
-      "from": 2,
-      "to": 4
-    },
-    {
-      "id": "UCDgiH80X9SHLgHukBy-XzkQ",
-      "name": "@JacksonGross-q4b",
-      "comment": "seaty where is my white house house makeover?",
-      "from": 1,
-      "to": 3
-    },
-    {
-      "id": "UCJ8vLkrMd5einlvr_L_Bpfw",
-      "name": "@ЕленаИзюмова-у7ц",
-      "comment": "FLOOR 6",
-      "from": 5,
-      "to": 6
-    },
-    {
-      "id": "UCJKwj1uw3QlueW6K3N-U2gw",
-      "name": "@Staypositivels",
-      "comment": "Can you change my house into a skyscraper model",
-      "from": 5,
-      "to": 6
+      "to": 7
     },
     {
       "id": "UCVNoIdSeaoW2eEnaZ61pAEQ",
       "name": "@Get_jin_in_use",
-      "comment": "give me a pond for my dojo",
-      "from": 5,
-      "to": 6
+      "comment": "GIVME ME A KITUNE",
+      "from": 6,
+      "to": 8
+    },
+    {
+      "id": "UCn-3PuoTEOwyWSCo-89yj0A",
+      "name": "@POUSALI2412",
+      "comment": "Invited by @Pousali2412",
+      "from": 6,
+      "to": 7
+    },
+    {
+      "id": "UCJ8vLkrMd5einlvr_L_Bpfw",
+      "name": "@ЕленаИзюмова-у7ц",
+      "comment": "OH DEAR, 7 FLOORS",
+      "from": 6,
+      "to": 7
+    },
+    {
+      "id": "UCJKwj1uw3QlueW6K3N-U2gw",
+      "name": "@Staypositivels",
+      "comment": "Dude",
+      "from": 6,
+      "to": 7
     },
     {
       "id": "UCv-a0knslevzeV3tfAHRhFg",
       "name": "@ShashankShekhar-o3i",
-      "comment": "Got a swimming pool and a drone in my backyard and a Lamborghini",
+      "comment": "Got a mango tree in my backyard",
+      "from": 6,
+      "to": 7
+    },
+    {
+      "id": "UC1nwHOUj7poip83gnhJ46BQ",
+      "name": "@KetchupPac",
+      "comment": "bro add more fllors for me and i want to be a donut",
       "from": 5,
       "to": 6
     },
     {
       "id": "UCZm0diFKnMvsNQ--CtXCsNA",
       "name": "@Kirupa_49",
-      "comment": "Loving the new layout ❤",
-      "from": 4,
-      "to": 5
+      "comment": "Can you make my house look like a classy mansion if you can please?",
+      "from": 5,
+      "to": 6
     },
     {
       "id": "UCWkYCJOI-n0B8BB8XAE66Hg",
       "name": "@PolerGG",
-      "comment": "open a game store and please mention me in the video",
-      "from": 4,
-      "to": 5
+      "comment": "pls upgrade my house and get me a capybara THANK YOU FOR MENTIONING ME",
+      "from": 5,
+      "to": 6
     },
     {
       "id": "UCpD3u7o7qCaDE5Hui4Xo1bQ",
       "name": "@prabhasishbhattacharya9226",
-      "comment": "hey could you give me a pet lion and tiger?",
-      "from": 4,
-      "to": 5
+      "comment": "hey",
+      "from": 5,
+      "to": 6
     },
     {
-      "id": "UCICnlf3KRLmhydWXl38QXUQ",
-      "name": "@markchesterajeemercado3237",
-      "comment": "Can you add a new bus line and a bus depot?",
-      "from": 3,
-      "to": 4
+      "id": "UCZcS07-x1ubdSIjAGrVgU-A",
+      "name": "@mdsadiq4737",
+      "comment": "I want 5 floors to my house since i've been commenting on EVERY SINGLE VIDEO",
+      "from": 4,
+      "to": 5
     },
     {
       "id": "UCKXWTyD95c9W96Co4VMbD4A",
       "name": "@jjk-x2r",
-      "comment": "give me another floor and idk what else do get bt how about big transformens on the power plant and idk connect the dam and power plant whit visible cables",
-      "from": 3,
-      "to": 4
-    },
-    {
-      "id": "UCrBakTMMz8PQAn8oIW1hp-g",
-      "name": "@GamerGuy67x",
-      "comment": "Can I have a hotel 🏨",
-      "from": 3,
-      "to": 4
-    },
-    {
-      "id": "UCgDf7IYRCZ9MXVMjPXnZkEw",
-      "name": "@ConnorLukach",
-      "comment": "Hi",
-      "from": 3,
-      "to": 4
+      "comment": "Give me another floor and im runing out of ideas can u give me any ideas idk maybe make the power plant look like it realy powers everything",
+      "from": 4,
+      "to": 5
     },
     {
       "id": "UCZYD9tjWBaJgrwaKK6DXp7g",
       "name": "@Eastonfortniteeee",
-      "comment": "Or a mall",
-      "from": 3,
-      "to": 4
-    },
-    {
-      "id": "UC3EbWVsoRRZmwM2zz7bbkgA",
-      "name": "@immortal_snaiI",
-      "comment": "+1 floor both",
-      "from": 3,
-      "to": 4
-    },
-    {
-      "id": "UCMmaqv6m-fww53sSbYdD2RQ",
-      "name": "@JackMihna",
-      "comment": "Can I live in the death star",
-      "from": 2,
-      "to": 3
+      "comment": "Can you make a nasa place",
+      "from": 4,
+      "to": 5
     },
     {
       "id": "UC_GtnlGVIQfvWpnr-nZvefQ",
       "name": "@MrTauntyFace",
-      "comment": "Can you add a mango farm and a barn.",
-      "from": 2,
-      "to": 3
+      "comment": "Can you add the Colosseum",
+      "from": 3,
+      "to": 4
     },
     {
       "id": "UConyzasmuGpqcUUKsdwutJA",
       "name": "@karanchhabra6434",
-      "comment": "We need a huge castle",
+      "comment": "Add a museum",
+      "from": 3,
+      "to": 4
+    },
+    {
+      "id": "UC9JUSObteFHT96kE-U5WMNg",
+      "name": "@ZariGolpayegani",
+      "comment": "Park a Prado SUV in front of the bridal boutique, and include a floor dedicated to wedding dresses.",
       "from": 2,
       "to": 3
-    },
-    {
-      "id": "UCSPBwDEWtAP6dMdwOAE94uQ",
-      "name": "@AURABLOX-HQ",
-      "comment": "Tell my name or I will un sub you",
-      "from": 1,
-      "to": 2
-    },
-    {
-      "id": "UC3Em45knIod38GO1zzu8j0Q",
-      "name": "@og-goat1.0",
-      "comment": "Hi",
-      "from": 1,
-      "to": 2
-    },
-    {
-      "id": "UCTFf6UXQXcMuslCJiH2uTOQ",
-      "name": "@hasmask9103",
-      "comment": "Thank you for adding the market in the day  6 can you show it with another floor",
-      "from": 1,
-      "to": 2
-    },
-    {
-      "id": "UCNozJOseq3VkW3izE6u28Qw",
-      "name": "@AlicePlayz175",
-      "comment": "Can i have house please?",
-      "from": 1,
-      "to": 2
     }
   ],
   "top": [
     {
+      "id": "UCVNoIdSeaoW2eEnaZ61pAEQ",
+      "name": "@Get_jin_in_use",
+      "floors": 8
+    },
+    {
+      "id": "UC72l66Gfc4bCEQEASVG6oPQ",
+      "name": "@Fly4Ever777",
+      "floors": 7
+    },
+    {
       "id": "UCn-3PuoTEOwyWSCo-89yj0A",
       "name": "@POUSALI2412",
-      "floors": 6
-    },
-    {
-      "id": "UCJ8vLkrMd5einlvr_L_Bpfw",
-      "name": "@ЕленаИзюмова-у7ц",
-      "floors": 6
-    },
-    {
-      "id": "UCX6wVTHYXPiW7mS_UD_leoQ",
-      "name": "@ChristinneeeXD",
-      "floors": 6
+      "floors": 7
     }
   ],
   "newSpecials": [
     {
-      "kind": "landmark",
-      "id": "pizza-place",
-      "name": "Pizza Place",
-      "requestedBy": "@POUSALI2412"
-    },
-    {
-      "kind": "landmark",
-      "id": "capybara-adoption-center",
-      "name": "Capybara Adoption Center",
-      "requestedBy": "@ChristinneeeXD"
-    },
-    {
-      "kind": "landmark",
-      "id": "castle",
-      "name": "Castle",
-      "requestedBy": "@karanchhabra6434"
-    },
-    {
-      "kind": "landmark",
-      "id": "game-store",
-      "name": "Game Store",
-      "requestedBy": "@PolerGG"
-    },
-    {
-      "kind": "landmark",
-      "id": "motel",
-      "name": "Motel",
-      "requestedBy": "@AURABLOX-HQ"
-    },
-    {
-      "kind": "landmark",
-      "id": "bus-depot",
-      "name": "Bus Depot",
-      "requestedBy": "@markchesterajeemercado3237"
-    },
-    {
-      "kind": "upgrade",
-      "id": "UCFKlbA0mu0HMUyWG3orzc7g",
-      "name": "@moisescaicedolover",
-      "type": "dog"
-    },
-    {
-      "kind": "upgrade",
-      "id": "UC1nwHOUj7poip83gnhJ46BQ",
-      "name": "@KetchupPac",
-      "type": "garage"
-    },
-    {
       "kind": "upgrade",
       "id": "UCv-a0knslevzeV3tfAHRhFg",
       "name": "@ShashankShekhar-o3i",
-      "type": "pool"
+      "type": "mango-tree"
     },
     {
       "kind": "upgrade",
-      "id": "UCv-a0knslevzeV3tfAHRhFg",
-      "name": "@ShashankShekhar-o3i",
-      "type": "drone"
-    },
-    {
-      "kind": "upgrade",
-      "id": "UCv-a0knslevzeV3tfAHRhFg",
-      "name": "@ShashankShekhar-o3i",
-      "type": "garage"
-    },
-    {
-      "kind": "upgrade",
-      "id": "UCX6wVTHYXPiW7mS_UD_leoQ",
-      "name": "@ChristinneeeXD",
-      "type": "capybara-pen"
-    },
-    {
-      "kind": "upgrade",
-      "id": "UCZYD9tjWBaJgrwaKK6DXp7g",
-      "name": "@Eastonfortniteeee",
-      "type": "xmas-hats"
-    },
-    {
-      "kind": "upgrade",
-      "id": "UCpD3u7o7qCaDE5Hui4Xo1bQ",
-      "name": "@prabhasishbhattacharya9226",
-      "type": "big-cats"
-    },
-    {
-      "kind": "house",
-      "id": "UCDgiH80X9SHLgHukBy-XzkQ",
-      "name": "@JacksonGross-q4b",
-      "title": "White House"
+      "id": "UCWkYCJOI-n0B8BB8XAE66Hg",
+      "name": "@PolerGG",
+      "type": "capybara"
     },
     {
       "kind": "house",
       "id": "UC1nwHOUj7poip83gnhJ46BQ",
       "name": "@KetchupPac",
-      "title": "Penthouse Tower"
+      "title": "Donut House"
     },
     {
       "kind": "house",
-      "id": "UCKgB0kce7yRwStaUsMl_nZQ",
-      "name": "@AverageHuman67",
-      "title": "Rainbow House"
+      "id": "UC72l66Gfc4bCEQEASVG6oPQ",
+      "name": "@Fly4Ever777",
+      "title": "Airplane House"
     },
     {
       "kind": "house",
-      "id": "UCJKwj1uw3QlueW6K3N-U2gw",
-      "name": "@Staypositivels",
-      "title": "White Sky Tower"
+      "id": "UCZm0diFKnMvsNQ--CtXCsNA",
+      "name": "@Kirupa_49",
+      "title": "Classy Mansion"
     },
     {
       "kind": "house",
-      "id": "UCMmaqv6m-fww53sSbYdD2RQ",
-      "name": "@JackMihna",
-      "title": "Space Station House"
-    },
-    {
-      "kind": "house",
-      "id": "UC-Kcqoiyqx-UnJiJgjtCWbg",
-      "name": "@Owen_B13",
-      "title": "Glass Spire Tower"
+      "id": "UCWkYCJOI-n0B8BB8XAE66Hg",
+      "name": "@PolerGG",
+      "title": "Farm Villa"
     }
   ],
-  "challenge": null
+  "challenge": null,
+  "invites": []
 }

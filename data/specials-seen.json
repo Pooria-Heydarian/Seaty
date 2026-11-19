@@ -123,6 +123,12 @@
     "house:UCKgB0kce7yRwStaUsMl_nZQ:2026-11-18:{\"shape\":\"rainbow\",\"roof\":\"pointed\",\"wall\":\"#ffffff\",\"roofColor\":\"#ffffff\",\"door\":\"#ffffff\",\"accent\":\"#ff8c42\",\"extras\":[]}": "2026-11-18",
     "house:UCJKwj1uw3QlueW6K3N-U2gw:2026-11-18:{\"shape\":\"glass\",\"roof\":\"flat\",\"wall\":\"#e8f1f8\",\"roofColor\":\"#8fc1e3\",\"door\":\"#2f6690\",\"accent\":\"#8fc1e3\",\"extras\":[]}": "2026-11-18",
     "house:UCMmaqv6m-fww53sSbYdD2RQ:2026-11-18:{\"shape\":\"space-station\",\"roof\":\"pointed\",\"wall\":\"#9aa0a8\",\"roofColor\":\"#b5523b\",\"door\":\"#3b4552\",\"accent\":\"#5cc55a\",\"extras\":[]}": "2026-11-18",
-    "house:UC-Kcqoiyqx-UnJiJgjtCWbg:2026-11-18:{\"shape\":\"glass-spire\",\"roof\":\"pointed\",\"wall\":\"#8fb8d8\",\"roofColor\":\"#b5523b\",\"door\":\"#2b2d42\",\"accent\":\"#ff3b3b\",\"extras\":[]}": "2026-11-18"
+    "house:UC-Kcqoiyqx-UnJiJgjtCWbg:2026-11-18:{\"shape\":\"glass-spire\",\"roof\":\"pointed\",\"wall\":\"#8fb8d8\",\"roofColor\":\"#b5523b\",\"door\":\"#2b2d42\",\"accent\":\"#ff3b3b\",\"extras\":[]}": "2026-11-18",
+    "upgrade:UCv-a0knslevzeV3tfAHRhFg:mango-tree": "2026-11-19",
+    "upgrade:UCWkYCJOI-n0B8BB8XAE66Hg:capybara": "2026-11-19",
+    "house:UC1nwHOUj7poip83gnhJ46BQ:2026-11-19:{\"shape\":\"donut\",\"roof\":\"pointed\",\"wall\":\"#e0a252\",\"roofColor\":\"#ff8fb8\",\"door\":\"#6b4630\",\"accent\":\"#ffffff\",\"extras\":[]}": "2026-11-19",
+    "house:UC72l66Gfc4bCEQEASVG6oPQ:2026-11-19:{\"shape\":\"airplane\",\"roof\":\"pointed\",\"wall\":\"#f7f7f5\",\"roofColor\":\"#b5523b\",\"door\":\"#3b4552\",\"accent\":\"#3a86ff\",\"extras\":[]}": "2026-11-19",
+    "house:UCZm0diFKnMvsNQ--CtXCsNA:2026-11-19:{\"shape\":\"mansion\",\"roof\":\"pointed\",\"wall\":\"#f7f5ef\",\"roofColor\":\"#1d3557\",\"door\":\"#1d3557\",\"accent\":\"#d4af37\",\"extras\":[\"fountain\",\"flowers\",\"fence\"]}": "2026-11-19",
+    "house:UCWkYCJOI-n0B8BB8XAE66Hg:2026-11-19:{\"shape\":\"mansion\",\"roof\":\"gable\",\"wall\":\"#f3ead7\",\"roofColor\":\"#2f7d4a\",\"door\":\"#6b4630\",\"accent\":\"#ffd23f\",\"extras\":[\"flowers\",\"windmill\"]}": "2026-11-19"
   }
 }
