@@ -1070,31 +1070,80 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     }
   }
 
-  /** Pylons and cables carrying power from the dam to the power plant (requested by @jjk-x2r, Day 6). */
+  /**
+   * Big steel pylons carrying power from the dam to the power plant (requested by @jjk-x2r, Day 6). The line follows
+   * the street grid in straight runs with right-angle corners, and goes round the city rather than through it.
+   */
   function buildPowerLine() {
     const all = [...world.landmarks.values()];
     const dam = all.find((l) => l.def.type === 'dam');
     const plant = all.find((l) => l.def.type === 'power-plant');
-    if (!plant) return;
-    if (dam) powerLine(dam.outer.position.clone().setY(0), plant.outer.position.clone().setY(0));
-    // and on into town: the plant powers the city (Day 7, @jjk-x2r)
-    const p = plant.outer.position.clone().setY(0);
-    const edge = p.clone().setLength(world.radius + 4);
-    powerLine(p, edge, 0.12, 1.0);
+    if (!dam || !plant) return;
+    const L = world.layout;
+    const V = (x, z) => new THREE.Vector3(x, 0, z);
+    const street = (c) => (Math.round((c - PITCH / 2) / PITCH) + 0.5) * PITCH; // nearest street line
+    const snap = (o) => V(street(o.outer.position.x), street(o.outer.position.z));
+    const ringE = (L.beltR + 1.5) * PITCH; // a street out past the green belt and the villages
+    // a 2 x 2 landmark straddles a street line: the line must not run through it
+    const own = new Set([dam.def.id, plant.def.id]); // a line may start inside its own landmark
+    const lm = new Map(L.blocks.filter((b) => b.landmark && !own.has(b.landmark)).map((b) => [`${b.x},${b.z}`, b.landmark]));
+    const clear = (a, b) => {
+      const alongX = Math.abs(a.z - b.z) < 0.5, g = Math.round((alongX ? a.z : a.x) / PITCH - 0.5);
+      const lo = Math.min(alongX ? a.x : a.z, alongX ? b.x : b.z), hi = Math.max(alongX ? a.x : a.z, alongX ? b.x : b.z);
+      for (let s = Math.ceil(lo / PITCH - 0.5); s <= Math.floor(hi / PITCH + 0.5); s++) {
+        const k1 = alongX ? `${s},${g}` : `${g},${s}`, k2 = alongX ? `${s},${g + 1}` : `${g + 1},${s}`;
+        if (lm.get(k1) && lm.get(k1) === lm.get(k2)) return false;
+      }
+      return true;
+    };
+    const inTown = (a, b) => { // does an axis segment pass through the city and its belt?
+      const e = ringE - 1;
+      if (Math.abs(a.z - b.z) < 0.5) return Math.abs(a.z) < e && Math.min(a.x, b.x) < e && Math.max(a.x, b.x) > -e;
+      return Math.abs(a.x) < e && Math.min(a.z, b.z) < e && Math.max(a.z, b.z) > -e;
+    };
+    const ok = (pts) => pts.every((q, i) => i === 0 || (clear(pts[i - 1], q) && !inTown(pts[i - 1], q)));
+    const tidy = (pts) => pts.filter((q, i) => i === 0 || q.distanceTo(pts[i - 1]) > 0.5);
+    // onto the ring street, straight out along the nearer axis
+    const toRing = (p) => (Math.abs(p.x) >= Math.abs(p.z) ? V(Math.sign(p.x) * ringE, p.z) : V(p.x, Math.sign(p.z) * ringE));
+    const corners = [V(ringE, ringE), V(-ringE, ringE), V(-ringE, -ringE), V(ringE, -ringE)];
+    const side = (p) => (Math.abs(p.x - ringE) < 1 ? 0 : Math.abs(p.z - ringE) < 1 ? 1 : Math.abs(p.x + ringE) < 1 ? 2 : 3); // which edge of the ring
+    const aroundRing = (a, b) => { // the shorter way round the ring, through its corners
+      const sa = side(a), sb = side(b);
+      const cw = [], ccw = [];
+      for (let s = sa; s !== sb; s = (s + 1) % 4) ccw.push(corners[s]);
+      for (let s = sa; s !== sb; s = (s + 3) % 4) cw.push(corners[(s + 3) % 4]);
+      const len = (pts) => pts.reduce((t, q, i) => (i ? t + q.distanceTo(pts[i - 1]) : 0), 0);
+      const A = [a, ...ccw, b], B = [a, ...cw, b];
+      return len(A) <= len(B) ? A : B;
+    };
+    const p = snap(plant);
+    if (dam) {
+      const d = snap(dam);
+      const tries = [[d, V(p.x, d.z), p], [d, V(d.x, p.z), p]].map(tidy);
+      bigLine(tries.find(ok) || tidy([d, ...aroundRing(toRing(d), toRing(p)), p]));
+    }
   }
-  function powerLine(a, b, from = 0.12, to = 0.88) {
-    const len = a.distanceTo(b);
-    if (len < 10) return;
-    const n = Math.max(2, Math.round(len / 18));
+
+  /** Big steel pylons along a path of street points (outside the city), three heavy sagging cables. */
+  function bigLine(path) {
+    if (path.length < 2) return;
     const steel = new THREE.MeshStandardMaterial({ color: '#8a939c', metalness: 0.4, roughness: 0.5 });
     const cableM = new THREE.MeshStandardMaterial({ color: '#2b3340' });
-    const dir = b.clone().sub(a).normalize();
-    const yaw = Math.atan2(dir.x, dir.z);
-    const tops = [];
+    // pylon spots: every corner, and evenly spaced (about 16) along each straight leg
+    const spots = [];
+    for (let i = 0; i < path.length - 1; i++) {
+      const a = path[i], b = path[i + 1], n = Math.max(1, Math.round(a.distanceTo(b) / 16));
+      const yaw = Math.atan2(b.x - a.x, b.z - a.z);
+      for (let k = i === 0 ? 0 : 1; k <= n; k++) spots.push({ p: a.clone().lerp(b, k / n), yaw });
+    }
+    // a corner pylon turns half way between its two legs
+    for (let i = 1; i < spots.length - 1; i++) {
+      const d0 = spots[i].p.clone().sub(spots[i - 1].p), d1 = spots[i + 1].p.clone().sub(spots[i].p);
+      const d = d0.normalize().add(d1.normalize());
+      if (d.lengthSq() > 1e-6) spots[i].yaw = Math.atan2(d.x, d.z);
+    }
     const group = new THREE.Group();
-    for (let i = 0; i <= n; i++) {
-      // skip the very ends, which stand inside the two landmarks' blocks
-      const p = a.clone().lerp(b, from + ((to - from) * i) / n);
+    for (const { p, yaw } of spots) {
       const t = new THREE.Group();
       for (const [dx, dz] of [[-0.6, -0.6], [0.6, -0.6], [-0.6, 0.6], [0.6, 0.6]]) {
         const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.09, 8.2, 5), steel);
@@ -1107,16 +1156,13 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       t.position.copy(p);
       t.rotation.y = yaw + Math.PI / 2;
       group.add(t);
-      tops.push(t);
     }
-    // three sagging cables between neighbouring pylons
-    for (let i = 0; i < tops.length - 1; i++) {
+    const side = (s, off) => new THREE.Vector3(Math.cos(s.yaw), 0, -Math.sin(s.yaw)).multiplyScalar(off);
+    for (let i = 0; i < spots.length - 1; i++) {
       for (const [off, y] of [[-1.6, 5.5], [1.6, 5.5], [0, 6.9]]) {
-        const side = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw)).multiplyScalar(off);
-        const p0 = tops[i].position.clone().add(side).setY(y), p1 = tops[i + 1].position.clone().add(side).setY(y);
+        const p0 = spots[i].p.clone().add(side(spots[i], off)).setY(y), p1 = spots[i + 1].p.clone().add(side(spots[i + 1], off)).setY(y);
         const mid = p0.clone().lerp(p1, 0.5).setY(y - 1.2);
-        const curve = new THREE.QuadraticBezierCurve3(p0, mid, p1);
-        group.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 16, 0.04, 4), cableM));
+        group.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.QuadraticBezierCurve3(p0, mid, p1), 16, 0.04, 4), cableM));
       }
     }
     group.traverse((o) => { if (o.isMesh) o.castShadow = true; });
