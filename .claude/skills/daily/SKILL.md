@@ -100,8 +100,11 @@ If a house looks wrong, fix the recipe (or the model), run `npm run finish` agai
 
 ## 6. Publish
 
+Code changes (new models, fixes) need fresh version tags so visitors don't keep the old files from their browser cache: `npm run report` / `npm run finish` already run `npm run stamp`; after any later code edit run `npm run stamp` again, and always commit the `web/*.html` pages it changed.
+
 ```bash
-git add web/data reports data
+npm run stamp
+git add web reports data
 git commit -m "City update <date>"
 git push
 ```

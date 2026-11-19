@@ -8,7 +8,7 @@
   "scripts": {
     "demo": "node scripts/demo-data.mjs",
     "fetch": "node scripts/fetch-comments.mjs && node scripts/latest-video.mjs && node scripts/tourists.mjs",
-    "report": "node scripts/daily-report.mjs",
+    "report": "node scripts/daily-report.mjs && node scripts/stamp.mjs",
     "lottery": "node scripts/lottery.mjs",
     "serve": "node scripts/serve.mjs",
     "daily": "node scripts/fetch-comments.mjs && node scripts/latest-video.mjs && node scripts/tourists.mjs && node scripts/requests.mjs",
@@ -18,12 +18,13 @@
     "inbox": "node scripts/comment-inbox.mjs",
     "requests": "node scripts/requests.mjs",
     "special": "node scripts/add-special.mjs",
-    "finish": "node scripts/daily-report.mjs && node scripts/render-video.mjs",
+    "finish": "node scripts/daily-report.mjs && node scripts/stamp.mjs && node scripts/render-video.mjs",
     "tour": "node scripts/render-video.mjs --page tour.html --name seaty-city-tour --width 1920 --height 1080",
     "podcast": "node scripts/render-video.mjs --page podcast.html --name seaty-weekly --width 1920 --height 1080",
     "challenge": "node scripts/challenge.mjs",
     "invite": "node scripts/invite.mjs",
-    "tourists": "node scripts/tourists.mjs"
+    "tourists": "node scripts/tourists.mjs",
+    "stamp": "node scripts/stamp.mjs"
   },
   "engines": {
     "node": ">=18"

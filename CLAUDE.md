@@ -23,6 +23,7 @@ Every weekend the owner asks for "weekly" / "weekly episode" / "Seaty Weekly". F
 - `scripts/latest-video.mjs` (runs after the fetch) → `web/data/latest-video.json` + `.jpg`: the channel's newest video, shown on the airship that circles over the city (click it to open the video).
 - `scripts/daily-report.mjs` → report, history snapshot, `web/data/changes.json` (what the video shows).
 - `web/video.js`: the Short's timeline; `scripts/render-video.mjs` renders it (Puppeteer + ffmpeg + Kokoro voice).
+- `npm run stamp` (`scripts/stamp.mjs`): puts a version tag (`?v=<hash of web/*.js>`) on every page's modules, so after a publish browsers load the new code instead of their cached copy. Run it before pushing any code change (the daily `report` / `finish` run it).
 - `npm run serve` → http://localhost:5173 (site), `/video.html` (Short preview with scrubber).
 
 `comments/` and `video/` are private working folders (git-ignored).

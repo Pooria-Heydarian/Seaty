@@ -8,10 +8,23 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&display=block" rel="stylesheet" />
   <script type="importmap">
-    { "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
-    } }
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/",
+        "./catalog.js": "./catalog.js?v=ebb78e3e89",
+        "./city.js": "./city.js?v=ebb78e3e89",
+        "./extra-models.js": "./extra-models.js?v=ebb78e3e89",
+        "./house-models.js": "./house-models.js?v=ebb78e3e89",
+        "./houses.js": "./houses.js?v=ebb78e3e89",
+        "./layout.js": "./layout.js?v=ebb78e3e89",
+        "./podcast.js": "./podcast.js?v=ebb78e3e89",
+        "./tour.js": "./tour.js?v=ebb78e3e89",
+        "./trailer.js": "./trailer.js?v=ebb78e3e89",
+        "./video.js": "./video.js?v=ebb78e3e89",
+        "./world.js": "./world.js?v=ebb78e3e89"
+      }
+    }
   </script>
   <style>
     :root { --ink: #14202f; --paper: #fff; --accent: #ff7a45; --gold: #f5b82e; }
@@ -76,6 +89,6 @@
     <div id="flash"></div>
   </div>
   <div id="controls"><button id="play">Pause</button><input id="scrub" type="range" min="0" max="1000" value="0" /><span id="time">0.0s</span></div>
-  <script type="module" src="tour.js"></script>
+  <script type="module" src="tour.js?v=ebb78e3e89"></script>
 </body>
 </html>
