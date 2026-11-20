@@ -11,17 +11,17 @@
       "imports": {
         "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
         "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/",
-        "./catalog.js": "./catalog.js?v=ebb78e3e89",
-        "./city.js": "./city.js?v=ebb78e3e89",
-        "./extra-models.js": "./extra-models.js?v=ebb78e3e89",
-        "./house-models.js": "./house-models.js?v=ebb78e3e89",
-        "./houses.js": "./houses.js?v=ebb78e3e89",
-        "./layout.js": "./layout.js?v=ebb78e3e89",
-        "./podcast.js": "./podcast.js?v=ebb78e3e89",
-        "./tour.js": "./tour.js?v=ebb78e3e89",
-        "./trailer.js": "./trailer.js?v=ebb78e3e89",
-        "./video.js": "./video.js?v=ebb78e3e89",
-        "./world.js": "./world.js?v=ebb78e3e89"
+        "./catalog.js": "./catalog.js?v=80181df852",
+        "./city.js": "./city.js?v=80181df852",
+        "./extra-models.js": "./extra-models.js?v=80181df852",
+        "./house-models.js": "./house-models.js?v=80181df852",
+        "./houses.js": "./houses.js?v=80181df852",
+        "./layout.js": "./layout.js?v=80181df852",
+        "./podcast.js": "./podcast.js?v=80181df852",
+        "./tour.js": "./tour.js?v=80181df852",
+        "./trailer.js": "./trailer.js?v=80181df852",
+        "./video.js": "./video.js?v=80181df852",
+        "./world.js": "./world.js?v=80181df852"
       }
     }
   </script>
@@ -80,6 +80,21 @@
     #cta .small { margin-top: 30px; font-weight: 700; font-size: 46px; line-height: 1.25; }
     #cta .url { display: inline-block; margin-top: 40px; font-weight: 800; font-size: 38px; background: var(--paper); color: var(--ink); padding: 16px 30px; border-radius: 999px; text-shadow: none; }
 
+    /* The viewer's request: their words light up as their voice reads them */
+    #card.ask .tag { color: #7a5cff; }
+    #card.ask .comment span { color: #b7c0cc; transition: none; }
+    #card.ask .comment span.said { color: var(--ink); }
+
+    /* Day badge (all through the Short, except under the big title) */
+    #badge { top: 70px; left: 60px; right: auto; font-weight: 900; font-size: 40px; letter-spacing: 2px; color: var(--ink); background: var(--gold); padding: 12px 28px; border-radius: 999px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+
+    /* Captions: the anchor's words, a few at a time, the spoken one lit up */
+    #caption { top: 1440px; padding: 0 70px; text-align: center; font-weight: 900; font-size: 84px; line-height: 1.08; letter-spacing: -1px; color: #fff;
+      -webkit-text-stroke: 10px #14202f; paint-order: stroke fill; text-shadow: 0 10px 0 #14202f, 0 18px 40px rgba(0,0,0,.35); }
+    #caption span { display: inline-block; margin: 0 0.14em; }
+    #caption span.on { color: var(--gold); transform: scale(1.12); }
+    #caption span.said { color: #fff; }
+
     #flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; z-index: 3; }
 
     /* 3D name tags */
@@ -132,6 +147,9 @@
       <div class="url" id="cta-url"></div>
     </div>
 
+    <div class="ov" id="badge"></div>
+    <div class="ov" id="caption"></div>
+
     <div id="flash"></div>
   </div>
 
@@ -141,6 +159,6 @@
     <span id="time">0.0s</span>
   </div>
 
-  <script type="module" src="video.js?v=ebb78e3e89"></script>
+  <script type="module" src="video.js?v=80181df852"></script>
 </body>
 </html>

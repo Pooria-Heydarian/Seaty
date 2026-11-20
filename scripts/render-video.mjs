@@ -18,6 +18,7 @@ import puppeteer from 'puppeteer';
 import ffmpegPath from 'ffmpeg-static';
 import { ROOT, VIDEO_DIR, CHANGES_FILE, CITY_FILE, readJSON, writeJSON, today } from './lib.mjs';
 import { writeMusic } from './music.mjs';
+import { writeSfx } from './sfx.mjs';
 
 const args = Object.fromEntries(
   process.argv.slice(2).reduce((acc, a, i, all) => (a.startsWith('--') ? [...acc, [a.slice(2), all[i + 1]]] : acc), []),
@@ -128,16 +129,27 @@ if (clips.size) {
   writeWavMono(voiceFile, track, rate);
 }
 
+// Sound effects the page asked for (whooshes, pops, thuds…), on their own track.
+const sfxFile = path.join(VIDEO_DIR, `sfx-${baseName}.wav`);
+const sfx = (info.sfx || []).filter((e) => e.t < duration);
+if (sfx.length) writeSfx(sfxFile, duration, sfx);
+
 // ---- encoder ----
-// With a voice: the music ducks (gets quieter) whenever someone is speaking.
-const audioArgs = clips.size
-  ? ['-i', musicFile, '-i', voiceFile,
-     '-filter_complex',
-     '[2:a]aresample=44100,pan=stereo|c0=c0|c1=c0,volume=1.6,asplit=2[vk][vm];' +
-     '[1:a]volume=0.6[m];[m][vk]sidechaincompress=threshold=0.02:ratio=12:attack=20:release=400[duck];' +
-     '[duck][vm]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95[aout]',
-     '-map', '0:v', '-map', '[aout]']
-  : ['-i', musicFile, '-map', '0:v', '-map', '1:a'];
+// With a voice: the music ducks (gets quieter) whenever someone is speaking. Effects sit on top, not ducked.
+const inputs = ['-i', musicFile];
+let graph = '[1:a]volume=0.6[m];', mix = '[m]';
+if (clips.size) {
+  inputs.push('-i', voiceFile);
+  graph += '[2:a]aresample=44100,pan=stereo|c0=c0|c1=c0,volume=1.6,asplit=2[vk][vm];[m][vk]sidechaincompress=threshold=0.02:ratio=12:attack=20:release=400[duck];';
+  mix = '[duck][vm]';
+}
+if (sfx.length) {
+  inputs.push('-i', sfxFile);
+  graph += `[${clips.size ? 3 : 2}:a]volume=0.75[fx];`;
+  mix += '[fx]';
+}
+const nIn = mix.split('[').length - 1;
+const audioArgs = [...inputs, '-filter_complex', `${graph}${mix}amix=inputs=${nIn}:duration=first:normalize=0,alimiter=limit=0.95[aout]`, '-map', '0:v', '-map', '[aout]'];
 const ff = spawn(ffmpegPath, [
   '-y', '-loglevel', 'error',
   '-f', 'image2pipe', '-framerate', String(info.fps), '-c:v', 'mjpeg', '-i', '-',
@@ -176,6 +188,7 @@ await browser.close();
 server.close();
 fs.rmSync(musicFile, { force: true });
 fs.rmSync(voiceFile, { force: true });
+fs.rmSync(sfxFile, { force: true });
 
 if (!isDaily) {
   console.log(`Done in ${Math.round((Date.now() - t0) / 1000)}s: ${outFile}`);

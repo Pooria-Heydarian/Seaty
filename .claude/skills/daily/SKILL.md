@@ -90,7 +90,9 @@ Write `comments/replies-<YYYY-MM-DD>.md` (UTC date): for each comment, the comme
 npm run finish
 ```
 
-This writes the town report and renders **`video/<date>.mp4`** (about 30–60 s with voiceover and music; rendering takes a few minutes, so run it in the background), plus `video/<date>.txt` with the title and description.
+This writes the town report and renders **`video/<date>.mp4`** (about 45–65 s with voiceover, music and sound effects; rendering takes a few minutes, so run it in the background), plus `video/<date>.txt` with the title and description.
+
+How the Short tells the day (`web/video.js`): it opens on the best request (a dream house first) as a **hook**: the viewer's comment is read in a second voice (`ask` scene, words light up on the card), then the anchor answers and the building **rises** with a thud and dust. Then "This is day N…", up to 5 such stories, a fast **montage** (`rapid`) of the other new things, newcomers, growers, the leaderboard, the night outro, and a glide back to the opening shot so it **loops**. Big captions follow the anchor word by word. A request is only quoted if its special has `--comment <id>` (always pass it) and the comment is 3+ words, under 140 characters, without links.
 
 Check it before saying it's done:
 - the render log shows the scenes you expect (`house`, `upgrade`, `landmark`, `newcomer`…) and no `page error`;

@@ -48,21 +48,27 @@ const norm = (s) => String(s || '').trim().replace(/^@/, '').toLowerCase();
 const findResident = (who) => city.residents.find((r) => r.id === who || norm(r.name) === norm(who));
 const isNew = (key) => !seen[key] || seen[key] === date; // a re-run on the same day still shows it
 const newSpecials = [];
+// The comment that asked for each special (the Short lets the viewer "say" it before the build).
+const askedText = new Map(((readJSON(NEW_COMMENTS_FILE)?.comments) || []).map((c) => [c.id, c.text]));
+const asked = (x) => {
+  const t = String(askedText.get(x.requestedIn) || '').replace(/s+/g, ' ').trim();
+  return t && !/https?:|www./i.test(t) && t.length <= 140 && t.split(' ').length >= 3 ? { comment: t } : {};
+};
 (specials.landmarks || []).forEach((l) => {
   const key = `landmark:${l.id}`;
-  if (isNew(key)) { newSpecials.push({ kind: 'landmark', id: l.id, name: l.name, requestedBy: l.requestedBy || '' }); seen[key] = date; }
+  if (isNew(key)) { newSpecials.push({ kind: 'landmark', id: l.id, name: l.name, requestedBy: l.requestedBy || '', ...asked(l) }); seen[key] = date; }
 });
 for (const u of specials.upgrades || []) {
   const r = findResident(u.resident);
   if (!r) continue; // shows up once that person lives in the city
   const key = `upgrade:${r.id}:${u.type}`;
-  if (isNew(key)) { newSpecials.push({ kind: 'upgrade', id: r.id, name: r.name, type: u.type }); seen[key] = date; }
+  if (isNew(key)) { newSpecials.push({ kind: 'upgrade', id: r.id, name: r.name, type: u.type, ...asked(u) }); seen[key] = date; }
 }
 for (const h of specials.houses || []) {
   const r = findResident(h.resident);
   if (!r) continue;
   const key = `house:${r.id}:${h.added || ''}:${JSON.stringify(h.recipe)}`; // a redesign is news again
-  if (isNew(key)) { newSpecials.push({ kind: 'house', id: r.id, name: r.name, title: h.title || 'Dream House' }); seen[key] = date; }
+  if (isNew(key)) { newSpecials.push({ kind: 'house', id: r.id, name: r.name, title: h.title || 'Dream House', ...asked(h) }); seen[key] = date; }
 }
 writeJSON(SEEN_FILE, seenAll);
 
