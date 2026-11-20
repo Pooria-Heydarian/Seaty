@@ -2343,6 +2343,241 @@ export function createExtraModels({ THREE, M, mat, FLOOR_H, glow, shadowAll }) {
 
   const day6Landmarks = { pizzeria, 'capybara-adoption': capybaraAdoption, castle, 'game-store': gameStore, motel, 'bus-depot': busDepot };
 
+  // ---------------- Day 8 (2026-11-20) requests ----------------
+
+  Object.assign(upgrades, {
+    /** A swirling portal to the milk realm in the back yard: a stone ring with a creamy white vortex and milk splashes (@AverageHuman67). */
+    'milk-portal'() {
+      const g = new THREE.Group();
+      const ring = mesh(new THREE.TorusGeometry(0.85, 0.16, 10, 32).translate(0, 1.15, 0), M('#8f8aa3', { flatShading: true }));
+      g.add(ring);
+      for (const s of [-1, 1]) g.add(mesh(box(0.35, 0.5, 0.5, s * 0.75, 0, 0), STONE));
+      const swirl = new THREE.Group();
+      swirl.position.y = 1.15;
+      const milk = glow('#fffaf0', 0.55, 1.4);
+      swirl.add(mesh(new THREE.CircleGeometry(0.76, 32), milk));
+      const cream = M('#dfe9ff', { emissive: '#8fb4ff', emissiveIntensity: 0.5 });
+      for (let i = 0; i < 3; i++) swirl.add(mesh(new THREE.TorusGeometry(0.2 + i * 0.18, 0.035, 6, 24, Math.PI * 1.4).rotateZ(i * 2.1).translate(0, 0, 0.02 + i * 0.01), cream));
+      g.add(swirl);
+      // a carton and a puddle in front: you can tell what realm it is
+      g.add(mesh(new THREE.CircleGeometry(0.55, 20).rotateX(-Math.PI / 2).translate(0.2, 0.02, 0.55), M('#fffaf0', { roughness: 0.2 })));
+      const carton = new THREE.Group();
+      carton.add(mesh(box(0.22, 0.34, 0.22), M('#ffffff')), mesh(box(0.22, 0.08, 0.22, 0, 0.34), M('#3a86ff')));
+      carton.add(mesh(new THREE.ConeGeometry(0.16, 0.12, 4).rotateY(Math.PI / 4).translate(0, 0.48, 0), M('#ffffff')));
+      carton.position.set(0.75, 0, 0.55);
+      carton.rotation.y = 0.5;
+      g.add(carton);
+      const drops = [];
+      for (let i = 0; i < 5; i++) { const d = mesh(new THREE.SphereGeometry(0.07, 8, 6), milk); g.add(d); drops.push(d); }
+      shadowAll(g);
+      g.position.set(1.35, 0.27, -2.45);
+      g.rotation.y = Math.PI / 2; // faces the side of the lot (the open side), not the house
+      g.userData.view = Math.PI / 2 + 0.35; // the Short films it from that side, looking at the swirl
+      g.userData.tick = (t) => {
+        swirl.rotation.z = -t * 1.6;
+        drops.forEach((d, i) => {
+          const k = (t * 0.7 + i / 5) % 1;
+          d.position.set(Math.cos(i * 1.3) * 0.3 * k, 1.15 + Math.sin(k * Math.PI) * 0.6 - k * 0.9, 0.3 + k * 0.6);
+          d.scale.setScalar(1 - k * 0.6);
+        });
+      };
+      g.userData.tick(0);
+      return g;
+    },
+
+    /** A big lit sign on the roof with the owner's letters (e.g. "P.B."), on two posts (@prabhasishbhattacharya9226). */
+    'rooftop-sign'(entry, up) {
+      const text = String(up?.text || entry?.resident?.name?.replace(/^@/, '').slice(0, 2).toUpperCase() || '*').slice(0, 10);
+      const g = new THREE.Group();
+      const cv = document.createElement('canvas');
+      cv.width = 512; cv.height = 192;
+      const c = cv.getContext('2d');
+      c.fillStyle = '#14202f'; c.fillRect(0, 0, 512, 192);
+      c.strokeStyle = '#ffd23f'; c.lineWidth = 10; c.strokeRect(8, 8, 496, 176);
+      c.font = `900 ${text.length > 5 ? 96 : 130}px Inter, Arial, sans-serif`;
+      c.textAlign = 'center'; c.textBaseline = 'middle';
+      c.shadowColor = '#ffb703'; c.shadowBlur = 24;
+      c.fillStyle = '#fff3c4'; c.fillText(text, 256, 102);
+      const tex = new THREE.CanvasTexture(cv);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      const W = 2.8, Hs = 1.05;
+      const face = new THREE.MeshStandardMaterial({ map: tex, emissive: '#ffffff', emissiveMap: tex, emissiveIntensity: 0.55, roughness: 0.6 });
+      const board = mesh(new THREE.BoxGeometry(W, Hs, 0.12).translate(0, 0.9 + Hs / 2, 0), [DARK, DARK, DARK, DARK, face, DARK]);
+      g.add(board);
+      for (const x of [-W * 0.35, W * 0.35]) g.add(mesh(box(0.08, 0.95, 0.08, x, 0, -0.05), M('#5b6b80', { metalness: 0.5 })));
+      for (let i = 0; i < 9; i++) g.add(mesh(new THREE.SphereGeometry(0.05, 6, 4).translate(-W / 2 + 0.15 + i * ((W - 0.3) / 8), 0.9 + Hs + 0.06, 0.08), glow('#ffe7a8', 0.6, 2.2)));
+      shadowAll(g);
+      g.position.set(0, 0, 0.4);
+      // stands on the roof, whatever height the house has right now
+      g.userData.tick = () => { g.position.y = Math.max(1.5, (entry?.roofTop ?? 3) - 0.35); };
+      g.userData.tick(0);
+      return g;
+    },
+
+    /** A garden beside the house: raised flower beds, vegetable rows and a watering can (@TwoToThePowerOf999ImSmart). */
+    garden() {
+      const g = new THREE.Group();
+      const soil = M('#6b4a2f', { roughness: 1 });
+      const wood = M('#a47148');
+      g.add(mesh(box(1.5, 0.03, 4.4), M('#b9d48c')));
+      for (const z of [-1.5, 0, 1.5]) g.add(mesh(box(1.2, 0.22, 1.1, 0, 0, z), wood), mesh(box(1.08, 0.04, 0.98, 0, 0.2, z), soil));
+      // flowers in the front bed, cabbages in the middle, tomato canes at the back
+      const petals = ['#ff6fa5', '#ffd23f', '#9b5de5', '#ff7a45', '#ffffff'];
+      for (let i = 0; i < 10; i++) {
+        const f = mesh(new THREE.SphereGeometry(0.08, 6, 4), M(petals[i % 5]));
+        f.position.set(-0.4 + (i % 5) * 0.2, 0.33, 1.25 + Math.floor(i / 5) * 0.45);
+        g.add(f, mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.12, 4).translate(f.position.x, 0.27, f.position.z), LEAF));
+      }
+      for (let i = 0; i < 6; i++) g.add(mesh(new THREE.IcosahedronGeometry(0.13, 0).translate(-0.3 + (i % 3) * 0.3, 0.32, -0.25 + Math.floor(i / 3) * 0.5), M('#6fbf4a', { flatShading: true })));
+      for (let i = 0; i < 4; i++) {
+        const x = -0.36 + i * 0.24;
+        g.add(mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.6, 4).translate(x, 0.5, -1.5), wood));
+        g.add(mesh(new THREE.IcosahedronGeometry(0.1, 0).translate(x, 0.45, -1.5), LEAF), mesh(new THREE.SphereGeometry(0.06, 6, 4).translate(x + 0.05, 0.4, -1.42), M('#e63946')));
+      }
+      const can = new THREE.Group();
+      can.add(mesh(new THREE.CylinderGeometry(0.1, 0.11, 0.2, 10).translate(0, 0.1, 0), M('#2a9d8f')));
+      can.add(mesh(new THREE.CylinderGeometry(0.015, 0.02, 0.22, 5).rotateZ(-0.9).translate(0.15, 0.17, 0), M('#2a9d8f')));
+      can.position.set(0.55, 0.03, 0.75);
+      g.add(can);
+      shadowAll(g);
+      g.position.set(-2.55, 0.27, 0);
+      return g;
+    },
+
+    /** A putting green with a flag, a sand bunker, a golf cart and a ball by the hole (@samuel_pagaimo). */
+    golf() {
+      const g = new THREE.Group();
+      g.add(mesh(new THREE.CylinderGeometry(1, 1, 0.05, 28).scale(2.2, 1, 0.75).translate(0, 0.025, 0), M('#6cc24a', { roughness: 0.9 })));
+      g.add(mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.04, 16).scale(1.3, 1, 0.8).translate(-1.6, 0.03, 0.35), M('#efd9a7')));
+      g.add(mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.06, 10).translate(1.1, 0.03, -0.1), DARK));
+      g.add(mesh(new THREE.CylinderGeometry(0.015, 0.015, 1.2, 5).translate(1.1, 0.6, -0.1), WHITE));
+      const flag = mesh(new THREE.PlaneGeometry(0.42, 0.26).translate(0.21, 1.05, 0), M('#e63946', { side: THREE.DoubleSide }));
+      flag.position.set(1.1, 0, -0.1);
+      g.add(flag);
+      g.add(mesh(new THREE.SphereGeometry(0.05, 8, 6).translate(0.75, 0.08, 0.15), WHITE));
+      // golf cart
+      const cart = new THREE.Group();
+      cart.add(mesh(box(0.8, 0.3, 0.5, 0, 0.12), WHITE), mesh(box(0.35, 0.3, 0.5, -0.2, 0.42), M('#3b4552')));
+      cart.add(mesh(box(0.85, 0.04, 0.55, 0, 0.95), M('#2a9d8f')));
+      for (const x of [-0.32, 0.32]) for (const z of [-0.2, 0.2]) cart.add(mesh(box(0.03, 0.55, 0.03, x, 0.42, z), DARK));
+      for (const x of [-0.25, 0.25]) for (const z of [-0.27, 0.27]) cart.add(mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.06, 10).rotateX(Math.PI / 2).translate(x, 0.1, z), DARK));
+      cart.position.set(-1.0, 0, -0.55);
+      cart.rotation.y = 0.3;
+      g.add(cart);
+      shadowAll(g);
+      g.position.set(0.3, 0.27, -2.55);
+      g.userData.tick = (t) => { flag.rotation.y = Math.sin(t * 2.4) * 0.25; };
+      return g;
+    },
+
+    /** Two big pickup trucks parked beside the house: diesel country trucks, no badges (@Yattster). */
+    'pickup-trucks'() {
+      const g = new THREE.Group();
+      const truck = (color) => {
+        const t = new THREE.Group();
+        const paint = M(color, { roughness: 0.35, metalness: 0.3 });
+        t.add(mesh(box(1.9, 0.42, 0.85, 0, 0.22), paint));
+        t.add(mesh(box(0.85, 0.42, 0.8, 0.35, 0.64), paint));
+        t.add(mesh(box(0.06, 0.32, 0.7, 0.79, 0.68), GLASS), mesh(box(0.6, 0.26, 0.82, 0.35, 0.72), GLASS));
+        t.add(mesh(box(0.95, 0.18, 0.75, -0.48, 0.64), M('#2b2d33')));
+        t.add(mesh(box(0.1, 0.22, 0.86, 0.97, 0.26), M('#c0c4c8', { metalness: 0.7, roughness: 0.25 })));
+        for (const x of [-0.6, 0.6]) for (const z of [-0.45, 0.45]) t.add(mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.2, 14).rotateX(Math.PI / 2).translate(x, 0.24, z), DARK));
+        return t;
+      };
+      const a = truck('#1d3557'); a.rotation.y = Math.PI / 2;
+      const b = truck('#8b2e1f'); b.position.set(1.15, 0, 0.2); b.rotation.y = Math.PI / 2 + 0.08;
+      g.add(a, b);
+      shadowAll(g);
+      g.scale.setScalar(0.85);
+      g.position.set(2.35, 0.27, 1.1);
+      return g;
+    },
+  });
+
+  /**
+   * Samurai Statue: a samurai in dark armour with a white headband, katana held low in both hands, on a stone plinth,
+   * with stone lanterns and a cherry tree (@Get_jin_in_use; inspired by a samurai hero, no copied design).
+   */
+  function samuraiStatue(def, floors = 1) {
+    const g = new THREE.Group();
+    g.add(mesh(new THREE.CylinderGeometry(5.2, 5.4, 0.2, 32), M('#d9cfba')));
+    g.add(mesh(box(9.5, 0.06, 1.6, 0, 0.2, 3.6), M('#c2b59b')));
+    const P = 1.8 + dy(floors) * 0.6;
+    const plinth = mesh(box(3.4, P, 3.4, 0, 0.2, 0), M('#7d7f86', { flatShading: true }));
+    g.add(plinth, mesh(box(3.8, 0.3, 3.8, 0, 0.2 + P, 0), M('#5f6168')));
+    const fig = new THREE.Group();
+    fig.position.y = 0.5 + P;
+    const armour = M(def.color || '#26324a', { roughness: 0.55, metalness: 0.25 });
+    const lace = M('#8b1e2d');
+    const cloth = M('#1b1d24');
+    const skin = M('#e2b98f');
+    const steel = M('#d9dde2', { metalness: 0.85, roughness: 0.2 });
+    // legs in a wide stance (hakama) and feet
+    for (const x of [-0.55, 0.55]) {
+      fig.add(mesh(new THREE.CylinderGeometry(0.3, 0.45, 1.7, 8).rotateZ(x > 0 ? -0.18 : 0.18).translate(x, 0.85, 0), cloth));
+      fig.add(mesh(box(0.45, 0.2, 0.7, x * 1.25, 0, 0.1), DARK));
+    }
+    // skirt plates, body armour with lacing bands, gold belt, shoulder plates
+    fig.add(mesh(new THREE.CylinderGeometry(0.85, 1.15, 0.9, 10, 1, true).translate(0, 1.75, 0), armour));
+    fig.add(mesh(new THREE.CylinderGeometry(0.75, 0.82, 1.4, 10).translate(0, 2.85, 0), armour));
+    for (const y of [2.35, 2.75, 3.15]) fig.add(mesh(new THREE.TorusGeometry(0.8, 0.05, 6, 20).rotateX(Math.PI / 2).translate(0, y, 0), lace));
+    fig.add(mesh(new THREE.TorusGeometry(0.86, 0.09, 6, 20).rotateX(Math.PI / 2).translate(0, 2.05, 0), M('#c9a227')));
+    for (const s of [-1, 1]) {
+      const sh = mesh(new THREE.BoxGeometry(0.75, 0.7, 0.9), armour);
+      sh.position.set(s * 1.0, 3.25, 0);
+      sh.rotation.z = s * -0.35;
+      fig.add(sh);
+      // arms forward, both hands on the hilt in front of the body
+      const arm = mesh(new THREE.CylinderGeometry(0.17, 0.2, 1.1, 8), cloth);
+      arm.position.set(s * 0.45, 2.85, 0.5);
+      arm.rotation.set(-1.0, 0, s * 0.45);
+      fig.add(arm);
+    }
+    fig.add(mesh(new THREE.SphereGeometry(0.2, 8, 6).translate(0, 2.55, 1.0), skin));
+    // katana: guard, grip and a long blade angled down and forward
+    const sword = new THREE.Group();
+    sword.add(mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.55, 6).translate(0, 0.27, 0), M('#2b2d33')));
+    sword.add(mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.04, 12), M('#c9a227')));
+    sword.add(mesh(new THREE.BoxGeometry(0.09, 2.4, 0.03).translate(0, -1.2, 0), steel));
+    sword.position.set(0, 2.55, 1.05);
+    sword.rotation.x = 2.3; // blade forward and down, ready
+    fig.add(sword);
+    // scabbard at the hip
+    fig.add(mesh(new THREE.CylinderGeometry(0.07, 0.07, 2.1, 6).rotateZ(1.25).translate(-0.7, 1.95, 0.45), M('#1b1d24')));
+    // head: neck, face, hair, white headband with tails, topknot, eyes
+    fig.add(mesh(new THREE.CylinderGeometry(0.22, 0.25, 0.25, 8).translate(0, 3.6, 0), skin));
+    fig.add(mesh(new THREE.SphereGeometry(0.45, 12, 10).translate(0, 4.0, 0), skin));
+    fig.add(mesh(new THREE.SphereGeometry(0.48, 12, 10, 0, Math.PI * 2, 0, Math.PI * 0.55).translate(0, 4.05, -0.04), cloth));
+    fig.add(mesh(new THREE.TorusGeometry(0.47, 0.06, 6, 20).rotateX(Math.PI / 2).translate(0, 4.12, 0), WHITE));
+    for (const s of [-1, 1]) {
+      const tail = mesh(new THREE.BoxGeometry(0.1, 0.55, 0.04), WHITE);
+      tail.position.set(s * 0.12, 3.85, -0.5);
+      tail.rotation.set(0.35, 0, s * 0.2);
+      fig.add(tail);
+    }
+    fig.add(mesh(new THREE.CylinderGeometry(0.12, 0.16, 0.35, 8).translate(0, 4.55, -0.1), cloth));
+    fig.add(mesh(box(0.06, 0.06, 0.06, -0.15, 3.97, 0.42), DARK), mesh(box(0.06, 0.06, 0.06, 0.15, 3.97, 0.42), DARK));
+    // a cape flowing behind
+    const cape = mesh(new THREE.BoxGeometry(1.3, 2.2, 0.08), lace);
+    cape.position.set(0, 2.3, -0.9);
+    cape.rotation.x = 0.18;
+    fig.add(cape);
+    fig.scale.setScalar(1.15);
+    g.add(fig);
+    // stone lanterns and a cherry tree
+    for (const x of [-3.8, 3.8]) {
+      g.add(mesh(box(0.35, 1.0, 0.35, x, 0.2, 3.4), STONE), mesh(box(0.8, 0.5, 0.8, x, 1.2, 3.4), STONE));
+      g.add(mesh(box(0.5, 0.35, 0.5, x, 1.25, 3.4), glow('#ffd38a', 0.25, 2)));
+      g.add(mesh(new THREE.ConeGeometry(0.75, 0.5, 4).rotateY(Math.PI / 4).translate(x, 1.95, 3.4), STONE));
+    }
+    g.add(mesh(new THREE.CylinderGeometry(0.15, 0.25, 2.2, 7).translate(-3.6, 1.3, -2.8), TRUNK));
+    for (const [x, y, z, r] of [[-3.6, 3.0, -2.8, 1.3], [-3.0, 2.6, -2.3, 0.9], [-4.2, 2.7, -2.4, 0.85]]) g.add(mesh(new THREE.IcosahedronGeometry(r, 0).translate(x, y, z), M('#f7b6c8', { flatShading: true })));
+    shadowAll(g);
+    return { group: g, body: plinth, height: 0.5 + P + 4.8 * 1.15 };
+  }
+
+  const day8Landmarks = { 'samurai-statue': samuraiStatue };
+
   return {
     upgrades,
     landmarks: {
@@ -2352,6 +2587,7 @@ export function createExtraModels({ THREE, M, mat, FLOOR_H, glow, shadowAll }) {
       'mma-gym': mmaGym, school, market, mall,
       ...day5Landmarks,
       ...day6Landmarks,
+      ...day8Landmarks,
     },
   };
 }

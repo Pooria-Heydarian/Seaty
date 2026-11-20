@@ -51,10 +51,11 @@ const newSpecials = [];
 // The comment that asked for each special (shown on the card) and the anchor's set-up line (--story).
 const askedText = new Map(((readJSON(NEW_COMMENTS_FILE)?.comments) || []).map((c) => [c.id, c.text]));
 const asked = (x) => {
-  const t = String(askedText.get(x.requestedIn) || '').replace(/s+/g, ' ').trim();
+  const t = String(askedText.get(x.requestedIn) || '').replace(/\s+/g, ' ').trim();
   return {
-    ...(t && !/https?:|www./i.test(t) && t.length <= 140 && t.split(' ').length >= 3 ? { comment: t } : {}),
+    ...(t && !/https?:|www\./i.test(t) && t.length <= 140 && t.split(' ').length >= 3 ? { comment: t } : {}),
     ...(x.story ? { story: x.story } : {}),
+    ...(x.top ? { top: x.top } : {}), // the daily session's pick for the Short: 1 = the hook, 2, 3…
   };
 };
 (specials.landmarks || []).forEach((l) => {
@@ -116,7 +117,7 @@ if (prev) {
 }
 
 if (newSpecials.length) {
-  const UP = { pool: 'a swimming pool', 'apple-tree': 'an apple tree', capybara: 'a capybara', cat: 'a pet cat', dog: 'a pet dog', gems: 'a ruby and a sapphire', 'flower-tree': 'a blossom tree', pond: 'a pond', campfire: 'a campfire patio', chickens: 'a chicken coop', 'giant-apple-tree': 'a giant apple tree', 'giant-oak-tree': 'a giant oak tree', garage: 'a garage and a sports car', torii: 'a red shrine gate', quail: 'a pet quail', 'soccer-field': 'a soccer field', elephant: 'a pet elephant', shelter: 'a storm shelter', drone: 'a drone', 'koi-pond': 'a koi pond', trophy: 'the weekly challenge trophy', 'capybara-pen': 'a capybara pen', 'xmas-hats': 'Christmas hats for the chickens', 'big-cats': 'a lion and a tiger', 'mango-tree': 'a mango tree' };
+  const UP = { pool: 'a swimming pool', 'apple-tree': 'an apple tree', capybara: 'a capybara', cat: 'a pet cat', dog: 'a pet dog', gems: 'a ruby and a sapphire', 'flower-tree': 'a blossom tree', pond: 'a pond', campfire: 'a campfire patio', chickens: 'a chicken coop', 'giant-apple-tree': 'a giant apple tree', 'giant-oak-tree': 'a giant oak tree', garage: 'a garage and a sports car', torii: 'a red shrine gate', quail: 'a pet quail', 'soccer-field': 'a soccer field', elephant: 'a pet elephant', shelter: 'a storm shelter', drone: 'a drone', 'koi-pond': 'a koi pond', trophy: 'the weekly challenge trophy', 'capybara-pen': 'a capybara pen', 'xmas-hats': 'Christmas hats for the chickens', 'big-cats': 'a lion and a tiger', 'mango-tree': 'a mango tree', 'milk-portal': 'a portal to the milk realm', 'rooftop-sign': 'a rooftop sign', garden: 'a garden', golf: 'a golf green', 'pickup-trucks': 'two pickup trucks' };
   lines.push('## ✨ New in town');
   for (const s of newSpecials) {
     lines.push(s.kind === 'landmark'

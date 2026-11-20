@@ -10,7 +10,25 @@
     "code": "Q0FQWUdPTEQ=",
     "start": "2026-11-19T00:00:00.000Z",
     "deadline": "2026-11-27T23:59:59.000Z",
-    "winner": null
+    "winner": "@prabhasishbhattacharya9226",
+    "winnerComment": "Ugzlci3F5PGy3vPdgvl4AaABAg",
+    "won": "2026-11-20T03:05:35.817Z"
   },
-  "history": []
+  "history": [
+    {
+      "week": 1,
+      "name": "Golden Capybara",
+      "at": {
+        "resident": "UCn-3PuoTEOwyWSCo-89yj0A"
+      },
+      "where": "behind @POUSALI2412's house",
+      "clue": "Old Town, behind a cottage with flowers, a little fence and a smoking chimney.",
+      "code": "Q0FQWUdPTEQ=",
+      "start": "2026-11-19T00:00:00.000Z",
+      "deadline": "2026-11-27T23:59:59.000Z",
+      "winner": "@prabhasishbhattacharya9226",
+      "winnerComment": "Ugzlci3F5PGy3vPdgvl4AaABAg",
+      "won": "2026-11-20T03:05:35.817Z"
+    }
+  ]
 }

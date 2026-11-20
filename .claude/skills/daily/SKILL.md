@@ -96,6 +96,8 @@ How the Short tells the day (`web/video.js`): it opens on the best request (a dr
 
 **Write a set-up line for every special** with `--story "<line>"` on the add command (or later: `npm run special -- story <who | landmark id> "<line>" [upgrade type]`). It's the anchor retelling the wish with a twist, never reading the comment out: 1–2 short sentences, under 160 characters, building curiosity without saying what gets built (that's the reveal). Say names the way they sound ("Fly For Ever", not "Fly4Ever777"), use the name instead of he/she. Examples: *"KetchupPac didn't want more floors. KetchupPac wanted to become… a donut."* · *"Fly For Ever already owns the airport. But that wasn't enough."* · *"Kirupa asked, very politely, for something classy."* Specials with a written line go first. Always pass `--comment <id>` too: the card shows that comment.
 
+**Pick the 3 featured stories yourself** with `--top 1|2|3` on the add command (1 = the hook, the funniest or most surprising build of the day; mix houses, upgrades and landmarks). Without it, dream houses come first. Everything else goes in the fast montage.
+
 Check it before saying it's done:
 - the render log shows the scenes you expect (`house`, `upgrade`, `landmark`, `newcomer`…) and no `page error`;
 - pull a frame from each new house's scene and look at it, e.g. `node_modules/ffmpeg-static/ffmpeg.exe -ss <seconds> -i video/<date>.mp4 -frames:v 1 -y <scratchpad>/frame.jpg` (scene start times are in the log).

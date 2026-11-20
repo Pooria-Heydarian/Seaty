@@ -57,9 +57,10 @@ function resident(who) {
 const save = () => writeJSON(SPECIALS_FILE, specials);
 // --story "<line>": how the anchor sets up this request in the Short, before it is built (a fun retelling, not a quote)
 const story = () => {
-  const t = typeof flags.story === 'string' ? flags.story.replace(/s+/g, ' ').trim() : '';
+  const t = typeof flags.story === 'string' ? flags.story.replace(/\s+/g, ' ').trim() : '';
   if (t.length > 160) fail('--story is too long: one or two short sentences (max 160 characters).');
-  return t ? { story: t } : {};
+  const top = Number(flags.top) > 0 ? { top: Number(flags.top) } : {}; // --top 1 = the Short's hook, 2, 3 = the next stories
+  return { ...(t ? { story: t } : {}), ...top };
 };
 const slug = (s) => norm(s).replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 40) || 'landmark';
 
@@ -111,7 +112,7 @@ switch (cmd) {
     const r = resident(a);
     if (!UPGRADE_TYPES[b]) fail(`Unknown upgrade "${b}". Options: ${Object.keys(UPGRADE_TYPES).join(', ')}`);
     if (specials.upgrades.some((u) => same(u.resident, r) && u.type === b)) fail(`${r.name} already has the ${b}.`);
-    specials.upgrades.push({ resident: r.id, name: r.name, type: b, ...(flags.comment ? { requestedIn: flags.comment } : {}), ...story(), added: date });
+    specials.upgrades.push({ resident: r.id, name: r.name, type: b, ...(typeof flags.text === 'string' ? { text: flags.text.trim().slice(0, 10) } : {}), ...(flags.comment ? { requestedIn: flags.comment } : {}), ...story(), added: date });
     save();
     console.log(`✓ ${r.name} got the ${b}`);
     break;

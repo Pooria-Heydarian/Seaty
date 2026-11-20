@@ -60,6 +60,18 @@ export function writeSfx(file, seconds, events = []) {
         put(s0 + i, v * vol * Math.min(1, t / 0.002), 0.2);
       }
     },
+    // the blueprint drawing itself: a soft rising sweep with quick ticks, like a plotter
+    build(s0, vol = 0.1) {
+      const len = Math.floor(1.0 * SR);
+      let ph = 0;
+      for (let i = 0; i < len; i++) {
+        const t = i / SR, k = i / len;
+        ph += (2 * Math.PI * (380 + 900 * k * k)) / SR;
+        const env = Math.min(1, t / 0.05) * (1 - k) ** 0.6;
+        const tick = (Math.floor(t * 22) % 2 ? 0.55 : 1);
+        put(s0 + i, Math.sin(ph) * env * tick * vol, -0.4 + 0.8 * k);
+      }
+    },
     sparkle(s0, vol = 0.12) {
       [0, 4, 7, 12, 16].forEach((semi, j) => {
         const st = s0 + Math.floor(j * 0.06 * SR);

@@ -1,181 +1,527 @@
 {
-  "date": "2026-11-19",
-  "day": 7,
+  "date": "2026-11-20",
+  "day": 8,
   "firstReport": false,
-  "residentCount": 87,
-  "totalFloors": 231,
-  "videoCount": 8,
-  "floorsAdded": 20,
-  "newResidents": [],
+  "residentCount": 107,
+  "totalFloors": 283,
+  "videoCount": 10,
+  "floorsAdded": 52,
+  "newResidents": [
+    {
+      "id": "UCNTsAgoc6UXNniHwe7xWvVg",
+      "name": "@HughJass-l6b",
+      "comment": "invited by @AverageHuman67",
+      "plot": 88,
+      "floors": 1
+    },
+    {
+      "id": "UCmGjZA2seKD2hqGXblnXFDw",
+      "name": "@ojalnemade",
+      "comment": "Im a new subscriber can I have a pink house❤",
+      "plot": 89,
+      "floors": 1
+    },
+    {
+      "id": "UC-bcGAszcKoylSp-ZnfpRXA",
+      "name": "@Tootdino507",
+      "comment": "Can u make me a canes house?",
+      "plot": 90,
+      "floors": 1
+    },
+    {
+      "id": "UC4sdae2OIEfYQ4PyEEbHn9A",
+      "name": "@Nooni1024",
+      "comment": "Canni have the biggest futuristic modern mansion",
+      "plot": 91,
+      "floors": 1
+    },
+    {
+      "id": "UCgrae7IxkL7HBkWbmTiF6Iw",
+      "name": "@Dragos-bd9vw",
+      "comment": "make a tall skyscraper with 1k floors",
+      "plot": 92,
+      "floors": 1
+    },
+    {
+      "id": "UCYPkkMP7x27hsJkLq01ZCOA",
+      "name": "@Fluffy_paw2212",
+      "comment": "I would love to live in a old Japanese building if that’s possible :3",
+      "plot": 93,
+      "floors": 1
+    },
+    {
+      "id": "UCYa0MLnfFOvY-9GFMFR2b4Q",
+      "name": "@Vinc-t1y",
+      "comment": "Make a military",
+      "plot": 94,
+      "floors": 1
+    },
+    {
+      "id": "UCoPzG1EAWwr7vt44xxYZIKw",
+      "name": "@markuslundin7909",
+      "comment": "My is a school",
+      "plot": 95,
+      "floors": 1
+    },
+    {
+      "id": "UCTXNzVkHrIJh82Qx_2UqO2A",
+      "name": "@Liam-n8l8x",
+      "comment": "Pls, get me a garage with a mustang",
+      "plot": 96,
+      "floors": 1
+    },
+    {
+      "id": "UC9zk9h7GNNrgUzsmTwnK0CQ",
+      "name": "@GunnerAdams-l6v",
+      "comment": "Museum",
+      "plot": 97,
+      "floors": 1
+    },
+    {
+      "id": "UCOdauvrwnO6_c5fQpDt2QpQ",
+      "name": "@RoachOFC-ALT",
+      "comment": "make a roach themed house\n for me",
+      "plot": 98,
+      "floors": 1
+    },
+    {
+      "id": "UCSJL3D3GkGUZ_d3FmorAecQ",
+      "name": "@samuel_pagaimo",
+      "comment": "Can i be the president of the city too?",
+      "plot": 99,
+      "floors": 1
+    },
+    {
+      "id": "UC9FFOnaiOZ7tL8GbQhEqPtg",
+      "name": "@Just_A_guy_Doing_guy_Things",
+      "comment": "Lets get a railroad around the whole city!",
+      "plot": 100,
+      "floors": 1
+    },
+    {
+      "id": "UCb9VhnHBBHozOxWA-Bhnazg",
+      "name": "@WaffleHousefunny",
+      "comment": "Can I get a house but I want a landmark my house can we have the Red Cross on the top?",
+      "plot": 101,
+      "floors": 1
+    },
+    {
+      "id": "UCE9tGi0eAKdpRFM6ZAa7_lg",
+      "name": "@Yattster",
+      "comment": "Moved into city: countryside farm with country mansion, and a collection of diesel trucks all of them dodge",
+      "plot": 102,
+      "floors": 1
+    },
+    {
+      "id": "UC7Qs7Pl5zIDtGHnCVf_RmRw",
+      "name": "@KyloFerrier",
+      "comment": "A lake house",
+      "plot": 103,
+      "floors": 1
+    },
+    {
+      "id": "UC2Ege9KWrUtiXbvu4ZE7MMA",
+      "name": "@CourtneyBray-m7k",
+      "comment": "I want to be in the city in a bidding with 5 floors",
+      "plot": 104,
+      "floors": 2
+    },
+    {
+      "id": "UCS_RzGBL-_dA6BFnssVGBAg",
+      "name": "@GranttheGreat-g4d",
+      "comment": "hi there",
+      "plot": 105,
+      "floors": 1
+    },
+    {
+      "id": "UCZkvMk5tejH02mYG1CzPLCw",
+      "name": "@boeing777council",
+      "comment": "@CourtneyBray-m7k 777 is goated",
+      "plot": 106,
+      "floors": 1
+    },
+    {
+      "id": "UCda1S6he5ANJAyVol849inQ",
+      "name": "@Marioplayzroblox_777",
+      "comment": "Revamp the city \nIt looks ugly",
+      "plot": 107,
+      "floors": 1
+    }
+  ],
   "grew": [
     {
-      "id": "UC72l66Gfc4bCEQEASVG6oPQ",
-      "name": "@Fly4Ever777",
-      "comment": "Hi!",
-      "from": 3,
-      "to": 7
-    },
-    {
-      "id": "UCVNoIdSeaoW2eEnaZ61pAEQ",
-      "name": "@Get_jin_in_use",
-      "comment": "GIVME ME A KITUNE",
-      "from": 6,
-      "to": 8
-    },
-    {
-      "id": "UCn-3PuoTEOwyWSCo-89yj0A",
-      "name": "@POUSALI2412",
-      "comment": "Invited by @Pousali2412",
-      "from": 6,
-      "to": 7
-    },
-    {
-      "id": "UCJ8vLkrMd5einlvr_L_Bpfw",
-      "name": "@ЕленаИзюмова-у7ц",
-      "comment": "OH DEAR, 7 FLOORS",
-      "from": 6,
-      "to": 7
-    },
-    {
-      "id": "UCJKwj1uw3QlueW6K3N-U2gw",
-      "name": "@Staypositivels",
-      "comment": "Dude",
-      "from": 6,
-      "to": 7
+      "id": "UCKgB0kce7yRwStaUsMl_nZQ",
+      "name": "@AverageHuman67",
+      "comment": "i can't have more landmarks :((((",
+      "from": 5,
+      "to": 10
     },
     {
       "id": "UCv-a0knslevzeV3tfAHRhFg",
       "name": "@ShashankShekhar-o3i",
-      "comment": "Got a mango tree in my backyard",
-      "from": 6,
-      "to": 7
+      "comment": "Nice",
+      "from": 7,
+      "to": 10
     },
     {
-      "id": "UC1nwHOUj7poip83gnhJ46BQ",
-      "name": "@KetchupPac",
-      "comment": "bro add more fllors for me and i want to be a donut",
-      "from": 5,
-      "to": 6
+      "id": "UCJ8vLkrMd5einlvr_L_Bpfw",
+      "name": "@ЕленаИзюмова-у7ц",
+      "comment": "Capygold? What are you all talking about?",
+      "from": 7,
+      "to": 9
     },
     {
       "id": "UCZm0diFKnMvsNQ--CtXCsNA",
       "name": "@Kirupa_49",
-      "comment": "Can you make my house look like a classy mansion if you can please?",
-      "from": 5,
-      "to": 6
-    },
-    {
-      "id": "UCWkYCJOI-n0B8BB8XAE66Hg",
-      "name": "@PolerGG",
-      "comment": "pls upgrade my house and get me a capybara THANK YOU FOR MENTIONING ME",
-      "from": 5,
-      "to": 6
+      "comment": "Great episode!\nThe answer to the puzzle is CAPYGOLD🎉✌️",
+      "from": 6,
+      "to": 8
     },
     {
       "id": "UCpD3u7o7qCaDE5Hui4Xo1bQ",
       "name": "@prabhasishbhattacharya9226",
-      "comment": "hey",
+      "comment": "capygold",
+      "from": 6,
+      "to": 8
+    },
+    {
+      "id": "UCFKlbA0mu0HMUyWG3orzc7g",
+      "name": "@moisescaicedolover",
+      "comment": "day 3.5  asking for american family field and can my house be mansion",
+      "from": 4,
+      "to": 6
+    },
+    {
+      "id": "UC3EbWVsoRRZmwM2zz7bbkgA",
+      "name": "@immortal_snaiI",
+      "comment": "CAPYGOLD",
+      "from": 4,
+      "to": 6
+    },
+    {
+      "id": "UCVNoIdSeaoW2eEnaZ61pAEQ",
+      "name": "@Get_jin_in_use",
+      "comment": "Make statue of jin sakai",
+      "from": 8,
+      "to": 9
+    },
+    {
+      "id": "UC72l66Gfc4bCEQEASVG6oPQ",
+      "name": "@Fly4Ever777",
+      "comment": "Hi! Can you make an airport?",
+      "from": 7,
+      "to": 8
+    },
+    {
+      "id": "UC1nwHOUj7poip83gnhJ46BQ",
+      "name": "@KetchupPac",
+      "comment": "I want 10 fllors",
+      "from": 6,
+      "to": 7
+    },
+    {
+      "id": "UCX6wVTHYXPiW7mS_UD_leoQ",
+      "name": "@ChristinneeeXD",
+      "comment": "Could u make my house a capybara head with an capybara mail box and make an capybara plushie and a capybara tree  and add an art school",
+      "from": 6,
+      "to": 7
+    },
+    {
+      "id": "UCUh2iTRVNp77G29R_R6sM4A",
+      "name": "@TwoToThePowerOf999ImSmart",
+      "comment": "Add a garden next to my house.",
       "from": 5,
       "to": 6
     },
     {
-      "id": "UCZcS07-x1ubdSIjAGrVgU-A",
-      "name": "@mdsadiq4737",
-      "comment": "I want 5 floors to my house since i've been commenting on EVERY SINGLE VIDEO",
-      "from": 4,
-      "to": 5
-    },
-    {
-      "id": "UCKXWTyD95c9W96Co4VMbD4A",
-      "name": "@jjk-x2r",
-      "comment": "Give me another floor and im runing out of ideas can u give me any ideas idk maybe make the power plant look like it realy powers everything",
-      "from": 4,
-      "to": 5
-    },
-    {
       "id": "UCZYD9tjWBaJgrwaKK6DXp7g",
       "name": "@Eastonfortniteeee",
-      "comment": "Can you make a nasa place",
+      "comment": "Can you make a can you make a Coca Cola factory",
+      "from": 5,
+      "to": 6
+    },
+    {
+      "id": "UCgDf7IYRCZ9MXVMjPXnZkEw",
+      "name": "@ConnorLukach",
+      "comment": "Hiiii Can you make a larger international airport?",
       "from": 4,
       "to": 5
     },
     {
       "id": "UC_GtnlGVIQfvWpnr-nZvefQ",
       "name": "@MrTauntyFace",
-      "comment": "Can you add the Colosseum",
-      "from": 3,
-      "to": 4
+      "comment": "Can you add a public big bunker for everyone?",
+      "from": 4,
+      "to": 5
     },
     {
       "id": "UConyzasmuGpqcUUKsdwutJA",
       "name": "@karanchhabra6434",
-      "comment": "Add a museum",
+      "comment": "Make an airport",
+      "from": 4,
+      "to": 5
+    },
+    {
+      "id": "UCDgiH80X9SHLgHukBy-XzkQ",
+      "name": "@JacksonGross-q4b",
+      "comment": "we need a working airport",
       "from": 3,
       "to": 4
     },
     {
-      "id": "UC9JUSObteFHT96kE-U5WMNg",
-      "name": "@ZariGolpayegani",
-      "comment": "Park a Prado SUV in front of the bridal boutique, and include a floor dedicated to wedding dresses.",
+      "id": "UCWDGjI4UHg4ITRCbq_Lkxgw",
+      "name": "@marygracecaayaacaylar4311",
+      "comment": "OMGGG thank you so muchhh",
       "from": 2,
       "to": 3
+    },
+    {
+      "id": "UC3Em45knIod38GO1zzu8j0Q",
+      "name": "@og-goat1.0",
+      "comment": "Now living in the white house",
+      "from": 2,
+      "to": 3
+    },
+    {
+      "id": "UCOdUCQ_pkaIh8sb76Aw4cgw",
+      "name": "@Jimking12goat",
+      "comment": "two story house I sub as well !!!",
+      "from": 1,
+      "to": 2
     }
   ],
   "top": [
     {
-      "id": "UCVNoIdSeaoW2eEnaZ61pAEQ",
-      "name": "@Get_jin_in_use",
-      "floors": 8
+      "id": "UCKgB0kce7yRwStaUsMl_nZQ",
+      "name": "@AverageHuman67",
+      "floors": 10
     },
     {
-      "id": "UC72l66Gfc4bCEQEASVG6oPQ",
-      "name": "@Fly4Ever777",
-      "floors": 7
+      "id": "UCv-a0knslevzeV3tfAHRhFg",
+      "name": "@ShashankShekhar-o3i",
+      "floors": 10
     },
     {
-      "id": "UCn-3PuoTEOwyWSCo-89yj0A",
-      "name": "@POUSALI2412",
-      "floors": 7
+      "id": "UCJ8vLkrMd5einlvr_L_Bpfw",
+      "name": "@ЕленаИзюмова-у7ц",
+      "floors": 9
     }
   ],
   "newSpecials": [
     {
-      "kind": "upgrade",
-      "id": "UCv-a0knslevzeV3tfAHRhFg",
-      "name": "@ShashankShekhar-o3i",
-      "type": "mango-tree"
+      "kind": "landmark",
+      "id": "samurai-statue",
+      "name": "Samurai Statue",
+      "requestedBy": "@Get_jin_in_use",
+      "comment": "Make statue of jin sakai",
+      "story": "Jin already has a dojo. Now Jin wanted a hero to guard the city."
+    },
+    {
+      "kind": "landmark",
+      "id": "art-school",
+      "name": "Art School",
+      "requestedBy": "@ChristinneeeXD",
+      "comment": "Could u make my house a capybara head with an capybara mail box and make an capybara plushie and a capybara tree and add an art school",
+      "story": "And Christine had one more idea, for every artist in town."
+    },
+    {
+      "kind": "landmark",
+      "id": "soda-factory",
+      "name": "Soda Factory",
+      "requestedBy": "@Eastonfortniteeee",
+      "comment": "Can you make a can you make a Coca Cola factory",
+      "story": "Easton thinks the city is thirsty. Very thirsty."
     },
     {
       "kind": "upgrade",
-      "id": "UCWkYCJOI-n0B8BB8XAE66Hg",
-      "name": "@PolerGG",
-      "type": "capybara"
+      "id": "UCpD3u7o7qCaDE5Hui4Xo1bQ",
+      "name": "@prabhasishbhattacharya9226",
+      "type": "trophy"
+    },
+    {
+      "kind": "upgrade",
+      "id": "UCTXNzVkHrIJh82Qx_2UqO2A",
+      "name": "@Liam-n8l8x",
+      "type": "garage",
+      "comment": "Pls, get me a garage with a mustang",
+      "story": "Liam is new in town, and Liam already knows what belongs in the driveway."
+    },
+    {
+      "kind": "upgrade",
+      "id": "UCSJL3D3GkGUZ_d3FmorAecQ",
+      "name": "@samuel_pagaimo",
+      "type": "pool",
+      "comment": "Could u make the white house, with an golf, a pool and its got to be like the real one in Washington D.C.?"
+    },
+    {
+      "kind": "upgrade",
+      "id": "UCSJL3D3GkGUZ_d3FmorAecQ",
+      "name": "@samuel_pagaimo",
+      "type": "golf",
+      "comment": "Could u make the white house, with an golf, a pool and its got to be like the real one in Washington D.C.?",
+      "story": "And no presidential home is complete without a little sport."
+    },
+    {
+      "kind": "upgrade",
+      "id": "UCKgB0kce7yRwStaUsMl_nZQ",
+      "name": "@AverageHuman67",
+      "type": "milk-portal",
+      "comment": "Hi can i have a portal to the milk realm",
+      "story": "Then AverageHuman asked for something nobody has ever asked for. A way into the milk realm.",
+      "top": 3
+    },
+    {
+      "kind": "upgrade",
+      "id": "UCpD3u7o7qCaDE5Hui4Xo1bQ",
+      "name": "@prabhasishbhattacharya9226",
+      "type": "rooftop-sign",
+      "comment": "could you add a big sign that says \"P.B.\" above my house",
+      "story": "Prabhasish wants the whole city to know whose house this is."
+    },
+    {
+      "kind": "upgrade",
+      "id": "UCUh2iTRVNp77G29R_R6sM4A",
+      "name": "@TwoToThePowerOf999ImSmart",
+      "type": "garden",
+      "comment": "Add a garden next to my house.",
+      "story": "Two To The Power had a quiet wish for the space next to the house."
+    },
+    {
+      "kind": "upgrade",
+      "id": "UCE9tGi0eAKdpRFM6ZAa7_lg",
+      "name": "@Yattster",
+      "type": "pickup-trucks",
+      "comment": "Moved into city: countryside farm with country mansion, and a collection of diesel trucks all of them dodge"
     },
     {
       "kind": "house",
-      "id": "UC1nwHOUj7poip83gnhJ46BQ",
-      "name": "@KetchupPac",
-      "title": "Donut House"
+      "id": "UCKgB0kce7yRwStaUsMl_nZQ",
+      "name": "@AverageHuman67",
+      "title": "Grand Mansion",
+      "comment": "make my house a mansion",
+      "story": "AverageHuman is number one in the whole city. And number one wanted a home to match."
     },
     {
       "kind": "house",
-      "id": "UC72l66Gfc4bCEQEASVG6oPQ",
-      "name": "@Fly4Ever777",
-      "title": "Airplane House"
+      "id": "UCmGjZA2seKD2hqGXblnXFDw",
+      "name": "@ojalnemade",
+      "title": "Pink Cottage",
+      "comment": "Im a new subscriber can I have a pink house❤",
+      "story": "Ojal just moved in, and had exactly one wish. A colour."
     },
     {
       "kind": "house",
-      "id": "UCZm0diFKnMvsNQ--CtXCsNA",
-      "name": "@Kirupa_49",
-      "title": "Classy Mansion"
+      "id": "UC3Em45knIod38GO1zzu8j0Q",
+      "name": "@og-goat1.0",
+      "title": "White House",
+      "comment": "Now living in the white house",
+      "story": "O G Goat had already decided where to live. Very presidential."
     },
     {
       "kind": "house",
-      "id": "UCWkYCJOI-n0B8BB8XAE66Hg",
-      "name": "@PolerGG",
-      "title": "Farm Villa"
+      "id": "UC-bcGAszcKoylSp-ZnfpRXA",
+      "name": "@Tootdino507",
+      "title": "Chicken Shack",
+      "comment": "Can u make me a canes house?",
+      "story": "Toot Dino loves one restaurant so much, they wanted to live in it."
+    },
+    {
+      "kind": "house",
+      "id": "UC4sdae2OIEfYQ4PyEEbHn9A",
+      "name": "@Nooni1024",
+      "title": "Future Mansion",
+      "comment": "Canni have the biggest futuristic modern mansion",
+      "story": "Nooni wanted the biggest, most futuristic home in town. From the year three thousand."
+    },
+    {
+      "kind": "house",
+      "id": "UCgrae7IxkL7HBkWbmTiF6Iw",
+      "name": "@Dragos-bd9vw",
+      "title": "Mini Skyscraper",
+      "comment": "make a tall skyscraper with 1k floors",
+      "story": "Dragos asked for a skyscraper with a thousand floors. Let's start with one."
+    },
+    {
+      "kind": "house",
+      "id": "UCYPkkMP7x27hsJkLq01ZCOA",
+      "name": "@Fluffy_paw2212",
+      "title": "Old Japanese House",
+      "comment": "I would love to live in a old Japanese building if that’s possible :3",
+      "story": "Fluffy Paw dreamed of something old, quiet and very far from here."
+    },
+    {
+      "kind": "house",
+      "id": "UCoPzG1EAWwr7vt44xxYZIKw",
+      "name": "@markuslundin7909",
+      "title": "Schoolhouse",
+      "comment": "My is a school",
+      "story": "Markus wanted to live somewhere with a bell, a flag and homework."
+    },
+    {
+      "kind": "house",
+      "id": "UCFKlbA0mu0HMUyWG3orzc7g",
+      "name": "@moisescaicedolover",
+      "title": "Family Mansion",
+      "comment": "day 3.5 asking for american family field and can my house be mansion",
+      "story": "Moises has been asking for days. Day three and a half, to be exact."
+    },
+    {
+      "kind": "house",
+      "id": "UCE9tGi0eAKdpRFM6ZAa7_lg",
+      "name": "@Yattster",
+      "title": "Country Mansion",
+      "comment": "Moved into city: countryside farm with country mansion, and a collection of diesel trucks all of them dodge",
+      "story": "Yattster moved in with big countryside plans. And a lot of trucks."
+    },
+    {
+      "kind": "house",
+      "id": "UCX6wVTHYXPiW7mS_UD_leoQ",
+      "name": "@ChristinneeeXD",
+      "title": "Capybara Head",
+      "comment": "Could u make my house a capybara head with an capybara mail box and make an capybara plushie and a capybara tree and add an art school",
+      "story": "Christine already has a capybara, a capybara pen and a capybara centre. Christine needed more capybara.",
+      "top": 2
+    },
+    {
+      "kind": "house",
+      "id": "UCOdauvrwnO6_c5fQpDt2QpQ",
+      "name": "@RoachOFC-ALT",
+      "title": "Roach House",
+      "comment": "make a roach themed house for me",
+      "story": "Roach just moved in. And Roach had one very creepy, crawly wish.",
+      "top": 1
+    },
+    {
+      "kind": "house",
+      "id": "UC7Qs7Pl5zIDtGHnCVf_RmRw",
+      "name": "@KyloFerrier",
+      "title": "Lake House",
+      "comment": "A lake house",
+      "story": "Kylo asked for just three words. Two of them were house."
+    },
+    {
+      "kind": "house",
+      "id": "UCSJL3D3GkGUZ_d3FmorAecQ",
+      "name": "@samuel_pagaimo",
+      "title": "White House",
+      "comment": "Could u make the white house, with an golf, a pool and its got to be like the real one in Washington D.C.?",
+      "story": "Samuel wants to run this city. So Samuel needs the right address."
+    },
+    {
+      "kind": "house",
+      "id": "UCb9VhnHBBHozOxWA-Bhnazg",
+      "name": "@WaffleHousefunny",
+      "title": "Medic House",
+      "comment": "Can I get a house but I want a landmark my house can we have the Red Cross on the top?",
+      "story": "Waffle House wanted a home that everyone in town would recognise."
     }
   ],
-  "challenge": null,
+  "challenge": {
+    "type": "winner",
+    "week": 1,
+    "name": "Golden Capybara",
+    "winner": "@prabhasishbhattacharya9226",
+    "id": "UCpD3u7o7qCaDE5Hui4Xo1bQ"
+  },
   "invites": []
 }

@@ -414,4 +414,161 @@ export const HOUSE_MODELS = {
     for (let n = 0; n < 5; n++) g.add(new THREE.Mesh(k.box(0.6, 0.06, 0.25, n * (cy - Rf * 0.75) / 5).translate(L / 2 - 0.55, 0, Rf + 0.25 + (4 - n) * 0.22), plain('#f7f4ee')));
     return { body, top: cy + Rf + 1.6, eave: cy, front: Rf + 1.3, width: L + Rf * 2 };
   },
+  /**
+   * A giant capybara head with an orange on top, plus a capybara mailbox, a capybara plushie on the doorstep and a
+   * capybara-shaped hedge (Day 8, @ChristinneeeXD). wall = fur, roofColor = snout, accent = the orange.
+   */
+  'capybara-head'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const S = Math.min(1.3, 0.85 + (h - k.FLOOR_H) * 0.05); // the head grows a little with every floor
+    const fur = plain(r.wall, { roughness: 0.9, flatShading: true });
+    const snoutM = plain(r.roofColor, { roughness: 0.9, flatShading: true });
+    const dark = plain('#3b2a1f');
+    const head = new THREE.Group();
+    // a big rounded box: the capybara's famous square face
+    const body = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.9, 3.0, 2, 2, 2).translate(0, 1.45, -0.2), fur);
+    head.add(body);
+    for (const [w, hh, d, y, z] of [[3.4, 2.5, 2.6, 1.45, -0.2], [2.8, 3.2, 2.6, 1.45, -0.2]]) head.add(new THREE.Mesh(new THREE.BoxGeometry(w, hh, d).translate(0, y, z), fur));
+    // the long snout sticking out at the front, with nostrils
+    head.add(new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.7, 1.5).translate(0, 1.05, 1.8), snoutM));
+    head.add(new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.85, 2.2, 16).rotateZ(Math.PI / 2).scale(1, 1, 0.55).translate(0, 1.9, 2.25), snoutM));
+    head.add(new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.35, 0.1).translate(0, 2.05, 2.72), dark));
+    for (const s of [-1, 1]) head.add(new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.16, 0.06).translate(s * 0.4, 2.05, 2.78), plain('#14202f')));
+    // sleepy eyes: dark, half-closed, with a lit window behind each
+    for (const s of [-1, 1]) {
+      head.add(new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.3, 0.06).translate(s * 0.95, 2.25, 1.32), glowing('#ffe7a8', 0.15, 1.8)));
+      head.add(new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.14, 0.08).translate(s * 0.95, 2.36, 1.34), dark));
+    }
+    // small round ears
+    for (const s of [-1, 1]) head.add(new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.4, 0.25, 12).rotateX(Math.PI / 2).translate(s * 1.35, 3.0, -0.6), snoutM));
+    // the orange on top, with a leaf
+    const orange = new THREE.Mesh(new THREE.SphereGeometry(0.45, 14, 10).translate(0, 3.35, -0.2), plain(r.accent || '#ff8c1a', { roughness: 0.6 }));
+    head.add(orange, new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.3, 4).rotateZ(0.8).translate(0.15, 3.85, -0.2), plain('#4f8f3f')));
+    head.scale.setScalar(S);
+    g.add(head);
+    // door in the chin
+    g.add(k.door(r.door, 2.55 * S, 0.8, 0));
+    // capybara helper: a little capybara made of boxes
+    const capy = (m, s) => {
+      const c = new THREE.Group();
+      c.add(new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.42, 0.42, 1, 1, 1).translate(0, 0.21, 0), m));
+      c.add(new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.32, 0.34).translate(0.42, 0.34, 0), m));
+      c.add(new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.04, 0.2).translate(0.6, 0.4, 0), dark));
+      c.scale.setScalar(s);
+      return c;
+    };
+    // mailbox: a capybara on a post
+    const post = new THREE.Mesh(k.box(0.1, 0.9, 0.1, 0).translate(2.2, 0, 2.0), plain('#7b5a3c'));
+    const box = capy(fur, 0.7);
+    box.position.set(2.2, 0.9, 2.0);
+    box.rotation.y = -Math.PI / 2;
+    g.add(post, box, new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.16, 0.12).translate(2.48, 1.2, 2.0), plain('#e63946')));
+    // a pink plushie capybara by the door
+    const plush = capy(plain('#f4a6c0', { roughness: 1 }), 0.55);
+    plush.position.set(-0.9, 0, 2.55 * S);
+    plush.rotation.y = -0.6;
+    g.add(plush);
+    // a hedge trimmed into a capybara
+    const hedge = capy(plain('#4f8f3f', { flatShading: true, roughness: 1 }), 1.5);
+    hedge.position.set(-2.1, 0, 1.6);
+    hedge.rotation.y = -Math.PI / 2;
+    g.add(hedge);
+    return { body, top: 3.8 * S, eave: 2.9 * S, front: 2.6 * S, width: 3.4 * S };
+  },
+
+  /**
+   * A roach house: a big glossy beetle-shaped house on six legs, with long antennae, round windows down its side and a
+   * door in its friendly face (Day 8, @RoachOFC-ALT). wall = shell, roofColor = head and legs, accent = window light.
+   */
+  roach(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const L = 3.6 + (h - k.FLOOR_H) * 0.25; // longer and taller with every floor
+    const Hh = 1.4 + (h - k.FLOOR_H) * 0.25;
+    const shell = plain(r.wall, { roughness: 0.25, metalness: 0.2 });
+    const dark = plain(r.roofColor, { roughness: 0.4 });
+    const cy = 0.75 + Hh * 0.5;
+    // the oval body (points to the street, head at the front), with a line down the back
+    const body = new THREE.Mesh(new THREE.SphereGeometry(1, 24, 16), shell);
+    body.scale.set(1.45, Hh * 0.6, L / 2);
+    body.position.set(0, cy, -0.3);
+    g.add(body);
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, L * 0.9).translate(0, cy + Hh * 0.6 - 0.02, -0.3), dark));
+    for (let i = 0; i < 3; i++) {
+      const band = new THREE.Mesh(new THREE.TorusGeometry(1, 0.03, 6, 24, Math.PI), dark);
+      band.scale.set(1.47, Hh * 0.61, 1);
+      band.position.set(0, cy, -0.3 - L * 0.12 + i * L * 0.16);
+      g.add(band);
+    }
+    // round windows along both sides
+    for (const s of [-1, 1]) for (let i = 0; i < 3; i++) {
+      const w = new THREE.Mesh(new THREE.CircleGeometry(0.2, 14), glowing(r.accent || '#ffe7a8', 0.2, 1.8));
+      w.position.set(s * 1.38, cy + 0.1, -0.3 - L * 0.22 + i * L * 0.2);
+      w.rotation.y = s * Math.PI / 2;
+      g.add(w);
+    }
+    // the head with big friendly eyes, a door and two long antennae
+    const hz = -0.3 + L / 2 + 0.25;
+    g.add(new THREE.Mesh(new THREE.SphereGeometry(0.85, 16, 12).scale(1.1, 0.85, 0.8).translate(0, cy - 0.15, hz), dark));
+    for (const s of [-1, 1]) {
+      g.add(new THREE.Mesh(new THREE.SphereGeometry(0.24, 12, 8).translate(s * 0.45, cy + 0.2, hz + 0.5), plain('#ffffff')));
+      g.add(new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 8).translate(s * 0.47, cy + 0.2, hz + 0.7), plain('#14202f')));
+      const ant = new THREE.Mesh(new THREE.TubeGeometry(new THREE.QuadraticBezierCurve3(
+        new THREE.Vector3(s * 0.3, cy + 0.5, hz + 0.3), new THREE.Vector3(s * 0.9, cy + 2.4, hz + 1.0), new THREE.Vector3(s * 1.6, cy + 2.0, hz + 2.0)), 12, 0.04, 5), dark);
+      g.add(ant);
+      // three legs each side, bent like a real bug's
+      for (let i = 0; i < 3; i++) {
+        const z = -0.3 - L * 0.25 + i * L * 0.25;
+        const up = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.08, 1.0, 6), dark);
+        up.position.set(s * 1.65, cy - 0.05, z);
+        up.rotation.z = s * -1.0;
+        const down = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.05, cy, 6).translate(0, cy / 2, 0), dark);
+        down.position.set(s * 2.05, 0, z + (i - 1) * 0.2);
+        down.rotation.z = s * 0.12;
+        g.add(up, down);
+      }
+    }
+    g.add(k.door(r.door, hz + 0.62, 0.7, 0));
+    // little steps up to the door
+    g.add(new THREE.Mesh(k.box(0.7, 0.2, 0.5, 0).translate(0, 0, hz + 0.9), plain('#cfc6b4')));
+    return { body, top: cy + Hh * 0.6 + 1.9, eave: cy + Hh * 0.6, front: hz + 0.8, width: 4.2 };
+  },
+
+  /**
+   * A lake house: a wooden cabin with a deck and a big window, beside its own little lake with a dock and a canoe
+   * (Day 8, @KyloFerrier). wall = wood, roofColor = roof, accent = the canoe. Extra floors stack on the cabin.
+   */
+  'lake-house'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const H = 1.9 + h; // 3.1 at 1 floor
+    const wood = plain(r.wall, { roughness: 0.85 });
+    const trim = plain('#f3ead7');
+    // the lake: front-left of the lot, with a stone rim and reeds
+    const lake = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, 0.06, 28).scale(1.35, 1, 1.05).translate(-1.15, 0.36, 1.35), plain('#3fb6e8', { roughness: 0.1, emissive: '#0b5c80', emissiveIntensity: 0.3 }));
+    g.add(lake, new THREE.Mesh(new THREE.TorusGeometry(1.0, 0.09, 6, 28).rotateX(Math.PI / 2).scale(1.35, 1, 1.05).translate(-1.15, 0.38, 1.35), plain('#9aa0a6', { flatShading: true })));
+    for (let i = 0; i < 6; i++) g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.45, 4).translate(-2.35 + (i % 3) * 0.1, 0.55, 0.7 + Math.floor(i / 3) * 0.25), plain('#6b8f3a')));
+    // dock and canoe
+    g.add(new THREE.Mesh(k.box(0.5, 0.08, 1.3, 0.45).translate(-0.4, 0, 1.6), plain('#a47148')));
+    for (const z of [1.1, 2.1]) g.add(new THREE.Mesh(k.box(0.06, 0.5, 0.06, 0).translate(-0.18, 0, z), plain('#7b5a3c')));
+    const canoe = new THREE.Mesh(new THREE.SphereGeometry(1, 14, 8).scale(0.75, 0.12, 0.2).translate(-1.6, 0.42, 1.45), plain(r.accent || '#e76f51'));
+    canoe.rotation.y = 0.4;
+    g.add(canoe);
+    // the cabin at the back right, a deck facing the lake
+    const body = new THREE.Mesh(k.box(3.0, H, 2.6, 0).translate(0.7, 0, -0.9), wood);
+    g.add(body);
+    for (let y = 0.3; y < H; y += 0.35) g.add(new THREE.Mesh(k.box(3.04, 0.04, 2.64, y).translate(0.7, 0, -0.9), plain(new THREE.Color(r.wall).multiplyScalar(0.8).getStyle())));
+    const cab = new THREE.Group();
+    k.roof(cab, 'gable', r.roofColor, 3.4, 3.0, H);
+    cab.position.set(0.7, 0, -0.9);
+    g.add(cab);
+    // a big lit window, side windows on every floor, door and deck
+    g.add(new THREE.Mesh(k.box(1.3, Math.min(1.6, H - 0.9), 0.06, 0.7).translate(1.2, 0, 0.41), glowing('#ffe7a8', 0.25, 1.9)));
+    for (let y = 0.7; y < H - 0.6; y += k.FLOOR_H) g.add(new THREE.Mesh(k.box(0.06, 0.6, 0.6, y).translate(2.21, 0, -0.9), glowing('#ffe7a8', 0.2, 1.8)));
+    g.add(k.door(r.door, 0.41, 0.8, 0).translateX(-0.25));
+    g.add(new THREE.Mesh(k.box(3.4, 0.12, 1.0, 0.15).translate(0.7, 0, 0.9), plain('#a47148')));
+    for (const x of [-0.9, 2.3]) g.add(new THREE.Mesh(k.box(0.06, 0.55, 0.06, 0.27).translate(x, 0, 1.35), trim));
+    g.add(new THREE.Mesh(k.box(3.3, 0.05, 0.05, 0.8).translate(0.7, 0, 1.35), trim));
+    // chimney
+    g.add(new THREE.Mesh(k.box(0.4, 1.2, 0.4, H + 0.2).translate(1.8, 0, -1.6), plain('#9a8f84', { flatShading: true })));
+    return { body, top: H + 1.4, eave: H, front: 1.4, width: 4.6 };
+  },
 };

@@ -7,6 +7,9 @@
 // Optional query params: site=<url shown at the end>, date=YYYY-MM-DD
 
 import { createWorld, THREE, hashId, FLOOR_H } from './world.js';
+import { LineSegments2 } from 'three/addons/lines/LineSegments2.js';
+import { LineSegmentsGeometry } from 'three/addons/lines/LineSegmentsGeometry.js';
+import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 
 const W = 1080, H = 1920, FPS = 30;
 const params = new URLSearchParams(location.search);
@@ -130,22 +133,57 @@ function upgradeShot(s, lt) {
   // the upgrade's spot in world space, and the direction from the house towards it
   const wx = p.x + lx * Math.cos(ry) + lz * Math.sin(ry);
   const wz = p.z - lx * Math.sin(ry) + lz * Math.cos(ry);
-  const target = new THREE.Vector3((p.x + wx) / 2, Math.max(1.5, h * 0.35), (p.z + wz) / 2);
-  const dist = Math.max(15, h * 1.2 + 9);
-  s.az ??= clearestView(target, ry + Math.atan2(lx, lz) - 0.35, target.y, dist, 34, e.outer, 6);
-  return orbit(target, dist, s.az + (lt / s.dur) * 0.3, 34);
+  // Aim at the upgrade itself (a roof sign: at its height). Try camera spots around its preferred side (an upgrade can
+  // set userData.view = yaw from the house's front, e.g. a portal's face; otherwise: from the house towards it) and
+  // keep the first one with a clear line of sight to it, checked with real rays against the buildings around.
+  const ty = obj && obj.position.y > 1 ? obj.position.y + 1.4 : 1.1;
+  const target = new THREE.Vector3(wx, ty, wz);
+  if (!s.shot) {
+    const pref = ry + (obj?.userData.view ?? Math.atan2(lx, lz));
+    const near = ty > 2 ? Math.max(15, h * 0.5 + 10) : 12;
+    s.shot = clearShot(target, pref, [near, near * 0.75], ty > 2 ? [26, 40] : [34, 48, 62], obj) || { az: pref, dist: near, el: 40 };
+  }
+  return orbit(target, s.shot.dist, s.shot.az + (lt / s.dur) * 0.25, s.shot.el);
+}
+
+/** The first camera spot (around `pref`, then further round) that can see `target` without a building in between. */
+const ray = new THREE.Raycaster();
+function clearShot(target, pref, dists, elevations, ignore) {
+  world.scene.updateMatrixWorld(true);
+  const skip = new Set();
+  ignore?.traverse((o) => skip.add(o));
+  const solid = [];
+  world.scene.traverse((o) => { if ((o.isMesh || o.isInstancedMesh) && !skip.has(o) && o.visible !== false && !o.material?.transparent) solid.push(o); });
+  for (const d of [0, 0.35, -0.35, 0.7, -0.7, 1.1, -1.1, 1.6, -1.6, 2.2, -2.2, Math.PI]) {
+    for (const el of elevations) {
+      for (const dist of dists) {
+        const cam = orbit(target, dist, pref + d, el).pos;
+        const dir = cam.clone().sub(target);
+        const len = dir.length();
+        ray.set(target.clone().addScaledVector(dir.normalize(), 0.6), dir);
+        ray.far = len - 0.6;
+        // look along the whole view, not just the centre line: three rays a little apart
+        const side = new THREE.Vector3(-dir.z, 0, dir.x).normalize().multiplyScalar(0.7);
+        const blocked = [0, 1, -1].some((k) => {
+          ray.set(target.clone().addScaledVector(side, k).addScaledVector(dir, 0.6), dir);
+          return ray.intersectObjects(solid, false).some((hit) => hit.object.isMesh || hit.object.isInstancedMesh);
+        });
+        if (!blocked) return { az: pref + d, dist, el };
+      }
+    }
+  }
+  return null;
 }
 
 // ---------- Timeline ----------
 // The Short tells the day like a story:
 //   1. hook: the best request of the day, told by the anchor as a little story (their comment on the card), then it gets built
 //   2. "Day N of adding every commenter…" over the whole city
-//   3. more requests (the set-up → the building rises with a thud and dust → the pay-off line)
+//   3. more requests (the set-up → the building is drawn as a blueprint and filled in → the pay-off line)
 //   4. a fast montage of everything else that is new, then newcomers, growers, the leaderboard
 //   5. the outro at night, and a last camera glide back to the opening shot, so the Short loops
 // Captions light up word by word with the voice; whooshes, thuds, pops and dings go on an effects track.
 const MAX_STORIES = 3; // full set-up → build stories (the rest go into the fast montage)
-const RISE = 1.1; // seconds a building takes to rise
 
 /** Word timings for a spoken line: longer words and pauses after punctuation take longer. */
 function wordTimes(text, start, len) {
@@ -176,50 +214,100 @@ function chunks(times) {
   return out;
 }
 
-/** Dust bursts at the foot of a building as it lands. */
-function createDust(scene) {
-  const geo = new THREE.IcosahedronGeometry(1, 0);
-  const bursts = [];
-  return {
-    add(pos, at, size = 1) {
-      const g = new THREE.Group();
-      const puffs = [];
-      for (let i = 0; i < 16; i++) {
-        const m = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ color: '#efe6d6', transparent: true, opacity: 0.8, depthWrite: false }));
-        const a = (i / 16) * Math.PI * 2 + (hashId(`${at}${i}`) % 100) / 200;
-        puffs.push({ m, a, r: 0.8 + ((i * 7) % 5) * 0.15, up: 0.4 + ((i * 3) % 4) * 0.25 });
-        g.add(m);
-      }
-      g.position.copy(pos).setY(0.2);
-      g.visible = false;
-      scene.add(g);
-      bursts.push({ g, puffs, at, size });
-    },
-    update(time) {
-      for (const b of bursts) {
-        const age = time - b.at;
-        const L = 1.5;
-        b.g.visible = age > 0 && age < L;
-        if (!b.g.visible) continue;
-        const k = age / L;
-        for (const p of b.puffs) {
-          const r = (2.2 + 3.6 * easeOut(k)) * p.r * b.size;
-          p.m.position.set(Math.cos(p.a) * r, (p.up * 1.6 * Math.sin(Math.PI * Math.min(1, k * 1.3)) + 0.2) * b.size, Math.sin(p.a) * r);
-          p.m.scale.setScalar((0.5 + 0.9 * easeOut(k)) * b.size);
-          p.m.material.opacity = 0.8 * (1 - k);
-        }
-      }
-    },
+/**
+ * Blueprint to real: a glowing blue outline of the new building draws itself over a blueprint grid, then the real
+ * building fills in from the ground up (the outline stays above the fill line), and the outline and grid fade away.
+ * Works on any object (a house's outer group, a landmark): clipped copies of its materials during the reveal only.
+ */
+const BLUEPRINT = { draw: 0.9, fill: 1.1, fade: 0.35 }; // full reveal (a dream house, a landmark)
+const BLUEPRINT_QUICK = { draw: 0.25, fill: 0.4, fade: 0.15 }; // in the fast montage
+function createBlueprint(world) {
+  world.renderer.localClippingEnabled = true;
+  const BLUE = '#2f9bff';
+  const live = new Map(); // root object -> state
+  const strip = (root) => {
+    const st = live.get(root);
+    if (!st) return;
+    for (const m of st.meshes) if (m.mesh.material === m.clone) m.mesh.material = m.orig;
+    for (const x of st.extras) { x.removeFromParent(); if (x.isLineSegments2) x.geometry.dispose(); }
+    live.delete(root);
+  };
+  const prepare = (root, key) => {
+    root.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(root);
+    const st = { key, meshes: [], extras: [], lines: [], total: 0, y0: box.min.y, y1: box.max.y };
+    st.below = new THREE.Plane(new THREE.Vector3(0, -1, 0), st.y0 - 1); // keeps y <= constant: the real building
+    st.above = new THREE.Plane(new THREE.Vector3(0, 1, 0), -st.y0); // keeps y >= -constant: the blueprint still to fill
+    // thick glowing outline (fat lines, 5 px) and a see-through blue "hologram" of every part
+    st.lineMat = new LineMaterial({ color: BLUE, linewidth: 5, transparent: true, opacity: 1, clippingPlanes: [st.above], depthTest: true });
+    st.lineMat.clipping = true;
+    st.lineMat.resolution.set(world.renderer.domElement.width, world.renderer.domElement.height);
+    st.ghostMat = new THREE.MeshBasicMaterial({ color: '#4fb3ff', transparent: true, opacity: 0, depthWrite: false, clippingPlanes: [st.above], side: THREE.DoubleSide });
+    const parts = [];
+    root.traverse((o) => { if (o.isMesh && !o.isInstancedMesh && !o.userData.bp && o.visible) parts.push(o); });
+    for (const o of parts) {
+      const clip = (m) => { const c = m.clone(); c.clippingPlanes = [st.below]; return c; };
+      const orig = o.material;
+      const clone = Array.isArray(orig) ? orig.map(clip) : clip(orig);
+      o.material = clone;
+      st.meshes.push({ mesh: o, orig, clone });
+      const ghost = new THREE.Mesh(o.geometry, st.ghostMat);
+      ghost.userData.bp = true;
+      o.add(ghost);
+      st.extras.push(ghost);
+      const g = new LineSegmentsGeometry().fromEdgesGeometry(new THREE.EdgesGeometry(o.geometry, 20));
+      const line = new LineSegments2(g, st.lineMat);
+      line.userData.bp = true;
+      line.renderOrder = 3;
+      o.add(line);
+      st.extras.push(line);
+      st.lines.push(line);
+      line.userData.n = g.instanceCount ?? g.attributes.instanceStart.count;
+      st.total += line.userData.n;
+    }
+    // a blueprint sheet with a grid under the building (just above the lawn)
+    const size = Math.max(box.max.x - box.min.x, box.max.z - box.min.z) + 1.2;
+    const cx = (box.min.x + box.max.x) / 2, cz = (box.min.z + box.max.z) / 2;
+    st.sheetMat = new THREE.MeshBasicMaterial({ color: '#1f6fd1', transparent: true, opacity: 0, depthWrite: false });
+    const sheet = new THREE.Mesh(new THREE.PlaneGeometry(size, size).rotateX(-Math.PI / 2), st.sheetMat);
+    sheet.position.set(cx, 0.42, cz);
+    st.grid = new THREE.GridHelper(size, Math.max(8, Math.round(size * 1.6)), '#ffffff', '#bfe6ff');
+    st.grid.material.transparent = true;
+    st.grid.material.depthWrite = false;
+    st.grid.position.set(cx, 0.44, cz);
+    world.scene.add(sheet, st.grid);
+    st.extras.push(sheet, st.grid);
+    live.set(root, st);
+    return st;
+  };
+  /** Shows `root` as it is at `t` seconds into its reveal (any order of frames works: scrubbing the preview too). */
+  return (root, key, t, T = BLUEPRINT) => {
+    const end = T.draw + T.fill + T.fade;
+    if (t < 0 || t >= end) { strip(root); return; }
+    let st = live.get(root);
+    if (st && st.key !== key) { strip(root); st = null; }
+    st ||= prepare(root, key);
+    // the outline draws itself, part after part, and the hologram glows up with it
+    const kd = clamp01(t / T.draw);
+    let budget = Math.floor(st.total * easeOut(kd));
+    for (const l of st.lines) {
+      const take = Math.min(l.userData.n, budget);
+      l.geometry.instanceCount = take;
+      budget -= take;
+    }
+    // the real building fills in from the ground up
+    const kf = clamp01((t - T.draw) / T.fill);
+    const y = kf <= 0 ? st.y0 - 1 : st.y0 + (st.y1 - st.y0 + 0.3) * easeInOut(kf);
+    st.below.constant = y;
+    st.above.constant = -y;
+    const fadeK = clamp01((t - T.draw - T.fill) / T.fade);
+    const on = clamp01(t / 0.25) * (1 - fadeK);
+    st.lineMat.opacity = 1 - fadeK;
+    st.ghostMat.opacity = 0.5 * easeOut(kd) * (1 - fadeK);
+    st.sheetMat.opacity = 0.45 * on;
+    st.grid.material.opacity = 0.85 * on;
   };
 }
-/** Height factor while rising: the building stacks up in four quick steps, then settles with a little bounce. */
-function riseY(k) {
-  if (k >= 1) return 1;
-  const q = k * 4, base = Math.floor(q);
-  const y = (base + easeOut(Math.min(1, (q - base) * 1.5))) / 4;
-  return Math.max(0.001, y);
-}
-const settle = (age) => (age > 0 && age < 0.35 ? 1 + 0.07 * Math.sin((age / 0.35) * Math.PI) : 1);
 
 function buildTimeline(city, ch) {
   const scenes = [];
@@ -235,7 +323,8 @@ function buildTimeline(city, ch) {
     t += dur;
     return s;
   };
-  const say = (name) => name.replace(/^@/, '');
+  // spoken names: "AverageHuman67" -> "AverageHuman", "GranttheGreat-g4d" -> "GranttheGreat" (handle tags dropped)
+  const say = (name) => name.replace(/^@/, '').replace(/([-_]\p{L}{0,2}\d[\p{L}\d]{0,3})+$/u, '').replace(/(?<=\p{L})\d+$/u, '') || name.replace(/^@/, '');
   const pick = (arr, i) => arr[i % arr.length];
   const art = (w) => (/^[aeiou]/i.test(w) ? 'an' : 'a');
 
@@ -263,6 +352,11 @@ function buildTimeline(city, ch) {
     'capybara-pen': (n) => [`${n} now has a whole capybara pen in the yard!`, 'Got a capybara pen!'],
     'xmas-hats': (n) => [`${n}'s chickens are ready for Christmas!`, 'Got Christmas hats for the chickens!'],
     'mango-tree': (n) => [`${n} has a mango tree full of mangoes!`, 'Got a mango tree!'],
+    'milk-portal': (n) => [`It's real. ${n} now has a portal to the milk realm!`, 'Got a portal to the milk realm!'],
+    'rooftop-sign': (n) => [`Now everyone knows whose house this is: ${n} got a giant sign on the roof!`, 'Got a giant rooftop sign!'],
+    garden: (n) => [`${n} has a garden now: flowers, cabbages and tomatoes.`, 'Got a garden!'],
+    golf: (n) => [`Fore! ${n} has a putting green and a golf cart.`, 'Got a golf green!'],
+    'pickup-trucks': (n) => [`Two big trucks are parked at ${n}'s place now.`, 'Got two pickup trucks!'],
     'big-cats': (n) => [`${n} adopted a lion and a tiger!`, 'Got a lion and a tiger!'],
     trophy: (n) => [`${n} won the weekly challenge! A golden trophy now stands in the front yard.`, 'Won the weekly challenge trophy!'],
   };
@@ -271,18 +365,22 @@ function buildTimeline(city, ch) {
 
   // ---- what happened today ----
   const newcomers = ch.newResidents.map((n) => ({ ...n, entry: world.entries.get(n.id) })).filter((n) => n.entry);
-  const featuredNew = newcomers.slice(-MAX_FEATURED_NEW).reverse();
-  const montageNew = newcomers.filter((n) => !featuredNew.includes(n));
-  const featuredGrow = ch.firstReport ? [] : ch.grew.slice(0, MAX_FEATURED_GROW).map((g) => ({ ...g, entry: world.entries.get(g.id) })).filter((g) => g.entry);
   const specials = (ch.newSpecials || []).filter((s) =>
     s.kind === 'landmark' ? world.landmarks.has(s.id)
       : s.kind === 'house' ? world.entries.get(s.id)?.recipe
         : world.entries.get(s.id)?.upgradeObjects?.[s.type]);
   // best stories first: dream houses, then landmarks, then upgrades; one with a written set-up line beats one without
-  const rank = (s) => ({ house: 0, landmark: 1, upgrade: 2 })[s.kind] * 2 + (s.story ? 0 : 1);
-  const stories = [...specials].sort((a, b) => rank(a) - rank(b));
-  const featured = stories.slice(0, MAX_STORIES);
+  // the daily session can pick the order itself: top 1 = the hook, top 2, 3 next
+  const rank = (s) => (s.top ? s.top - 100 : ({ house: 0, landmark: 1, upgrade: 2 })[s.kind] * 2 + (s.story ? 0 : 1));
+  const trophy = specials.filter((s) => s.kind === 'upgrade' && s.type === 'trophy');
+  const stories = [...specials].filter((s) => !trophy.includes(s)).sort((a, b) => rank(a) - rank(b));
+  const featured = [...stories.slice(0, MAX_STORIES), ...trophy];
   const rapid = stories.slice(MAX_STORIES);
+  // a busy day keeps the rest short: fewer separate welcomes and growers
+  const busy = featured.length >= 3;
+  const featuredNew = newcomers.slice(-(busy ? 2 : MAX_FEATURED_NEW)).reverse();
+  const montageNew = newcomers.filter((n) => !featuredNew.includes(n));
+  const featuredGrow = ch.firstReport ? [] : ch.grew.slice(0, busy ? 1 : MAX_FEATURED_GROW).map((g) => ({ ...g, entry: world.entries.get(g.id) })).filter((g) => g.entry);
 
   const nNew = ch.newResidents.length;
   const introLine = ch.firstReport
@@ -300,7 +398,7 @@ function buildTimeline(city, ch) {
   const story = (sp, i, hook) => {
     const kind = sp.kind;
     const entry = kind === 'landmark' ? null : world.entries.get(sp.id);
-    const asked = hook || !!sp.story || !!sp.comment;
+    const asked = (hook || !!sp.story || !!sp.comment) && sp.type !== 'trophy';
     if (asked) add('ask', 2.0, { sp, entry, hook }, { text: setUp(sp, i), at: 0.25 });
     let text;
     if (kind === 'house') {
@@ -319,15 +417,16 @@ function buildTimeline(city, ch) {
   add('intro', 2.8, {}, { text: introLine, at: 0.3 });
   featured.slice(1).forEach((sp, i) => story(sp, i + 1, false));
   if (rapid.length) {
-    const items = rapid.map((sp) => ({
+    const items = rapid.slice(0, 10).map((sp) => ({
       sp,
       label: sp.kind === 'house' ? sp.title : sp.kind === 'landmark' ? sp.name : upNoun(sp).replace(/^(a|an) /, ''),
       who: sp.kind === 'landmark' ? sp.requestedBy || '' : sp.name,
       entry: sp.kind === 'landmark' ? null : world.entries.get(sp.id),
     }));
     const names = items.map((x) => (x.sp.kind === 'upgrade' ? upNoun(x.sp) : `${art(x.label)} ${x.label}`));
-    const list = names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}` : names[0];
-    add('rapid', Math.max(2.4, items.length * 1.1), { items }, { text: `Also new today: ${list}.`, at: 0.2 });
+    const more = rapid.length - 3;
+    const list = rapid.length <= 4 ? (names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}` : names[0]) : `${names.slice(0, 3).join(', ')}, and ${more} more`;
+    add('rapid', Math.max(2.4, items.length * 0.8), { items }, { text: `Also new today: ${list}.`, at: 0.2 });
   }
   if (!city.residents.length) add('empty', 5.5, {}, { text: 'The city is empty. Nobody lives here yet. Comment below, and I will build your house tomorrow!', at: 0.4 });
   featuredNew.forEach((n, i) => add('newcomer', 3.2, { n }, {
@@ -370,8 +469,8 @@ function buildTimeline(city, ch) {
 
   // ---- when does each thing appear? (and the sounds that go with it) ----
   const sfx = [];
-  const dust = createDust(world.scene);
-  const rise = new Map(); // object -> { at, kind }
+  const blueprint = createBlueprint(world);
+  const rise = new Map(); // object -> { at, kind, quick }
   for (const s of scenes) {
     if (s.type === 'house') rise.set(s.entry, { at: s.start + 0.3, kind: 'house' });
     if (s.type === 'landmark') rise.set(world.landmarks.get(s.sp.id), { at: s.start + 0.3, kind: 'landmark' });
@@ -380,8 +479,8 @@ function buildTimeline(city, ch) {
       s.slot = s.dur / s.items.length;
       s.items.forEach((x, j) => {
         const at = s.start + j * s.slot + 0.12;
-        if (x.sp.kind === 'house') rise.set(x.entry, { at, kind: 'house' });
-        else if (x.sp.kind === 'landmark') rise.set(world.landmarks.get(x.sp.id), { at, kind: 'landmark' });
+        if (x.sp.kind === 'house') rise.set(x.entry, { at, kind: 'house', quick: true });
+        else if (x.sp.kind === 'landmark') rise.set(world.landmarks.get(x.sp.id), { at, kind: 'landmark', quick: true });
         else rise.set(x.entry.upgradeObjects[x.sp.type], { at, kind: 'upgrade' });
         if (j) sfx.push({ t: s.start + j * s.slot - 0.12, kind: 'whoosh' });
       });
@@ -396,14 +495,14 @@ function buildTimeline(city, ch) {
   }
   for (const [obj, r] of rise) {
     if (!obj) continue;
-    const land = r.at + (r.kind === 'upgrade' || r.kind === 'montage' ? 0.45 : RISE);
+    r.T = r.quick ? BLUEPRINT_QUICK : BLUEPRINT;
+    const land = r.at + (r.kind === 'upgrade' || r.kind === 'montage' ? 0.45 : r.T.draw + r.T.fill);
     r.land = land;
     if (r.kind === 'upgrade') { sfx.push({ t: r.at + 0.05, kind: 'pop' }); sfx.push({ t: land, kind: 'sparkle' }); continue; }
     if (r.kind === 'montage') { sfx.push({ t: r.at, kind: 'pop' }); continue; }
-    const pos = obj.position || obj.outer.position;
-    const big = r.kind === 'landmark' ? (obj.size === 'L' ? 2.2 : 1.5) : 1;
-    dust.add(obj.outer ? obj.outer.position : pos, land - 0.05, big);
-    sfx.push({ t: land - 0.08, kind: 'thud' }, { t: land + 0.1, kind: 'sparkle' });
+    // the outline drawing has its own little sound, the finished building a sparkle
+    if (!r.quick) sfx.push({ t: r.at, kind: 'build' });
+    sfx.push({ t: land - 0.05, kind: 'sparkle' });
   }
   const growFrom = new Map(featuredGrow.map((g) => [g.id, g]));
   const growScene = new Map(scenes.filter((s) => s.type === 'grow').map((s) => [s.g.id, s]));
@@ -597,6 +696,9 @@ function buildTimeline(city, ch) {
         span.textContent = w.w.replace(/^@/, '');
         $('caption').append(span);
       });
+      // one very long word (a long name) would run off the screen: smaller letters for that chunk
+      const longest = Math.max(...c.map((w) => w.w.length));
+      $('caption').style.fontSize = longest > 16 ? '58px' : longest > 12 ? '70px' : '';
     }
     const spans = $('caption').querySelectorAll('span');
     c.forEach((w, j) => {
@@ -613,17 +715,17 @@ function buildTimeline(city, ch) {
     const s = scenes[i];
     const lt = time - s.start;
 
-    // Things that rise: hidden before, then they stack up and land with a bounce.
+    // New buildings: blueprint to real. Upgrades and the newcomers' montage still pop in.
     for (const [obj, r] of rise) {
       if (!obj) continue;
       if (r.kind === 'house') {
-        // the old house sinks away, the dream house rises in its place
+        // the old house sinks away, then the dream house is drawn as a blueprint and filled in
         const e = obj;
-        if (time < r.at - 0.25) { world.setCustom(e, false); e.outer.scale.set(1, 1, 1); continue; }
-        if (time < r.at) { world.setCustom(e, false); e.outer.scale.set(1, Math.max(0.001, (r.at - time) / 0.25), 1); continue; }
+        if (time < r.at - 0.25) { world.setCustom(e, false); e.outer.scale.set(1, 1, 1); blueprint(e.outer, '', -1); continue; }
+        if (time < r.at) { world.setCustom(e, false); e.outer.scale.set(1, Math.max(0.001, (r.at - time) / 0.25), 1); blueprint(e.outer, '', -1); continue; }
         world.setCustom(e, true);
-        const k = clamp01((time - r.at) / RISE);
-        e.outer.scale.set(1, riseY(k) * settle(time - r.land), 1);
+        e.outer.scale.set(1, 1, 1);
+        blueprint(e.outer, `${e.shownKey}`, time - r.at, r.T);
         continue;
       }
       const outer = obj.outer || obj;
@@ -636,11 +738,10 @@ function buildTimeline(city, ch) {
         const k = clamp01((time - r.at) / 0.6);
         outer.scale.set(0.85 + 0.15 * easeOut(k), Math.max(0.001, easeOutBack(k)), 0.85 + 0.15 * easeOut(k));
       } else {
-        const k = clamp01((time - r.at) / RISE);
-        outer.scale.set(1, riseY(k) * settle(time - r.land), 1);
+        outer.scale.set(1, 1, 1);
+        blueprint(outer, `${obj.shownKey ?? 'lm'}`, time - r.at, r.T);
       }
     }
-    dust.update(time);
     // Landmark signs only in their own scene (a city full of signs is unreadable).
     {
       const showing = new Set(s.type === 'landmark' ? [s.sp.id] : s.type === 'rapid' ? s.items.filter((x) => x.sp.kind === 'landmark').map((x) => x.sp.id) : []);

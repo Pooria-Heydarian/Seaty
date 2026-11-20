@@ -33,6 +33,11 @@ export const UPGRADE_TYPES = {
   'xmas-hats': 'Christmas hats on the chickens (needs the chicken coop)',
   'big-cats': 'a pet lion and tiger in the back yard',
   'mango-tree': 'a mango tree with ripe mangoes in the back yard',
+  'milk-portal': 'a swirling portal to the milk realm in the back yard (with a milk carton)',
+  'rooftop-sign': 'a big lit sign on the roof with their letters (npm run special -- upgrade <who> rooftop-sign --text "P.B.")',
+  garden: 'a garden beside the house: raised flower beds, vegetables and a watering can',
+  golf: 'a putting green with a flag, a sand bunker and a golf cart in the back yard',
+  'pickup-trucks': 'two big pickup trucks parked beside the house',
 };
 
 /** Landmarks with their own 3D model. Any other landmark is built as a generic gold-domed hall with a name sign. */
@@ -61,6 +66,7 @@ export const LANDMARK_TYPES = {
   'black-hole-reactor': 'a sci-fi reactor: glass dome over a black hole with a glowing disk, viewing gallery',
   'hot-dog-stand': 'a hot dog cart with a parasol and a giant hot dog on top',
   'baguette-statue': 'a giant statue of a girl with red drill pigtails holding up a baguette',
+  'samurai-statue': 'a samurai statue in dark armour with a katana, stone lanterns and a cherry tree (--color armour)',
   boutique: 'a clothing boutique with mannequins in dresses and a giant gold hanger sign',
   dojo: 'a Japanese martial-arts dojo with a two-tier roof, training dummy and bamboo',
   cinema: 'a movie theater with a glowing marquee, film reel and popcorn bucket',
@@ -118,7 +124,7 @@ const SHAPE_STYLE = {
   cottage: 'old', medieval: 'old', 'japanese-cafe': 'old',
   mushroom: 'fantasy', rocket: 'fantasy', igloo: 'fantasy', treehouse: 'fantasy', pyramid: 'fantasy', lighthouse: 'fantasy',
   'gem-head': 'fantasy', 'chess-knight': 'fantasy', bunker: 'fantasy', caravan: 'fantasy',
-  'white-house': 'villa', rainbow: 'fantasy', 'space-station': 'fantasy', 'glass-spire': 'tower', donut: 'fantasy', airplane: 'fantasy',
+  'white-house': 'villa', rainbow: 'fantasy', 'space-station': 'fantasy', 'glass-spire': 'tower', donut: 'fantasy', airplane: 'fantasy', 'capybara-head': 'fantasy', roach: 'fantasy', 'lake-house': 'old',
 };
 /** The neighbourhood of a house recipe (no recipe = classic). A classic shape with a flat roof counts as modern (Tower Row). */
 export function houseStyle(recipe) {
@@ -140,7 +146,7 @@ const LANDMARK_PLAN = {
   'jewelry-store': ['main', 'M'], 'pet-store': ['main', 'M'], 'mma-gym': ['main', 'M'], skyscraper: ['main', 'M'], boutique: ['main', 'M'], cinema: ['main', 'M'], 'construction-site': ['main', 'M'], 'game-store': ['main', 'M'], motel: ['main', 'M'], gym: ['main', 'M'], 'car-show': ['main', 'M'], mall: ['main', 'M'],
   bakery: ['local', 'S'], 'corner-shop': ['local', 'S'], market: ['local', 'S'], cafe: ['local', 'S'], 'hot-dog-stand': ['local', 'S'], pizzeria: ['local', 'S'], dojo: ['local', 'S'], pharmacy: ['local', 'S'], florist: ['local', 'S'],
   stadium: ['belt', 'L'], ballpark: ['belt', 'L'], 'theme-park': ['belt', 'L'], 'race-track': ['belt', 'L'], circus: ['belt', 'M'], aquarium: ['belt', 'M'],
-  park: ['belt', 'L'], farm: ['belt', 'L'], zoo: ['belt', 'L'], 'lemon-farm': ['belt', 'L'], 'baguette-statue': ['belt', 'M'], 'capybara-adoption': ['belt', 'M'], castle: ['belt', 'L'], statue: ['belt', 'M'],
+  park: ['belt', 'L'], farm: ['belt', 'L'], zoo: ['belt', 'L'], 'lemon-farm': ['belt', 'L'], 'baguette-statue': ['belt', 'M'], 'samurai-statue': ['belt', 'M'], 'capybara-adoption': ['belt', 'M'], castle: ['belt', 'L'], statue: ['belt', 'M'],
   'power-plant': ['outskirts', 'L'], 'spaghetti-factory': ['outskirts', 'L'], 'watermelon-factory': ['outskirts', 'L'], 'toy-factory': ['outskirts', 'L'],
   airport: ['outskirts', 'L'], 'space-center': ['outskirts', 'L'], 'black-hole-reactor': ['outskirts', 'L'], dam: ['outskirts', 'L'], 'bus-depot': ['outskirts', 'M'],
   rail: ['station', 'L'], railway: ['station', 'L'],
@@ -185,6 +191,9 @@ export const HOUSE_SHAPES = {
   'glass-spire': 'a sleek tapering glass skyscraper with a tall lit spire (wall = glass, accent = spire light)',
   donut: 'a giant donut house standing on its edge with icing and sprinkles (wall = dough, roofColor = icing)',
   airplane: 'an airplane house: fuselage with windows, wings, engines and tail (wall = body, accent = stripe and tail)',
+  'capybara-head': 'a giant capybara head with an orange on top, a capybara mailbox, plushie and hedge (wall = fur, roofColor = snout, accent = orange)',
+  roach: 'a glossy beetle / cockroach-shaped house on six legs with antennae and round windows (wall = shell, roofColor = head and legs, accent = window light)',
+  'lake-house': 'a wooden lake cabin with a deck, its own little lake, a dock and a canoe (wall = wood, accent = canoe)',
   'japanese-cafe': 'a Japanese house / café: paper screens, tiled roofs with upturned corners (one tier per floor), noren curtain, red lanterns (wall = wood, accent = curtain)',
 };
 

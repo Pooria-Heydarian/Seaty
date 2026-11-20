@@ -553,6 +553,43 @@
       "requestedById": "UCICnlf3KRLmhydWXl38QXUQ",
       "requestedIn": "UgwzQtWET6Dzq_HZid54AaABAg",
       "added": "2026-11-18"
+    },
+    {
+      "id": "samurai-statue",
+      "type": "samurai-statue",
+      "kind": "samurai-statue",
+      "name": "Samurai Statue",
+      "requestedBy": "@Get_jin_in_use",
+      "requestedById": "UCVNoIdSeaoW2eEnaZ61pAEQ",
+      "requestedIn": "Ugxtp1bRmByDiCsiC1V4AaABAg",
+      "story": "Jin already has a dojo. Now Jin wanted a hero to guard the city.",
+      "added": "2026-11-20"
+    },
+    {
+      "id": "art-school",
+      "type": "generic",
+      "kind": "art-school",
+      "name": "Art School",
+      "requestedBy": "@ChristinneeeXD",
+      "requestedById": "UCX6wVTHYXPiW7mS_UD_leoQ",
+      "color": "#ffd6e8",
+      "accent": "#7a5cff",
+      "requestedIn": "UgwGulji_OQNIzpfAg94AaABAg",
+      "story": "And Christine had one more idea, for every artist in town.",
+      "added": "2026-11-20"
+    },
+    {
+      "id": "soda-factory",
+      "type": "generic",
+      "kind": "soda-factory",
+      "name": "Soda Factory",
+      "requestedBy": "@Eastonfortniteeee",
+      "requestedById": "UCZYD9tjWBaJgrwaKK6DXp7g",
+      "color": "#d62828",
+      "accent": "#ffffff",
+      "requestedIn": "UgyKFV1Wq-mBYvGkQ2B4AaABAg",
+      "story": "Easton thinks the city is thirsty. Very thirsty.",
+      "added": "2026-11-20"
     }
   ],
   "upgrades": [
@@ -877,6 +914,69 @@
       "type": "capybara",
       "requestedIn": "UgzNmEtn9-I4yi6Lfbd4AaABAg",
       "added": "2026-11-19"
+    },
+    {
+      "resident": "UCpD3u7o7qCaDE5Hui4Xo1bQ",
+      "name": "@prabhasishbhattacharya9226",
+      "type": "trophy",
+      "requestedIn": "Ugzlci3F5PGy3vPdgvl4AaABAg",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UCTXNzVkHrIJh82Qx_2UqO2A",
+      "name": "@Liam-n8l8x",
+      "type": "garage",
+      "requestedIn": "UgyX4kFyKfvcN_pSvu14AaABAg",
+      "story": "Liam is new in town, and Liam already knows what belongs in the driveway.",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UCSJL3D3GkGUZ_d3FmorAecQ",
+      "name": "@samuel_pagaimo",
+      "type": "pool",
+      "requestedIn": "Ugy32BO7Tb5UzDgJ2Pt4AaABAg",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UCSJL3D3GkGUZ_d3FmorAecQ",
+      "name": "@samuel_pagaimo",
+      "type": "golf",
+      "requestedIn": "Ugy32BO7Tb5UzDgJ2Pt4AaABAg",
+      "story": "And no presidential home is complete without a little sport.",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UCKgB0kce7yRwStaUsMl_nZQ",
+      "name": "@AverageHuman67",
+      "type": "milk-portal",
+      "requestedIn": "UgzffEpL59F9hCBHhbF4AaABAg",
+      "story": "Then AverageHuman asked for something nobody has ever asked for. A way into the milk realm.",
+      "added": "2026-11-20",
+      "top": 3
+    },
+    {
+      "resident": "UCpD3u7o7qCaDE5Hui4Xo1bQ",
+      "name": "@prabhasishbhattacharya9226",
+      "type": "rooftop-sign",
+      "text": "P.B.",
+      "requestedIn": "UgyOwgSvwydZDDOwgPN4AaABAg",
+      "story": "Prabhasish wants the whole city to know whose house this is.",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UCUh2iTRVNp77G29R_R6sM4A",
+      "name": "@TwoToThePowerOf999ImSmart",
+      "type": "garden",
+      "requestedIn": "UgxSL9xPZoeVbWCDIW94AaABAg",
+      "story": "Two To The Power had a quiet wish for the space next to the house.",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UCE9tGi0eAKdpRFM6ZAa7_lg",
+      "name": "@Yattster",
+      "type": "pickup-trucks",
+      "requestedIn": "UgwoCVciAi5JJYqiXmx4AaABAg",
+      "added": "2026-11-20"
     }
   ],
   "houses": [
@@ -1327,22 +1427,6 @@
       "added": "2026-11-18"
     },
     {
-      "resident": "UCKgB0kce7yRwStaUsMl_nZQ",
-      "name": "@AverageHuman67",
-      "title": "Rainbow House",
-      "recipe": {
-        "shape": "rainbow",
-        "roof": "pointed",
-        "wall": "#ffffff",
-        "roofColor": "#ffffff",
-        "door": "#ffffff",
-        "accent": "#ff8c42",
-        "extras": []
-      },
-      "requestedIn": "UgzVK1yl_h539CWeQqt4AaABAg",
-      "added": "2026-11-18"
-    },
-    {
       "resident": "UCJKwj1uw3QlueW6K3N-U2gw",
       "name": "@Staypositivels",
       "title": "White Sky Tower",
@@ -1460,6 +1544,308 @@
       },
       "requestedIn": "UgzNmEtn9-I4yi6Lfbd4AaABAg",
       "added": "2026-11-19"
+    },
+    {
+      "resident": "UCKgB0kce7yRwStaUsMl_nZQ",
+      "name": "@AverageHuman67",
+      "title": "Grand Mansion",
+      "recipe": {
+        "shape": "mansion",
+        "roof": "pointed",
+        "wall": "#fdf6ec",
+        "roofColor": "#6a4c93",
+        "door": "#3b2a1f",
+        "accent": "#ffb703",
+        "extras": [
+          "fountain",
+          "flowers",
+          "fence",
+          "flag"
+        ]
+      },
+      "requestedIn": "UgwzjweHd5DL2Ccmphp4AaABAg",
+      "story": "AverageHuman is number one in the whole city. And number one wanted a home to match.",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UCmGjZA2seKD2hqGXblnXFDw",
+      "name": "@ojalnemade",
+      "title": "Pink Cottage",
+      "recipe": {
+        "shape": "cottage",
+        "roof": "gable",
+        "wall": "#ffc2d9",
+        "roofColor": "#e75480",
+        "door": "#8a3a5c",
+        "accent": "#ff6fa5",
+        "extras": [
+          "hearts",
+          "flowers",
+          "fence"
+        ]
+      },
+      "requestedIn": "UgyT6oIMumxLUObf5ZN4AaABAg",
+      "story": "Ojal just moved in, and had exactly one wish. A colour.",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UC3Em45knIod38GO1zzu8j0Q",
+      "name": "@og-goat1.0",
+      "title": "White House",
+      "recipe": {
+        "shape": "white-house",
+        "roof": "pointed",
+        "wall": "#f7f5ef",
+        "roofColor": "#c9ccd1",
+        "door": "#3b2a1f",
+        "accent": "#1d3557",
+        "extras": []
+      },
+      "requestedIn": "UgynWxiWCQ2v9Gc4cEx4AaABAg",
+      "story": "O G Goat had already decided where to live. Very presidential.",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UC-bcGAszcKoylSp-ZnfpRXA",
+      "name": "@Tootdino507",
+      "title": "Chicken Shack",
+      "recipe": {
+        "shape": "cottage",
+        "roof": "gable",
+        "wall": "#d62828",
+        "roofColor": "#ffd23f",
+        "door": "#3b2a1f",
+        "accent": "#ffd23f",
+        "extras": [
+          "smoke",
+          "flag",
+          "flowers"
+        ]
+      },
+      "requestedIn": "Ugy5Wm3aH83kjp3mBLh4AaABAg",
+      "story": "Toot Dino loves one restaurant so much, they wanted to live in it.",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UC4sdae2OIEfYQ4PyEEbHn9A",
+      "name": "@Nooni1024",
+      "title": "Future Mansion",
+      "recipe": {
+        "shape": "mansion",
+        "roof": "flat",
+        "wall": "#eef3f7",
+        "roofColor": "#1b263b",
+        "door": "#1b263b",
+        "accent": "#00e5ff",
+        "extras": [
+          "fairy-lights",
+          "solar-panels",
+          "fountain"
+        ]
+      },
+      "requestedIn": "Ugz3JFHqDAlYZB8t0LB4AaABAg",
+      "story": "Nooni wanted the biggest, most futuristic home in town. From the year three thousand.",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UCgrae7IxkL7HBkWbmTiF6Iw",
+      "name": "@Dragos-bd9vw",
+      "title": "Mini Skyscraper",
+      "recipe": {
+        "shape": "glass",
+        "roof": "flat",
+        "wall": "#4a7fb5",
+        "roofColor": "#22303f",
+        "door": "#22303f",
+        "accent": "#e0fbfc",
+        "extras": [
+          "satellite-dish"
+        ]
+      },
+      "requestedIn": "UgyOD6dl346GrZwxwBd4AaABAg",
+      "story": "Dragos asked for a skyscraper with a thousand floors. Let's start with one.",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UCYPkkMP7x27hsJkLq01ZCOA",
+      "name": "@Fluffy_paw2212",
+      "title": "Old Japanese House",
+      "recipe": {
+        "shape": "japanese-cafe",
+        "roof": "pointed",
+        "wall": "#7a4e2d",
+        "roofColor": "#3b4552",
+        "door": "#2b2d42",
+        "accent": "#a4161a",
+        "extras": []
+      },
+      "requestedIn": "UgzrtPQboVVEU_fDIjN4AaABAg",
+      "story": "Fluffy Paw dreamed of something old, quiet and very far from here.",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UCoPzG1EAWwr7vt44xxYZIKw",
+      "name": "@markuslundin7909",
+      "title": "Schoolhouse",
+      "recipe": {
+        "shape": "classic",
+        "roof": "gable",
+        "wall": "#b5523b",
+        "roofColor": "#3b4552",
+        "door": "#1d3557",
+        "accent": "#e63946",
+        "extras": [
+          "flag",
+          "fence"
+        ]
+      },
+      "requestedIn": "UgzhlbHYjhi2CGW_pmx4AaABAg",
+      "story": "Markus wanted to live somewhere with a bell, a flag and homework.",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UCFKlbA0mu0HMUyWG3orzc7g",
+      "name": "@moisescaicedolover",
+      "title": "Family Mansion",
+      "recipe": {
+        "shape": "mansion",
+        "roof": "gable",
+        "wall": "#f1e3c6",
+        "roofColor": "#12284b",
+        "door": "#12284b",
+        "accent": "#ffc52f",
+        "extras": [
+          "flowers",
+          "fountain",
+          "flag"
+        ]
+      },
+      "requestedIn": "UgwzULn88P7Cobnd2eR4AaABAg",
+      "story": "Moises has been asking for days. Day three and a half, to be exact.",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UCE9tGi0eAKdpRFM6ZAa7_lg",
+      "name": "@Yattster",
+      "title": "Country Mansion",
+      "recipe": {
+        "shape": "mansion",
+        "roof": "gable",
+        "wall": "#f3ead7",
+        "roofColor": "#8b2e1f",
+        "door": "#5a3a22",
+        "accent": "#c9a227",
+        "extras": [
+          "windmill",
+          "fence",
+          "flowers"
+        ]
+      },
+      "requestedIn": "UgwoCVciAi5JJYqiXmx4AaABAg",
+      "story": "Yattster moved in with big countryside plans. And a lot of trucks.",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UCX6wVTHYXPiW7mS_UD_leoQ",
+      "name": "@ChristinneeeXD",
+      "title": "Capybara Head",
+      "recipe": {
+        "shape": "capybara-head",
+        "roof": "flat",
+        "wall": "#a0703f",
+        "roofColor": "#7a5230",
+        "door": "#4a3020",
+        "accent": "#ff8c1a",
+        "extras": []
+      },
+      "requestedIn": "UgwGulji_OQNIzpfAg94AaABAg",
+      "story": "Christine already has a capybara, a capybara pen and a capybara centre. Christine needed more capybara.",
+      "added": "2026-11-20",
+      "top": 2
+    },
+    {
+      "resident": "UCOdauvrwnO6_c5fQpDt2QpQ",
+      "name": "@RoachOFC-ALT",
+      "title": "Roach House",
+      "recipe": {
+        "shape": "roach",
+        "roof": "flat",
+        "wall": "#7a3b1d",
+        "roofColor": "#3a1d10",
+        "door": "#2b1a10",
+        "accent": "#ffe7a8",
+        "extras": []
+      },
+      "requestedIn": "UgzV73RbiLCtOtIPlUx4AaABAg",
+      "story": "Roach just moved in. And Roach had one very creepy, crawly wish.",
+      "added": "2026-11-20",
+      "top": 1
+    },
+    {
+      "resident": "UC7Qs7Pl5zIDtGHnCVf_RmRw",
+      "name": "@KyloFerrier",
+      "title": "Lake House",
+      "recipe": {
+        "shape": "lake-house",
+        "roof": "gable",
+        "wall": "#9c6b43",
+        "roofColor": "#3b4552",
+        "door": "#4a3020",
+        "accent": "#e76f51",
+        "extras": []
+      },
+      "requestedIn": "UgwbidZCSshGBvi4ZVB4AaABAg",
+      "story": "Kylo asked for just three words. Two of them were house.",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UCSJL3D3GkGUZ_d3FmorAecQ",
+      "name": "@samuel_pagaimo",
+      "title": "White House",
+      "recipe": {
+        "shape": "white-house",
+        "roof": "pointed",
+        "wall": "#f7f5ef",
+        "roofColor": "#c9ccd1",
+        "door": "#3b2a1f",
+        "accent": "#b22234",
+        "extras": []
+      },
+      "requestedIn": "Ugy32BO7Tb5UzDgJ2Pt4AaABAg",
+      "story": "Samuel wants to run this city. So Samuel needs the right address.",
+      "added": "2026-11-20"
+    },
+    {
+      "resident": "UCb9VhnHBBHozOxWA-Bhnazg",
+      "name": "@WaffleHousefunny",
+      "title": "Medic House",
+      "recipe": {
+        "shape": "classic",
+        "roof": "pointed",
+        "wall": "#ffffff",
+        "roofColor": "#d62828",
+        "door": "#d62828",
+        "accent": "#d62828",
+        "extras": [
+          "flag",
+          "hearts",
+          "flowers"
+        ]
+      },
+      "requestedIn": "Ugwk7wx6GIIO7uO2lPV4AaABAg",
+      "story": "Waffle House wanted a home that everyone in town would recognise.",
+      "added": "2026-11-20"
     }
-  ]
+  ],
+  "invites": [
+    {
+      "friend": "@HughJass-l6b",
+      "friendId": "UCNTsAgoc6UXNniHwe7xWvVg",
+      "by": "@AverageHuman67",
+      "byId": "UCKgB0kce7yRwStaUsMl_nZQ",
+      "comment": "UgzRAliHLjssh2Egg7J4AaABAg",
+      "added": "2026-11-20T03:05:36.909Z"
+    }
+  ],
+  "villages": []
 }
