@@ -8,6 +8,7 @@ import { LOT, BLOCK, ROAD, PITCH, LOT_OFFSETS, createCityLayout } from './layout
 import { createHouseKit } from './houses.js';
 import { cleanHouseRecipe, NEIGHBOURHOODS } from './catalog.js';
 import { createExtraModels } from './extra-models.js';
+import { isChristmas, decorate } from './christmas.js';
 export { LOT, BLOCK, PITCH };
 
 // ---------- Layout constants ----------
@@ -560,6 +561,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       list.forEach((mat4, i) => im.setMatrixAt(i, mat4));
       im.receiveShadow = true;
       scene.add(im);
+      return im;
     };
 
     // grass everywhere; roads and pavement only around the blocks that are built (the city grows organically)
@@ -568,6 +570,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     grass.rotation.x = -Math.PI / 2;
     grass.position.y = -0.02;
     grass.receiveShadow = true;
+    grass.userData.snow = '#e9eff3'; // the Christmas snow colour (christmas.js)
     scene.add(grass);
     const byKey = new Map(L.blocks.map((b) => [`${b.x},${b.z}`, b]));
     const BUILT = new Set(['square', 'civic-empty', 'homes', 'park', 'promenade', 'main-empty', 'green', 'plaza', 'yard', 'pitch']);
@@ -699,8 +702,10 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     flat(new THREE.BoxGeometry(BLOCK, 0.02, BLOCK).translate(0, 0.01, 0), '#6f7782', roads);
     flat(new THREE.BoxGeometry(BLOCK, 0.25, BLOCK).translate(0, 0.125, 0), '#d9d6cf', pads);
     flat(new THREE.BoxGeometry(BLOCK, 0.22, BLOCK).translate(0, 0.11, 0), '#eadfca', pavers);
-    flat(new THREE.BoxGeometry(LOT - 0.8, 0.05, LOT - 0.8).translate(0, 0.27, 0), '#a3c784', lotLawns);
-    flat(new THREE.BoxGeometry(BLOCK - 0.6, 0.05, BLOCK - 0.6).translate(0, 0.27, 0), '#9cc77d', blockLawns);
+    const lotLawnMesh = flat(new THREE.BoxGeometry(LOT - 0.8, 0.05, LOT - 0.8).translate(0, 0.27, 0), '#a3c784', lotLawns);
+    if (lotLawnMesh) lotLawnMesh.userData.snow = '#f2f6f8';
+    const blockLawnMesh = flat(new THREE.BoxGeometry(BLOCK - 0.6, 0.05, BLOCK - 0.6).translate(0, 0.27, 0), '#9cc77d', blockLawns);
+    if (blockLawnMesh) blockLawnMesh.userData.snow = '#eef3f4';
     flat(new THREE.BoxGeometry(BLOCK - 0.6, 0.03, BLOCK - 0.6).translate(0, 0.3, 0), '#e2d6bd', paths);
     flat(new THREE.BoxGeometry(BLOCK, 0.03, BLOCK).translate(0, 0.26, 0), '#5f6670', yards);
     if (crates.length) {
@@ -726,8 +731,11 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
         fm.setColorAt(i, new THREE.Color(FIELD[c]));
       });
       fm.receiveShadow = true;
+      fm.userData.snow = '#ffffff';
+      fm.userData.snowInstances = '#f1f5f7';
       scene.add(fm);
-      flat(new THREE.BoxGeometry(BLOCK - 0.5, 0.04, BLOCK - 0.5).translate(0, 0.02, 0), '#8a6a48', fields.map(([x, z]) => at(x, z)));
+      const earth = flat(new THREE.BoxGeometry(BLOCK - 0.5, 0.04, BLOCK - 0.5).translate(0, 0.02, 0), '#8a6a48', fields.map(([x, z]) => at(x, z)));
+      if (earth) earth.userData.snow = '#dde3e6';
     }
     flat(new THREE.BoxGeometry(1, 0.02, 1).translate(0, 0.31, 0), '#f4f4ef', pitchLines);
     if (benches.length) {
@@ -771,6 +779,8 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       trunks.setMatrixAt(i, m);
       crowns.setMatrixAt(i, m);
     });
+    crowns.userData.snow = '#c5d9cc'; // snow-dusted
+    trunks.userData.trees = crowns.userData.trees = true;
     scene.add(trunks, crowns);
   }
 
@@ -1079,6 +1089,8 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     sun.shadow.camera.updateProjectionMatrix();
     sun.shadow.mapSize.set(4096, 4096);
     world.setNight(false);
+    // Christmas decorations, from 20 November to 6 January (christmas.js)
+    world.season = isChristmas() ? decorate(world, glow) : null;
   };
 
   /** Camera pose that shows the whole city. */
@@ -1105,6 +1117,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     if (world.townHall) world.townHall.userData.tip.rotation.y = seconds * 1.1;
     world.cars?.update(seconds);
     world.transit?.(seconds);
+    world.season?.(seconds);
     for (const l of world.landmarks.values()) l.tick?.(seconds);
     for (const e of world.customEntries) e.tick?.(seconds);
     for (const f of world.upgradeTicks) f(seconds);
@@ -1193,6 +1206,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
 
     // ---- bridges ----
     const bridges = [];
+    world.bridges = bridges;
     const addBridge = (ox, oz, ux, uz, needRoad, width = 5.4) => {
       if (inPoly(L.lake, ox, oz)) return;
       const end = (sg) => {
