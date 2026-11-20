@@ -73,17 +73,17 @@ function timeline(city) {
     'It works like this. Comment on any video, and you get a house. Every different video you comment on adds one more floor. And every day, a new Short shows who moved in.', 0.6);
   // ---- 3. the plan ----
   add('plan', 9, { chapter: 'The city plan' },
-    'Here is the new plan. Downtown in the middle, Main Street running east, five neighbourhoods, a green belt with parks and stadiums, and the industry outside town.', 0.6);
+    'Here is the new plan, a real lake city. The river runs out of the lake through the old town, Bahnhofstrasse goes from the main station down to the lake, trams and trains connect everything, and around it all, five neighbourhoods, a Sports Village, the industry by the river and the airport in the north.', 0.6);
   // ---- 4. downtown ----
-  add('area', 4.5, { chapter: 'Downtown', target: new THREE.Vector3(0, 0, 0), dist: 60, elev: 38, az0: 0.5 }, 'Downtown is the heart of the city, around the town hall.', 0.5);
-  lmScenes(inDistrict('Downtown'), 'Downtown');
+  add('area', 4.5, { chapter: 'Old Town', target: new THREE.Vector3(0, 0, 0), dist: 60, elev: 38, az0: 0.5 }, 'The old town is the heart of the city, by the river, around the town hall.', 0.5);
+  lmScenes(inDistrict('Old Town'), 'Old Town');
   // ---- 5. Main Street ----
-  const station = lms.find((l) => l.district === 'Main Street station');
-  const mainShops = inDistrict('Main Street').sort((a, b) => a.outer.position.x - b.outer.position.x);
-  add('street', 8, { chapter: 'Main Street', x0: 0.5 * PITCH, x1: (station ? station.outer.position.x : 5 * PITCH) - 2 * PITCH },
-    'Main Street is our shopping promenade, lined with shops, all the way from downtown to the Seaty Rail station.', 0.5);
-  lmScenes(mainShops, 'Main Street');
-  if (station) lmScenes([station], 'Main Street');
+  const station = lms.find((l) => l.district === 'Main Station');
+  const mainShops = inDistrict('Bahnhofstrasse').sort((a, b) => a.outer.position.z - b.outer.position.z);
+  add('street', 8, { chapter: 'Bahnhofstrasse', z0: -3.5 * PITCH, z1: 3.5 * PITCH, x: -3 * PITCH },
+    'Bahnhofstrasse is our shopping street: from the main station, past the shops, with the tram running down the middle, all the way to the lake.', 0.5);
+  lmScenes(mainShops, 'Bahnhofstrasse');
+  if (station) lmScenes([station], 'Bahnhofstrasse');
   // ---- 6. neighbourhoods ----
   const HOOD_LINE = {
     classic: 'Most citizens live in Classic Homes, with pocket parks and everyday shops between the houses.',
@@ -104,14 +104,27 @@ function timeline(city) {
     }, HOOD_LINE[style], 0.5);
     lmScenes(lms.filter((l) => l.district === NEIGHBOURHOODS[style]), 'Neighbourhoods');
   }
-  // ---- 7. green belt ----
-  add('area', 4.5, { chapter: 'The green belt', target: new THREE.Vector3(0, 0, 0), dist: (L.beltR + 3) * PITCH * 1.25, elev: 34, az0: 2.2 },
-    'Around the city runs the green belt: stadiums, a theme park, a race track, parks and a farm.', 0.5);
-  lmScenes(inDistrict('Green belt'), 'The green belt');
-  // ---- 8. outskirts ----
-  add('area', 4.5, { chapter: 'The outskirts', target: new THREE.Vector3(0, 0, 0), dist: (L.outerR + 2) * PITCH * 1.35, elev: 30, az0: 3.4 },
-    'And out in the countryside, the outskirts: factories, the power plant, the airport and the space center.', 0.5);
-  lmScenes(inDistrict('Outskirts'), 'The outskirts');
+  // ---- 7. plazas, lakeside, the hills ----
+  const Z = L.zones;
+  if (inDistrict('City Plazas').length) {
+    add('area', 4, { chapter: 'City Plazas', target: new THREE.Vector3(-PITCH, 0, 2 * PITCH), dist: 75, elev: 40, az0: 1.4 }, 'The statues stand on the city squares, from the lake up to the old town.', 0.5);
+    lmScenes(inDistrict('City Plazas'), 'City Plazas');
+  }
+  add('area', 4.5, { chapter: 'Lakeside', target: new THREE.Vector3(Z.lakeside.x, 0, Z.lakeside.z), dist: 90, elev: 36, az0: 0.4 },
+    'Where the river meets the lake, the lakeside promenade: parks, the theme park, the circus and the aquarium.', 0.5);
+  lmScenes(inDistrict('Lakeside'), 'Lakeside');
+  lmScenes(inDistrict('Zürichberg'), 'Lakeside');
+  // ---- 8. Sports Village, countryside, industry, airport ----
+  add('area', 4.5, { chapter: 'Sports Village', target: new THREE.Vector3(Z.sports.x, 0, Z.sports.z), dist: 110, elev: 36, az0: 2.2 },
+    'Take tram line 2 west to the Sports Village: the stadiums, the ballpark and the race track, with training pitches all around.', 0.5);
+  lmScenes(inDistrict('Sports Village'), 'Sports Village');
+  add('area', 4.5, { chapter: 'The countryside', target: new THREE.Vector3(0, 0, 0), dist: (L.beltR + 3) * PITCH * 1.25, elev: 34, az0: 2.2 },
+    'All around the city lies the countryside: farms, fields and the dam.', 0.5);
+  lmScenes(inDistrict('Countryside'), 'The countryside');
+  add('area', 4.5, { chapter: 'Industrial Quarter', target: new THREE.Vector3(Z.industry.x, 0, Z.industry.z), dist: 110, elev: 36, az0: 0.6 },
+    'Down the river, between the water and the railway, the Industrial Quarter: every factory, the power plant and the reactor.', 0.5);
+  lmScenes(inDistrict('Industrial Quarter'), 'Industrial Quarter');
+  lmScenes(inDistrict('Airport'), 'Airport');
   // ---- 9. night ----
   add('night', 6.5, { chapter: 'Seaty at night' }, 'And when the sun goes down, Seaty lights up.', 1.0);
   // ---- 10. the rules ----
@@ -133,8 +146,8 @@ function timeline(city) {
     world.scene.add(o);
     dl.push(o);
   };
-  label('Downtown', new THREE.Vector3(0, 10, 0));
-  label('Main Street', new THREE.Vector3(3 * PITCH, 6, 0));
+  label('Old Town', new THREE.Vector3(0, 10, 0));
+  label('Bahnhofstrasse', new THREE.Vector3(-3 * PITCH, 6, 0));
   for (const style of Object.keys(NEIGHBOURHOODS)) {
     const pts = [...L.homes.values()].filter((h) => h.style === style);
     if (!pts.length) continue;
@@ -144,8 +157,11 @@ function timeline(city) {
     label(NEIGHBOURHOODS[style], new THREE.Vector3(cx * out, 6, cz * out));
   }
   const firstOf = (d) => inDistrict(d)[0];
-  if (firstOf('Green belt')) label('Green belt', firstOf('Green belt').outer.position.clone().setY(14));
-  if (firstOf('Outskirts')) label('Outskirts', firstOf('Outskirts').outer.position.clone().setY(16));
+  label('Lake', new THREE.Vector3(4 * PITCH, 8, 9 * PITCH));
+  label('Lakeside', new THREE.Vector3(L.zones.lakeside.x, 12, L.zones.lakeside.z));
+  label('Sports Village', new THREE.Vector3(L.zones.sports.x, 12, L.zones.sports.z));
+  label('Industrial Quarter', new THREE.Vector3(L.zones.industry.x, 16, L.zones.industry.z));
+  label('Airport', new THREE.Vector3(L.zones.airport.x, 16, L.zones.airport.z));
 
   // ---- camera per scene ----
   const centre = new THREE.Vector3();
@@ -160,8 +176,8 @@ function timeline(city) {
       case 'plan': return orbit(new THREE.Vector3(PITCH, 0, 0), (L.beltR + 3) * PITCH * 1.9, 0.001 + k * 0.15, 80);
       case 'area': return orbit(s.target, s.dist * (1.05 - 0.1 * k), s.az0 + k * 0.45, s.elev);
       case 'street': {
-        const x = s.x0 + (s.x1 - s.x0) * ease(k);
-        return { pos: new THREE.Vector3(x - 10, 13, 26), target: new THREE.Vector3(x + 22, 2, 0) };
+        const z = s.z0 + (s.z1 - s.z0) * ease(k);
+        return { pos: new THREE.Vector3(s.x + 26, 13, z - 10), target: new THREE.Vector3(s.x, 2, z + 22) };
       }
       case 'landmark': {
         const l = s.l;

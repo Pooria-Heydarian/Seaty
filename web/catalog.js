@@ -135,28 +135,45 @@ export function houseStyle(recipe) {
 }
 
 /**
- * Where a landmark goes and how big it is.
- *   districts: civic (downtown around the town hall), main (Main Street shops), local (everyday shops between houses),
- *              belt (green belt: fun, sports, nature), outskirts (industry and transport), station (end of Main Street)
+ * Where a landmark goes and how big it is (the districts are drawn in layout.js).
+ *   civic      the Old Town by the river, then University Hill: public buildings
+ *   main       Bahnhofstrasse (station to the lake), then Niederdorf: shops, cinema, gym, mall…
+ *   local      everyday shops on the edge of a pocket park in the owner's neighbourhood
+ *   plaza      the city's squares (Bürkliplatz, Bellevue, Paradeplatz…): statues, fountains, monuments
+ *   leisure    the lakeside promenade: park, theme park, aquarium, circus…
+ *   hill       the wooded hills (Zürichberg): zoo, lookouts
+ *   sports     the Sports Village (its own little town in the west): stadiums, ballpark, race track
+ *   country    the countryside round the city: farms, castle, dam
+ *   industry   the Industrial Quarter (west, between the river and the railway): every factory, power, depot
+ *   transport  north, at the end of the airport railway: airport, space center
+ *   station    the main station at the top of Bahnhofstrasse
  *   sizes: S = one house lot, M = one block, L = 2 x 2 blocks
  */
 const LANDMARK_PLAN = {
   museum: ['civic', 'M'], school: ['civic', 'M'], hospital: ['civic', 'M'], 'fire-station': ['civic', 'M'], mosque: ['civic', 'M'],
-  library: ['civic', 'M'], university: ['civic', 'M'], 'gothic-church': ['civic', 'M'], 'police-station': ['civic', 'M'], church: ['civic', 'M'], temple: ['civic', 'M'], 'post-office': ['civic', 'M'],
+  library: ['civic', 'M'], university: ['civic', 'M'], 'gothic-church': ['civic', 'M'], 'police-station': ['civic', 'M'], church: ['civic', 'M'], temple: ['civic', 'M'], 'post-office': ['civic', 'M'], 'art-school': ['civic', 'M'],
   'jewelry-store': ['main', 'M'], 'pet-store': ['main', 'M'], 'mma-gym': ['main', 'M'], skyscraper: ['main', 'M'], boutique: ['main', 'M'], cinema: ['main', 'M'], 'construction-site': ['main', 'M'], 'game-store': ['main', 'M'], motel: ['main', 'M'], gym: ['main', 'M'], 'car-show': ['main', 'M'], mall: ['main', 'M'],
   bakery: ['local', 'S'], 'corner-shop': ['local', 'S'], market: ['local', 'S'], cafe: ['local', 'S'], 'hot-dog-stand': ['local', 'S'], pizzeria: ['local', 'S'], dojo: ['local', 'S'], pharmacy: ['local', 'S'], florist: ['local', 'S'],
-  stadium: ['belt', 'L'], ballpark: ['belt', 'L'], 'theme-park': ['belt', 'L'], 'race-track': ['belt', 'L'], circus: ['belt', 'M'], aquarium: ['belt', 'M'],
-  park: ['belt', 'L'], farm: ['belt', 'L'], zoo: ['belt', 'L'], 'lemon-farm': ['belt', 'L'], 'baguette-statue': ['belt', 'M'], 'samurai-statue': ['belt', 'M'], 'capybara-adoption': ['belt', 'M'], castle: ['belt', 'L'], statue: ['belt', 'M'],
-  'power-plant': ['outskirts', 'L'], 'spaghetti-factory': ['outskirts', 'L'], 'watermelon-factory': ['outskirts', 'L'], 'toy-factory': ['outskirts', 'L'],
-  airport: ['outskirts', 'L'], 'space-center': ['outskirts', 'L'], 'black-hole-reactor': ['outskirts', 'L'], dam: ['outskirts', 'L'], 'bus-depot': ['outskirts', 'M'],
+  statue: ['plaza', 'M'], 'baguette-statue': ['plaza', 'M'], 'samurai-statue': ['plaza', 'M'], fountain: ['plaza', 'M'], monument: ['plaza', 'M'],
+  park: ['leisure', 'L'], 'theme-park': ['leisure', 'L'], zoo: ['hill', 'L'], aquarium: ['leisure', 'M'], circus: ['leisure', 'M'], 'capybara-adoption': ['hill', 'M'],
+  stadium: ['sports', 'L'], ballpark: ['sports', 'L'], 'race-track': ['sports', 'L'],
+  farm: ['country', 'L'], 'lemon-farm': ['country', 'L'], castle: ['country', 'L'], dam: ['country', 'L'],
+  'power-plant': ['industry', 'L'], 'spaghetti-factory': ['industry', 'L'], 'watermelon-factory': ['industry', 'L'], 'toy-factory': ['industry', 'L'],
+  'black-hole-reactor': ['industry', 'L'], 'bus-depot': ['industry', 'M'],
+  airport: ['transport', 'L'], 'space-center': ['transport', 'L'],
   rail: ['station', 'L'], railway: ['station', 'L'],
 };
 export function landmarkPlan(def) {
   const kind = landmarkKind(def);
   const plan = LANDMARK_PLAN[def.type] || LANDMARK_PLAN[kind];
   if (plan) return { district: plan[0], size: plan[1] };
-  if (/factory|plant|works|port$|mine|refinery/.test(kind)) return { district: 'outskirts', size: 'L' };
-  if (/stadium|arena|track|zoo|park$|garden/.test(kind)) return { district: 'belt', size: 'L' };
+  if (/factory|plant|works|mine|refinery|warehouse|reactor|port$/.test(kind)) return { district: 'industry', size: 'L' };
+  if (/statue|fountain|monument|memorial|obelisk/.test(kind)) return { district: 'plaza', size: 'M' };
+  if (/stadium|arena|track|court|field$/.test(kind)) return { district: 'sports', size: 'L' };
+  if (/zoo|observatory|lookout/.test(kind)) return { district: 'hill', size: 'L' };
+  if (/park$|garden|aquarium|playground|fair|beach|marina|harbou?r/.test(kind)) return { district: 'leisure', size: 'L' };
+  if (/farm|ranch|orchard|vineyard|windmill/.test(kind)) return { district: 'country', size: 'L' };
+  if (/school|college|library|church|chapel/.test(kind)) return { district: 'civic', size: 'M' };
   return { district: 'main', size: 'M' }; // any other shop or public building goes on Main Street
 }
 

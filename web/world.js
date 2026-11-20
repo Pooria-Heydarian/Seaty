@@ -472,8 +472,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       made.group.scale.setScalar(spot.scale);
       made.height *= spot.scale;
       const outer = new THREE.Group();
-      const inCity = Math.max(Math.abs(spot.x), Math.abs(spot.z)) <= (world.layout.cityR + 0.5) * PITCH;
-      outer.position.set(spot.x, inCity ? 0.25 : 0.02, spot.z); // on the pavement in town, on the grass outside
+      outer.position.set(spot.x, spot.paved ? 0.25 : 0.02, spot.z); // on the pavement in town, on the grass outside
       outer.rotation.y = spot.rot;
       outer.add(made.group);
       scene.add(outer);
@@ -486,7 +485,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       const label = new CSS2DObject(el);
       label.position.set(0, made.height + 2.5, 0);
       outer.add(label);
-      const lm = { def, outer, height: made.height, label, floors, owner, body: made.body, tick: made.group.userData.tick, district: spot.district, size: spot.size };
+      const lm = { def, outer, height: made.height, label, floors, owner, body: made.body, tick: made.group.userData.tick, district: spot.district, place: spot.place, size: spot.size };
       if (made.body) {
         made.body.userData.landmark = lm;
         world.pickables.push(made.body);
@@ -571,22 +570,24 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     grass.receiveShadow = true;
     scene.add(grass);
     const byKey = new Map(L.blocks.map((b) => [`${b.x},${b.z}`, b]));
-    const BUILT = new Set(['square', 'civic-empty', 'homes', 'park', 'promenade', 'main-empty']);
+    const BUILT = new Set(['square', 'civic-empty', 'homes', 'park', 'promenade', 'main-empty', 'green', 'plaza', 'yard', 'pitch']);
     const isBuilt = (x, z) => {
       const b = byKey.get(`${x},${z}`);
       if (!b) return false;
-      if (b.kind === 'landmark') return Math.max(Math.abs(x), Math.abs(z)) <= R;
+      if (b.kind === 'landmark') return !!b.paved;
       if (b.kind === 'boulevard') { // a boulevard runs as far as the houses along it
         const side = x === 0 ? [[-1, z], [1, z]] : [[x, -1], [x, 1]];
-        return side.some(([sx, sz]) => { const n = byKey.get(`${sx},${sz}`); return n && ['homes', 'park', 'landmark', 'civic-empty'].includes(n.kind); });
+        return side.some(([sx, sz]) => { const n = byKey.get(`${sx},${sz}`); return n && ['homes', 'park', 'landmark', 'civic-empty', 'green', 'plaza'].includes(n.kind); });
       }
       return BUILT.has(b.kind);
     };
+    world.isBuiltCell = isBuilt;
     const built = L.blocks.filter((b) => isBuilt(b.x, b.z));
     world.builtBlocks = built;
     const roads = built.map((b) => at(b.x * PITCH, b.z * PITCH, PITCH / BLOCK, PITCH / BLOCK));
 
     const pads = [], pavers = [], lotLawns = [], blockLawns = [], paths = [], benches = [], trees = [], lamps = [];
+    const yards = [], crates = [], fields = [], pitchLines = [];
     const r = rng(7);
     const tree = (x, z, s = 1, y = 0.25) => trees.push([x, z, s * (0.75 + r() * 0.5), y]);
     for (const b of L.blocks) {
@@ -621,13 +622,26 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
           blockLawns.push(at(cx, cz));
           LOT_OFFSETS.forEach(([ox, oz]) => tree(cx + ox + (r() - 0.5) * 2, cz + oz + (r() - 0.5) * 2));
           break;
-        case 'promenade':
-          // Main Street: a paved walk with lamps on both sides and trees down the middle
-          pavers.push(at(cx, cz, (PITCH + 0.01) / BLOCK, 1));
-          for (const dx of [-5, 0, 5]) lamps.push([cx + dx, cz - 4.6], [cx + dx, cz + 4.6]);
-          for (const dx of [-2.6, 2.6]) tree(cx + dx, cz, 0.7);
-          benches.push([cx - 5, cz - 1.6, 0], [cx + 5, cz + 1.6, Math.PI]);
+        case 'promenade': {
+          // a paved shopping street: the tram runs down the middle, lamps and trees along both sides
+          const az = b.along === 'z';
+          pavers.push(az ? at(cx, cz, 1, (PITCH + 0.01) / BLOCK) : at(cx, cz, (PITCH + 0.01) / BLOCK, 1));
+          for (const t of [-5, 0, 5]) lamps.push(az ? [cx - 4.8, cz + t] : [cx + t, cz - 4.8], az ? [cx + 4.8, cz + t] : [cx + t, cz + 4.8]);
+          for (const t of [-2.5, 2.5]) for (const sd of [-3.6, 3.6]) tree(az ? cx + sd : cx + t, az ? cz + t : cz + sd, 0.65);
+          benches.push(az ? [cx - 4.2, cz, Math.PI / 2] : [cx, cz - 4.2, 0], az ? [cx + 4.2, cz + 3, -Math.PI / 2] : [cx + 3, cz + 4.2, Math.PI]);
           break;
+        }
+        case 'forest':
+          // wooded hill: dense, tall trees
+          for (let k = 0; k < 8; k++) tree(cx + (r() - 0.5) * 15, cz + (r() - 0.5) * 15, 1.45 + r() * 0.6, 0);
+          break;
+        case 'pitch': {
+          // Sports Village: a training pitch with white lines
+          blockLawns.push(at(cx, cz));
+          const W = BLOCK - 2.6;
+          pitchLines.push(at(cx, cz - W / 2, W, 0.16), at(cx, cz + W / 2, W, 0.16), at(cx - W / 2, cz, 0.16, W), at(cx + W / 2, cz, 0.16, W), at(cx, cz, W, 0.16));
+          break;
+        }
         case 'boulevard': {
           // tree-lined boulevard: lawn median with two rows of trees and lamps along the axis
           const alongZ = b.x === 0;
@@ -639,12 +653,47 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
           for (const t of [-3, 3]) lamps.push(alongZ ? [cx, cz + t] : [cx + t, cz]);
           break;
         }
+        case 'green': {
+          // Leisure / Sports Quarter: park lawn between the attractions, with paths and lots of trees
+          blockLawns.push(at(cx, cz));
+          paths.push(at(cx, cz, 1, 0.1), at(cx, cz, 0.1, 1));
+          benches.push([cx - 2.2, cz + 0.9, 0], [cx + 2.2, cz - 0.9, Math.PI]);
+          LOT_OFFSETS.forEach(([ox, oz]) => { tree(cx + ox * 1.2 + (r() - 0.5), cz + oz * 1.2 + (r() - 0.5), 1.15); tree(cx + ox * 0.5, cz + oz * 0.6, 0.85); });
+          break;
+        }
+        case 'plaza':
+          // a paved square: lamps on the corners, trees and benches round a statue in the middle
+          pavers.push(b.along === 'z' ? at(cx, cz, 1, (PITCH + 0.01) / BLOCK) : at(cx, cz, (BLOCK + 0.01) / BLOCK, 1));
+          for (const [ox, oz] of LOT_OFFSETS) { lamps.push([cx + ox * 1.6, cz + oz * 1.6]); tree(cx + ox * 1.35, cz + oz * 1.35, 0.8); }
+          benches.push([cx, cz - 4.4, 0], [cx, cz + 4.4, Math.PI], [cx - 4.4, cz, Math.PI / 2], [cx + 4.4, cz, -Math.PI / 2]);
+          break;
+        case 'yard':
+          // Industrial Town: an asphalt yard with stacks of shipping containers
+          yards.push(at(cx, cz));
+          for (let k = 0; k < 4; k++) {
+            const px = cx + (r() - 0.5) * 7, pz = cz + (r() - 0.5) * 7, rot = r() < 0.5 ? 0 : Math.PI / 2, n = 1 + Math.floor(r() * 3);
+            for (let h = 0; h < n; h++) crates.push([px, pz, rot, h]);
+          }
+          break;
+        case 'country':
+          // countryside: fields of crops between hedgerows of trees
+          if (r() < 0.6) fields.push([cx, cz, r() < 0.5 ? 0 : Math.PI / 2, Math.floor(r() * 4)]);
+          else for (let k = 0; k < 2; k++) tree(cx + (r() - 0.5) * 10, cz + (r() - 0.5) * 10, 1.1, 0);
+          break;
         case 'belt':
           for (let k = 0; k < 3; k++) tree(cx + (r() - 0.5) * 10, cz + (r() - 0.5) * 10, 1.1, 0);
           break;
         case 'meadow':
-          if (r() < 0.5) tree(cx + (r() - 0.5) * 10, cz + (r() - 0.5) * 10, 1.2, 0);
+          if (r() < 0.4) fields.push([cx, cz, r() < 0.5 ? 0 : Math.PI / 2, Math.floor(r() * 4)]);
+          else if (r() < 0.5) tree(cx + (r() - 0.5) * 10, cz + (r() - 0.5) * 10, 1.2, 0);
           break;
+        case 'outskirts': {
+          // farmland thins out towards the edge of the map
+          const far = Math.max(Math.abs(b.x), Math.abs(b.z)) - L.beltR - 2;
+          if (r() < 0.3 - far * 0.06) fields.push([cx, cz, r() < 0.5 ? 0 : Math.PI / 2, Math.floor(r() * 4)]);
+          else if (r() < 0.2) tree(cx + (r() - 0.5) * 10, cz + (r() - 0.5) * 10, 1.2, 0);
+          break;
+        }
       }
     }
     flat(new THREE.BoxGeometry(BLOCK, 0.02, BLOCK).translate(0, 0.01, 0), '#6f7782', roads);
@@ -653,7 +702,34 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     flat(new THREE.BoxGeometry(LOT - 0.8, 0.05, LOT - 0.8).translate(0, 0.27, 0), '#a3c784', lotLawns);
     flat(new THREE.BoxGeometry(BLOCK - 0.6, 0.05, BLOCK - 0.6).translate(0, 0.27, 0), '#9cc77d', blockLawns);
     flat(new THREE.BoxGeometry(BLOCK - 0.6, 0.03, BLOCK - 0.6).translate(0, 0.3, 0), '#e2d6bd', paths);
-
+    flat(new THREE.BoxGeometry(BLOCK, 0.03, BLOCK).translate(0, 0.26, 0), '#5f6670', yards);
+    if (crates.length) {
+      const cm = new THREE.InstancedMesh(new THREE.BoxGeometry(2.6, 1.1, 1.1).translate(0, 0.55, 0), new THREE.MeshStandardMaterial({ roughness: 0.7 }), crates.length);
+      const COLS = ['#c0392b', '#2d6fb5', '#2f8f5b', '#e0a43a', '#7a5cff'];
+      crates.forEach(([x, z, rot, h], i) => {
+        cm.setMatrixAt(i, new THREE.Matrix4().compose(v(x, 0.27 + h * 1.12, z), new THREE.Quaternion().setFromAxisAngle(up, rot), v(1, 1, 1)));
+        cm.setColorAt(i, new THREE.Color(COLS[(i * 7 + h) % COLS.length]));
+      });
+      cm.castShadow = true;
+      cm.receiveShadow = true;
+      scene.add(cm);
+    }
+    if (fields.length) {
+      // each field: 5 strips of crops, ploughed earth between them
+      const FIELD = ['#d9c25a', '#7fae4a', '#b8d36a', '#c98f4a'];
+      const strips = [];
+      fields.forEach(([x, z, rot, c]) => { for (let k = -2; k <= 2; k++) strips.push([x, z, rot, c, k]); });
+      const fm = new THREE.InstancedMesh(new THREE.BoxGeometry(BLOCK - 1.5, 0.3, 1.5).translate(0, 0.15, 0), new THREE.MeshStandardMaterial({ roughness: 1 }), strips.length);
+      strips.forEach(([x, z, rot, c, k], i) => {
+        const off = new THREE.Vector3(0, 0, k * 2.1).applyAxisAngle(up, rot);
+        fm.setMatrixAt(i, new THREE.Matrix4().compose(v(x + off.x, 0, z + off.z), new THREE.Quaternion().setFromAxisAngle(up, rot), v(1, 1, 1)));
+        fm.setColorAt(i, new THREE.Color(FIELD[c]));
+      });
+      fm.receiveShadow = true;
+      scene.add(fm);
+      flat(new THREE.BoxGeometry(BLOCK - 0.5, 0.04, BLOCK - 0.5).translate(0, 0.02, 0), '#8a6a48', fields.map(([x, z]) => at(x, z)));
+    }
+    flat(new THREE.BoxGeometry(1, 0.02, 1).translate(0, 0.31, 0), '#f4f4ef', pitchLines);
     if (benches.length) {
       const seat = new THREE.InstancedMesh(new THREE.BoxGeometry(1.2, 0.1, 0.4).translate(0, 0.62, 0), new THREE.MeshStandardMaterial({ color: '#7b5a3c' }), benches.length);
       benches.forEach(([x, z, rot], i) => seat.setMatrixAt(i, at(x, z, 1, 1, rot)));
@@ -970,6 +1046,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     world.extent = (L.outerR + 1) * PITCH; // city + green belt + outskirts (ground, shadows)
 
     buildGround(L);
+    buildWaterAndTransit(L);
     buildVillages(L);
     buildCars();
     buildTownHall();
@@ -1023,18 +1100,316 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     mat.gold.emissiveIntensity = on ? 0.8 : 0.2;
   };
 
-  world.tick = (seconds) => {
+  world.tick = (time) => {
+    const seconds = Math.max(0, time); // the Short and the tour start a little before 0; the animations loop from 0
     if (world.townHall) world.townHall.userData.tip.rotation.y = seconds * 1.1;
     world.cars?.update(seconds);
+    world.transit?.(seconds);
     for (const l of world.landmarks.values()) l.tick?.(seconds);
     for (const e of world.customEntries) e.tick?.(seconds);
     for (const f of world.upgradeTicks) f(seconds);
     world.airship?.tick(seconds);
   };
 
+  /**
+   * The lake and the river (with stone quays), bridges where streets, tram lines and railways cross the water,
+   * the avenues out to the districts, the railways with their trains and the tram lines with their trams.
+   */
+  function buildWaterAndTransit(L) {
+    if (!L.lake) return;
+    const isBuilt = world.isBuiltCell;
+    const up = new THREE.Vector3(0, 1, 0);
+    const V = (x, y, z) => new THREE.Vector3(x, y, z);
+    const segD = (px, pz, [ax, az], [bx, bz]) => {
+      const dx = bx - ax, dz = bz - az, t = Math.max(0, Math.min(1, ((px - ax) * dx + (pz - az) * dz) / (dx * dx + dz * dz || 1)));
+      return Math.hypot(px - ax - t * dx, pz - az - t * dz);
+    };
+    const inPoly = (poly, x, z) => {
+      let inside = false;
+      for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+        const [xi, zi] = poly[i], [xj, zj] = poly[j];
+        if ((zi > z) !== (zj > z) && x < ((xj - xi) * (z - zi)) / (zj - zi) + xi) inside = !inside;
+      }
+      return inside;
+    };
+    const lineD = (line, x, z) => { let d = 1e9; for (let i = 1; i < line.length; i++) d = Math.min(d, segD(x, z, line[i - 1], line[i])); return d; };
+
+    // ---- water ----
+    const shapeMesh = (pts, color, y, opts = {}) => {
+      const g = new THREE.ShapeGeometry(new THREE.Shape(pts.map(([x, z]) => new THREE.Vector2(x, -z))));
+      g.rotateX(-Math.PI / 2);
+      const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color, roughness: 1, ...opts }));
+      m.position.y = y;
+      m.receiveShadow = true;
+      scene.add(m);
+      return m;
+    };
+    /** A band of width w along a line (mitred corners), as a polygon. */
+    const ribbon = (line, w) => {
+      const left = [], right = [];
+      const nrm = (a, b) => { const dx = b[0] - a[0], dz = b[1] - a[1], l = Math.hypot(dx, dz); return [-dz / l, dx / l]; };
+      line.forEach((p, i) => {
+        const n1 = i > 0 ? nrm(line[i - 1], p) : nrm(p, line[i + 1]);
+        const n2 = i < line.length - 1 ? nrm(p, line[i + 1]) : n1;
+        let mx = n1[0] + n2[0], mz = n1[1] + n2[1];
+        const ml = Math.hypot(mx, mz);
+        mx /= ml; mz /= ml;
+        const k = w / 2 / Math.max(0.3, mx * n1[0] + mz * n1[1]);
+        left.push([p[0] + mx * k, p[1] + mz * k]);
+        right.push([p[0] - mx * k, p[1] - mz * k]);
+      });
+      return [...left, ...right.reverse()];
+    };
+    /** The polygon pushed outward by d. */
+    const grow = (poly, d) => {
+      const n = poly.length;
+      let area = 0;
+      for (let i = 0; i < n; i++) { const [x1, z1] = poly[i], [x2, z2] = poly[(i + 1) % n]; area += x1 * z2 - x2 * z1; }
+      const sgn = area > 0 ? -1 : 1;
+      return poly.map((p, i) => {
+        const a = poly[(i - 1 + n) % n], b = poly[(i + 1) % n];
+        const e1 = [p[0] - a[0], p[1] - a[1]], e2 = [b[0] - p[0], b[1] - p[1]];
+        const l1 = Math.hypot(...e1), l2 = Math.hypot(...e2);
+        const n1 = [sgn * e1[1] / l1, -sgn * e1[0] / l1], n2 = [sgn * e2[1] / l2, -sgn * e2[0] / l2];
+        let mx = n1[0] + n2[0], mz = n1[1] + n2[1];
+        const ml = Math.hypot(mx, mz) || 1;
+        mx /= ml; mz /= ml;
+        const k = d / Math.max(0.35, mx * n1[0] + mz * n1[1]);
+        return [p[0] + mx * k, p[1] + mz * k];
+      });
+    };
+    const W = L.riverWidth;
+    shapeMesh(grow(L.lake, 1.6), '#bdb3a2', 0.015); // stone quay
+    shapeMesh(ribbon(L.river, W + 3.2), '#bdb3a2', 0.016);
+    const water = { color: '#4c8fc0', roughness: 0.55, metalness: 0.05 };
+    shapeMesh(L.lake, water.color, 0.035, water);
+    shapeMesh(ribbon(L.river, W), water.color, 0.036, water);
+    const wet = (x, z) => inPoly(L.lake, x, z) || lineD(L.river, x, z) < W / 2 + 1.6;
+
+    // ---- routes: avenues, tram lines, railways ----
+    const routes = [...(L.roads || []), ...(L.trams || [])].map((r) => r.path);
+    const nearRoute = (x, z) => routes.some((path) => lineD(path, x, z) < 2.6);
+    const builtAt = (x, z) => [[1.2, 1.2], [1.2, -1.2], [-1.2, 1.2], [-1.2, -1.2]].some(([dx, dz]) => isBuilt(Math.round((x + dx) / PITCH), Math.round((z + dz) / PITCH)));
+
+    // ---- bridges ----
+    const bridges = [];
+    const addBridge = (ox, oz, ux, uz, needRoad, width = 5.4) => {
+      if (inPoly(L.lake, ox, oz)) return;
+      const end = (sg) => {
+        let dry = null;
+        for (let t = 1; t < 3 * PITCH; t += 0.5) {
+          const x = ox + ux * t * sg, z = oz + uz * t * sg;
+          if (wet(x, z)) { dry = null; continue; }
+          dry ??= t;
+          if (!needRoad) return t + 0.8;
+          if (builtAt(x, z) || nearRoute(x, z)) return t + 0.6;
+          if (t - dry > PITCH) return null;
+        }
+        return null;
+      };
+      const t1 = end(1), t0 = end(-1);
+      if (t1 == null || t0 == null) return;
+      const b = { a: [ox - ux * t0, oz - uz * t0], b: [ox + ux * t1, oz + uz * t1], width };
+      if (bridges.some((o) => Math.hypot((o.a[0] + o.b[0]) / 2 - (b.a[0] + b.b[0]) / 2, (o.a[1] + o.b[1]) / 2 - (b.a[1] + b.b[1]) / 2) < 6)) return;
+      bridges.push(b);
+    };
+    const cross = (p, q, a, b) => { // segment p-q against a-b: the crossing point, or null
+      const r = [q[0] - p[0], q[1] - p[1]], s = [b[0] - a[0], b[1] - a[1]];
+      const den = r[0] * s[1] - r[1] * s[0];
+      if (Math.abs(den) < 1e-9) return null;
+      const t = ((a[0] - p[0]) * s[1] - (a[1] - p[1]) * s[0]) / den, u = ((a[0] - p[0]) * r[1] - (a[1] - p[1]) * r[0]) / den;
+      return t >= 0 && t <= 1 && u >= 0 && u <= 1 ? [p[0] + t * r[0], p[1] + t * r[1]] : null;
+    };
+    const R = L.river;
+    // tram lines, avenues and railways always get their bridge
+    for (const path of [...routes, ...(L.rails || []).map((r) => r.path)]) {
+      for (let i = 1; i < path.length; i++) {
+        for (let j = 1; j < R.length; j++) {
+          const c = cross(path[i - 1], path[i], R[j - 1], R[j]);
+          if (!c) continue;
+          const dx = path[i][0] - path[i - 1][0], dz = path[i][1] - path[i - 1][1], l = Math.hypot(dx, dz);
+          addBridge(c[0], c[1], dx / l, dz / l, false, 6);
+        }
+      }
+    }
+    // streets: a bridge on every other street that reaches the water on both banks
+    for (let j = 1; j < R.length; j++) {
+      const [ax, az] = R[j - 1], [bx, bz] = R[j];
+      for (let k = -40; k <= 40; k++) {
+        if (k % 2) continue;
+        const c = (k + 0.5) * PITCH;
+        if ((ax - c) * (bx - c) < 0) addBridge(c, az + ((bz - az) * (c - ax)) / (bx - ax), 0, 1, true);
+        if ((az - c) * (bz - c) < 0) addBridge(ax + ((bx - ax) * (c - az)) / (bz - az), c, 1, 0, true);
+      }
+    }
+    const stone = new THREE.MeshStandardMaterial({ color: '#c9c0b0', roughness: 0.9 });
+    for (const br of bridges) {
+      const [ax, az] = br.a, [bx, bz] = br.b, len = Math.hypot(bx - ax, bz - az), yaw = Math.atan2(bx - ax, bz - az);
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(br.width, 0.3, len).translate(0, -0.08, 0), stone));
+      for (const sd of [-1, 1]) g.add(new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.55, len).translate(sd * (br.width / 2 - 0.15), 0.28, 0), stone));
+      // arches under the deck
+      const n = Math.max(1, Math.round(len / 9));
+      for (let k = 0; k < n; k++) {
+        const arch = new THREE.Mesh(new THREE.TorusGeometry(len / n / 2 - 0.4, 0.35, 6, 16, Math.PI), stone);
+        arch.rotation.y = Math.PI / 2;
+        for (const sd of [-1, 1]) {
+          const a2 = arch.clone();
+          a2.position.set(sd * (br.width / 2 - 0.1), -0.25, -len / 2 + (k + 0.5) * (len / n));
+          a2.rotation.x = Math.PI;
+          g.add(a2);
+        }
+      }
+      g.position.set((ax + bx) / 2, 0.07, (az + bz) / 2);
+      g.rotation.y = yaw;
+      g.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+      scene.add(g);
+    }
+    const onBridge = (x, z) => bridges.some((br) => segD(x, z, br.a, br.b) < br.width / 2);
+
+    // ---- avenues (asphalt where no block road is) ----
+    const asphalt = new THREE.MeshStandardMaterial({ color: '#5d646e', roughness: 1 });
+    for (const path of routes) {
+      for (let i = 1; i < path.length; i++) {
+        const [ax, az] = path[i - 1], [bx, bz] = path[i];
+        const len = Math.hypot(bx - ax, bz - az);
+        const m = new THREE.Mesh(new THREE.BoxGeometry(5, 0.04, len + 5), asphalt);
+        m.position.set((ax + bx) / 2, 0.02, (az + bz) / 2);
+        m.rotation.y = Math.atan2(bx - ax, bz - az);
+        m.receiveShadow = true;
+        scene.add(m);
+      }
+    }
+
+    // ground height of a street point: on the promenade pavers, on a bridge or on the road
+    const raised = L.blocks.filter((b) => b.kind === 'promenade' || (b.kind === 'plaza' && b.along === 'z'));
+    const heightAt = (x, z) => {
+      if (onBridge(x, z)) return 0.12;
+      for (const b of raised) {
+        const along = b.along === 'z';
+        if (Math.abs(x - b.x * PITCH) <= (along ? BLOCK : PITCH) / 2 + 0.01 && Math.abs(z - b.z * PITCH) <= (along ? PITCH : BLOCK) / 2 + 0.01) return 0.23;
+      }
+      return 0.03;
+    };
+
+    // a path walker: point and heading at a distance along a polyline
+    const walker = (path) => {
+      const segs = [];
+      let total = 0;
+      for (let i = 1; i < path.length; i++) {
+        const [ax, az] = path[i - 1], [bx, bz] = path[i], len = Math.hypot(bx - ax, bz - az);
+        segs.push({ ax, az, bx, bz, len, start: total });
+        total += len;
+      }
+      const at = (s) => {
+        s = Math.max(0, Math.min(total, s));
+        const sg = segs.find((q) => s <= q.start + q.len) || segs[segs.length - 1];
+        const t = (s - sg.start) / sg.len;
+        return { x: sg.ax + (sg.bx - sg.ax) * t, z: sg.az + (sg.bz - sg.az) * t, yaw: Math.atan2(sg.bx - sg.ax, sg.bz - sg.az) };
+      };
+      return { total, at };
+    };
+    /** Two rails along a path, laid in short pieces that follow the ground height. */
+    const railPieces = [];
+    const lay = (path, gauge, yAt) => {
+      const w = walker(path);
+      for (let s = 0; s < w.total; s += 1) {
+        const p = w.at(s + 0.5);
+        const nx = Math.cos(p.yaw), nz = -Math.sin(p.yaw);
+        for (const sd of [-1, 1]) railPieces.push([p.x + nx * sd * gauge / 2, yAt(p.x, p.z), p.z + nz * sd * gauge / 2, p.yaw]);
+      }
+    };
+
+    // ---- railways: ballast, sleepers, rails ----
+    const sleepers = [];
+    for (const rl of L.rails || []) {
+      const w = walker(rl.path);
+      for (let i = 1; i < rl.path.length; i++) {
+        const [ax, az] = rl.path[i - 1], [bx, bz] = rl.path[i];
+        const len = Math.hypot(bx - ax, bz - az);
+        const m = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.16, len), new THREE.MeshStandardMaterial({ color: '#8b8177', roughness: 1 }));
+        m.position.set((ax + bx) / 2, 0.08, (az + bz) / 2);
+        m.rotation.y = Math.atan2(bx - ax, bz - az);
+        m.receiveShadow = true;
+        scene.add(m);
+      }
+      for (let s = 0.6; s < w.total; s += 1.2) sleepers.push(w.at(s));
+      lay(rl.path, 1.5, () => 0.2);
+    }
+    if (sleepers.length) {
+      const sm = new THREE.InstancedMesh(new THREE.BoxGeometry(2.7, 0.08, 0.38), new THREE.MeshStandardMaterial({ color: '#6b5440' }), sleepers.length);
+      sleepers.forEach((p, i) => sm.setMatrixAt(i, new THREE.Matrix4().compose(V(p.x, 0.19, p.z), new THREE.Quaternion().setFromAxisAngle(up, p.yaw), V(1, 1, 1))));
+      scene.add(sm);
+    }
+    // ---- tram tracks ----
+    for (const tl of L.trams || []) lay(tl.path, 1.4, (x, z) => heightAt(x, z) + 0.02);
+    if (railPieces.length) {
+      const rm = new THREE.InstancedMesh(new THREE.BoxGeometry(0.13, 0.07, 1.04), new THREE.MeshStandardMaterial({ color: '#9aa1a8', metalness: 0.6, roughness: 0.4 }), railPieces.length);
+      railPieces.forEach(([x, y, z, yaw], i) => rm.setMatrixAt(i, new THREE.Matrix4().compose(V(x, y + 0.035, z), new THREE.Quaternion().setFromAxisAngle(up, yaw), V(1, 1, 1))));
+      scene.add(rm);
+    }
+
+    // ---- vehicles ----
+    const mats = {
+      tram: new THREE.MeshStandardMaterial({ color: '#2b6cc4', roughness: 0.5 }),
+      white: new THREE.MeshStandardMaterial({ color: '#f3f3ee', roughness: 0.6 }),
+      glass: new THREE.MeshStandardMaterial({ color: '#28323e', roughness: 0.2, metalness: 0.3 }),
+      train: new THREE.MeshStandardMaterial({ color: '#d42a20', roughness: 0.5 }),
+      roof: new THREE.MeshStandardMaterial({ color: '#7d858d', roughness: 0.6 }),
+    };
+    const car = (body, len, w, h) => {
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.55, len).translate(0, h * 0.275 + 0.25, 0), body));
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(w + 0.02, h * 0.3, len - 0.5).translate(0, h * 0.7 + 0.25, 0), mats.glass));
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.15, len).translate(0, h * 0.925 + 0.25, 0), body === mats.tram ? mats.white : mats.roof));
+      g.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+      scene.add(g);
+      return g;
+    };
+    const movers = [];
+    /** A vehicle of n cars along a path: loops round, or runs to the end and back. */
+    const vehicle = (path, { cars, len, w, h, body, speed, loop, phase, yAt }) => {
+      const wk = walker(path);
+      const parts = [...Array(cars)].map(() => car(body, len, w, h));
+      const span = cars * (len + 0.4);
+      movers.push((t) => {
+        let s;
+        if (loop) s = (phase * wk.total + t * speed) % wk.total;
+        else {
+          const run = wk.total - span - 4, cyc = (phase * 2 * run + t * speed) % (2 * run);
+          s = 2 + span + (cyc < run ? cyc : 2 * run - cyc);
+        }
+        parts.forEach((g, k) => {
+          let d = s - k * (len + 0.4) - len / 2;
+          if (loop) d = ((d % wk.total) + wk.total) % wk.total;
+          const p = wk.at(d);
+          g.position.set(p.x, yAt(p.x, p.z), p.z);
+          g.rotation.y = p.yaw;
+        });
+      });
+    };
+    (L.trams || []).forEach((tl) => {
+      const n = tl.loop ? 3 : 2;
+      for (let i = 0; i < n; i++) vehicle(tl.path, { cars: 2, len: 5.4, w: 2.3, h: 3.0, body: mats.tram, speed: 5, loop: tl.loop, phase: i / n, yAt: heightAt });
+    });
+    (L.rails || []).forEach((rl, i) => vehicle(rl.path, { cars: 3, len: 7.4, w: 2.7, h: 3.3, body: mats.train, speed: 11, loop: false, phase: i * 0.37, yAt: () => 0.2 }));
+    world.transit = (t) => movers.forEach((f) => f(t));
+    world.transit(0);
+  }
+
   /** Invite villages: a wooden gate with the village's name over the road into it, and a little village green. */
   function buildVillages(L) {
     for (const v of L.villages || []) {
+      const g = gate(v.name, v.sign);
+      g.userData.village = v;
+      (world.villages ||= []).push({ ...v, group: g });
+    }
+    // district gates (the Industrial Town)
+    for (const s of L.signs || []) gate(s.name, s);
+  }
+  function gate(name, sign) {
+    {
+      const v = { name };
       const g = new THREE.Group();
       const wood = new THREE.MeshStandardMaterial({ color: '#7b5a3c', roughness: 0.8 });
       for (const x of [-2.6, 2.6]) {
@@ -1061,18 +1436,18 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
         if (side < 0) p.rotation.y = Math.PI;
         g.add(p);
       }
-      g.position.set(v.sign.x, 0.02, v.sign.z);
-      g.rotation.y = v.sign.rot;
+      g.position.set(sign.x, 0.02, sign.z);
+      g.rotation.y = sign.rot;
       g.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-      g.userData.village = v;
       scene.add(g);
-      (world.villages ||= []).push({ ...v, group: g });
+      return g;
     }
   }
 
   /**
-   * Big steel pylons carrying power from the dam to the power plant (requested by @jjk-x2r, Day 6). The line follows
-   * the street grid in straight runs with right-angle corners, and goes round the city rather than through it.
+   * Big steel pylons carrying power from the dam to the power plant (requested by @jjk-x2r, Day 6). The line runs in
+   * straight legs with right-angle corners and never crosses another building: it tries the straight line, then
+   * one corner, then two corners along a street line, and keeps the shortest route that is clear.
    */
   function buildPowerLine() {
     const all = [...world.landmarks.values()];
@@ -1081,47 +1456,35 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     if (!dam || !plant) return;
     const L = world.layout;
     const V = (x, z) => new THREE.Vector3(x, 0, z);
-    const street = (c) => (Math.round((c - PITCH / 2) / PITCH) + 0.5) * PITCH; // nearest street line
-    const snap = (o) => V(street(o.outer.position.x), street(o.outer.position.z));
-    const ringE = (L.beltR + 1.5) * PITCH; // a street out past the green belt and the villages
-    // a 2 x 2 landmark straddles a street line: the line must not run through it
-    const own = new Set([dam.def.id, plant.def.id]); // a line may start inside its own landmark
-    const lm = new Map(L.blocks.filter((b) => b.landmark && !own.has(b.landmark)).map((b) => [`${b.x},${b.z}`, b.landmark]));
-    const clear = (a, b) => {
-      const alongX = Math.abs(a.z - b.z) < 0.5, g = Math.round((alongX ? a.z : a.x) / PITCH - 0.5);
-      const lo = Math.min(alongX ? a.x : a.z, alongX ? b.x : b.z), hi = Math.max(alongX ? a.x : a.z, alongX ? b.x : b.z);
-      for (let s = Math.ceil(lo / PITCH - 0.5); s <= Math.floor(hi / PITCH + 0.5); s++) {
-        const k1 = alongX ? `${s},${g}` : `${g},${s}`, k2 = alongX ? `${s},${g + 1}` : `${g + 1},${s}`;
-        if (lm.get(k1) && lm.get(k1) === lm.get(k2)) return false;
-      }
+    const own = new Set([dam.def.id, plant.def.id]);
+    const solid = new Set(L.blocks.filter((b) => (b.landmark && !own.has(b.landmark)) || ['homes', 'park', 'plaza', 'promenade', 'main-empty', 'yard', 'pitch', 'square'].includes(b.kind)).map((b) => `${b.x},${b.z}`));
+    const hit = (x, z) => { // inside a building's block (the roads between blocks are fine)
+      const bx = Math.round(x / PITCH), bz = Math.round(z / PITCH);
+      return Math.abs(x - bx * PITCH) < BLOCK / 2 + 0.5 && Math.abs(z - bz * PITCH) < BLOCK / 2 + 0.5 && solid.has(`${bx},${bz}`);
+    };
+    const clear = (pts) => pts.every((q, i) => {
+      if (!i) return true;
+      const a = pts[i - 1], n = Math.ceil(a.distanceTo(q) / 1.5);
+      for (let k = 0; k <= n; k++) { const p = a.clone().lerp(q, k / n); if (hit(p.x, p.z)) return false; }
       return true;
-    };
-    const inTown = (a, b) => { // does an axis segment pass through the city and its belt?
-      const e = ringE - 1;
-      if (Math.abs(a.z - b.z) < 0.5) return Math.abs(a.z) < e && Math.min(a.x, b.x) < e && Math.max(a.x, b.x) > -e;
-      return Math.abs(a.x) < e && Math.min(a.z, b.z) < e && Math.max(a.z, b.z) > -e;
-    };
-    const ok = (pts) => pts.every((q, i) => i === 0 || (clear(pts[i - 1], q) && !inTown(pts[i - 1], q)));
-    const tidy = (pts) => pts.filter((q, i) => i === 0 || q.distanceTo(pts[i - 1]) > 0.5);
-    // onto the ring street, straight out along the nearer axis
-    const toRing = (p) => (Math.abs(p.x) >= Math.abs(p.z) ? V(Math.sign(p.x) * ringE, p.z) : V(p.x, Math.sign(p.z) * ringE));
-    const corners = [V(ringE, ringE), V(-ringE, ringE), V(-ringE, -ringE), V(ringE, -ringE)];
-    const side = (p) => (Math.abs(p.x - ringE) < 1 ? 0 : Math.abs(p.z - ringE) < 1 ? 1 : Math.abs(p.x + ringE) < 1 ? 2 : 3); // which edge of the ring
-    const aroundRing = (a, b) => { // the shorter way round the ring, through its corners
-      const sa = side(a), sb = side(b);
-      const cw = [], ccw = [];
-      for (let s = sa; s !== sb; s = (s + 1) % 4) ccw.push(corners[s]);
-      for (let s = sa; s !== sb; s = (s + 3) % 4) cw.push(corners[(s + 3) % 4]);
-      const len = (pts) => pts.reduce((t, q, i) => (i ? t + q.distanceTo(pts[i - 1]) : 0), 0);
-      const A = [a, ...ccw, b], B = [a, ...cw, b];
-      return len(A) <= len(B) ? A : B;
-    };
-    const p = snap(plant);
-    if (dam) {
-      const d = snap(dam);
-      const tries = [[d, V(p.x, d.z), p], [d, V(d.x, p.z), p]].map(tidy);
-      bigLine(tries.find(ok) || tidy([d, ...aroundRing(toRing(d), toRing(p)), p]));
+    });
+    const length = (pts) => pts.reduce((t, q, i) => (i ? t + q.distanceTo(pts[i - 1]) : 0), 0);
+    const a = V(dam.outer.position.x, dam.outer.position.z), b = V(plant.outer.position.x, plant.outer.position.z);
+    const routes = [[a, b], [a, V(b.x, a.z), b], [a, V(a.x, b.z), b]];
+    for (let k = -40; k <= 40; k++) {
+      const c = (k + 0.5) * PITCH;
+      routes.push([a, V(a.x, c), V(b.x, c), b], [a, V(c, a.z), V(c, b.z), b]);
     }
+    // a straight line only when it really is straight (along x or z)
+    const ok = routes.filter((r) => r.every((q, i) => !i || Math.abs(q.x - r[i - 1].x) < 0.5 || Math.abs(q.z - r[i - 1].z) < 0.5));
+    const best = ok.filter(clear).sort((p, q) => length(p) - length(q))[0];
+    if (!best) return;
+    const path = best.filter((q, i) => i === 0 || q.distanceTo(best[i - 1]) > 0.5).map((q) => q.clone());
+    // start and end at the edge of the dam and the plant, not in the middle of them
+    const trim = (p, q, d) => { const l = p.distanceTo(q); if (l > d + 2) p.lerp(q, d / l); };
+    trim(path[0], path[1], 13);
+    trim(path[path.length - 1], path[path.length - 2], 13);
+    bigLine(path);
   }
 
   /** Big steel pylons along a path of street points (outside the city), three heavy sagging cables. */

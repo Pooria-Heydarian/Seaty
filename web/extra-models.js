@@ -430,7 +430,7 @@ export function createExtraModels({ THREE, M, mat, FLOOR_H, glow, shadowAll }) {
       wheel.rotation.z = t * 0.25;
       cabins.forEach((c) => { c.rotation.z = -wheel.rotation.z; }); // cabins stay level
       carousel.rotation.y = t * 0.8;
-      const u = (t * 0.12) % 1;
+      const u = (((t * 0.12) % 1) + 1) % 1; // also before time 0 (the Short and the tour start there)
       car.position.copy(curve.getPointAt(u));
       car.lookAt(curve.getPointAt((u + 0.01) % 1));
     };

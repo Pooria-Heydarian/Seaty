@@ -118,7 +118,7 @@ function selectLandmark(lm, { fly = true, updateUrl = true } = {}) {
   $('info-meta').textContent = `Landmark${d.requestedBy ? ` · requested by ${d.requestedBy}` : ''}${d.added ? ` · opened ${new Date(d.added).toLocaleDateString()}` : ''}`;
   $('info-floors').textContent = lm.floors;
   $('info-rank').textContent = '★';
-  $('info-plot').textContent = lm.district || 'downtown';
+  $('info-plot').textContent = lm.place && lm.place !== lm.district ? `${lm.place} · ${lm.district}` : lm.district || 'downtown';
   const avatar = $('info-avatar');
   avatar.textContent = '★';
   const link = $('info-channel');
@@ -441,13 +441,13 @@ async function boot() {
   else if (startLandmark) selectLandmark(startLandmark, { updateUrl: false });
   else replayGrowth(Math.min(6000, 1500 + world.list.length * 8));
   // For screenshots / checks: window.__seatyView(azimuth, distance, elevation 0..1 where 1 = straight down)
-  window.__seatyView = (az, dist, elevK) => {
+  window.__seatyView = (az, dist, elevK, tx = 0, tz = 0) => {
     const el = Math.min(1.55, elevK * (Math.PI / 2));
     flight = null;
     controls.maxDistance = Math.max(controls.maxDistance, dist * 1.1);
     controls.maxPolarAngle = Math.PI / 2;
-    camera.position.set(Math.sin(az) * Math.cos(el) * dist, Math.sin(el) * dist, Math.cos(az) * Math.cos(el) * dist);
-    controls.target.set(0, 0, 0);
+    camera.position.set(tx + Math.sin(az) * Math.cos(el) * dist, Math.sin(el) * dist, tz + Math.cos(az) * Math.cos(el) * dist);
+    controls.target.set(tx, 0, tz);
     controls.update();
   };
   // For checks: look at the airship from outside its route (k = distance factor)

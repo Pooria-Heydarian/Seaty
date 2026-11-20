@@ -144,7 +144,7 @@ switch (cmd) {
     specials.landmarks.push(def);
     save();
     const plan = landmarkPlan(def);
-    const where = { civic: 'downtown', main: 'on Main Street', local: "between the houses of the owner's neighbourhood", belt: 'in the green belt', outskirts: 'in the outskirts', station: 'at the end of Main Street' }[plan.district];
+    const where = { civic: 'in the Old Town by the river', main: 'on Bahnhofstrasse', local: "between the houses of the owner's neighbourhood", plaza: 'on one of the city squares', leisure: 'on the lakeside promenade', hill: 'on the Zürichberg hill', sports: 'in the Sports Village', country: 'in the countryside', industry: 'in the Industrial Quarter', transport: 'at the airport', station: 'at the main station' }[plan.district];
     console.log(`✓ Landmark "${name}" (${type}, size ${plan.size}) added ${where}${by ? `, requested by ${by.name}` : ''}`);
     break;
   }
