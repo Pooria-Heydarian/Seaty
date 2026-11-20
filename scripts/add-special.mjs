@@ -16,6 +16,8 @@
 //     or the name. Pick --kind by meaning: "Airport", "Big Airport" and "Airfield" are all kind "airport".
 //   npm run special -- wish "dragon statue" --by <who> --note "needs its own 3D model"
 //   npm run special -- remove house|upgrade|landmark <who-or-landmark-id> [type]
+//   npm run special -- story <who | landmark id> "<line>" [upgrade type]   the anchor's set-up line in the Short
+//   Any add command also takes --story "<line>".
 //
 // <who> = @handle, display name or channel ID of a resident. Add --comment <commentId> to remember which comment asked.
 
@@ -53,9 +55,33 @@ function resident(who) {
   return r;
 }
 const save = () => writeJSON(SPECIALS_FILE, specials);
+// --story "<line>": how the anchor sets up this request in the Short, before it is built (a fun retelling, not a quote)
+const story = () => {
+  const t = typeof flags.story === 'string' ? flags.story.replace(/s+/g, ' ').trim() : '';
+  if (t.length > 160) fail('--story is too long: one or two short sentences (max 160 characters).');
+  return t ? { story: t } : {};
+};
 const slug = (s) => norm(s).replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 40) || 'landmark';
 
 switch (cmd) {
+  case 'story': {
+    // npm run special -- story <who | landmark id> "<line>" [upgrade type]   (sets the line on their newest special)
+    if (!a || !b) fail('Usage: npm run special -- story <who | landmark id> "<line>" [upgrade type]');
+    flags.story = b;
+    const line = story();
+    const lm = specials.landmarks.find((l) => l.id === a || norm(l.name) === norm(a));
+    const r = lm ? null : resident(a);
+    const pool = lm ? [lm] : [
+      ...(specials.houses || []).filter((h) => h.resident === r.id),
+      ...(specials.upgrades || []).filter((u) => u.resident === r.id && (!c || u.type === c)),
+    ].sort((x, y) => String(x.added).localeCompare(String(y.added)));
+    const target = pool.at(-1);
+    if (!target) fail(`No special found for ${a}.`);
+    Object.assign(target, line);
+    save();
+    console.log(`✓ Story for ${target.title || target.name || target.type}: "${line.story}"`);
+    break;
+  }
   case 'kit': {
     const list = (o) => Object.entries(o).map(([k, v]) => `  ${k.padEnd(15)} ${v}`).join('\n');
     console.log(`SHAPES\n${list(HOUSE_SHAPES)}\n\nROOFS\n${list(HOUSE_ROOFS)}\n\nEXTRAS (max ${MAX_HOUSE_EXTRAS})\n${list(HOUSE_EXTRAS)}\n\nUPGRADES\n${list(UPGRADE_TYPES)}\n\nLANDMARK MODELS (anything else = generic hall)\n${list(LANDMARK_TYPES)}`);
@@ -76,7 +102,7 @@ switch (cmd) {
     const recipe = cleanHouseRecipe(raw);
     const title = String(flags.title || '').trim().slice(0, 32) || `${recipe.shape[0].toUpperCase()}${recipe.shape.slice(1)} House`;
     specials.houses = specials.houses.filter((h) => !same(h.resident, r));
-    specials.houses.push({ resident: r.id, name: r.name, title, recipe, ...(flags.comment ? { requestedIn: flags.comment } : {}), added: date });
+    specials.houses.push({ resident: r.id, name: r.name, title, recipe, ...(flags.comment ? { requestedIn: flags.comment } : {}), ...story(), added: date });
     save();
     console.log(`✓ ${r.name}'s house is now "${title}": ${JSON.stringify(recipe)}`);
     break;
@@ -85,7 +111,7 @@ switch (cmd) {
     const r = resident(a);
     if (!UPGRADE_TYPES[b]) fail(`Unknown upgrade "${b}". Options: ${Object.keys(UPGRADE_TYPES).join(', ')}`);
     if (specials.upgrades.some((u) => same(u.resident, r) && u.type === b)) fail(`${r.name} already has the ${b}.`);
-    specials.upgrades.push({ resident: r.id, name: r.name, type: b, ...(flags.comment ? { requestedIn: flags.comment } : {}), added: date });
+    specials.upgrades.push({ resident: r.id, name: r.name, type: b, ...(flags.comment ? { requestedIn: flags.comment } : {}), ...story(), added: date });
     save();
     console.log(`✓ ${r.name} got the ${b}`);
     break;
@@ -113,7 +139,7 @@ switch (cmd) {
     let id = slug(name);
     while (specials.landmarks.some((l) => l.id === id)) id += '-2';
     const hex = (v) => (typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v) ? v : null);
-    const def = { id, type, kind, name, ...(by ? { requestedBy: by.name, requestedById: by.id } : {}), ...(hex(flags.color) ? { color: flags.color } : {}), ...(hex(flags.accent) ? { accent: flags.accent } : {}), ...(flags.comment ? { requestedIn: flags.comment } : {}), added: date };
+    const def = { id, type, kind, name, ...(by ? { requestedBy: by.name, requestedById: by.id } : {}), ...(hex(flags.color) ? { color: flags.color } : {}), ...(hex(flags.accent) ? { accent: flags.accent } : {}), ...(flags.comment ? { requestedIn: flags.comment } : {}), ...story(), added: date };
     specials.landmarks.push(def);
     save();
     const plan = landmarkPlan(def);

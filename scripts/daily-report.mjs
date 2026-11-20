@@ -48,11 +48,14 @@ const norm = (s) => String(s || '').trim().replace(/^@/, '').toLowerCase();
 const findResident = (who) => city.residents.find((r) => r.id === who || norm(r.name) === norm(who));
 const isNew = (key) => !seen[key] || seen[key] === date; // a re-run on the same day still shows it
 const newSpecials = [];
-// The comment that asked for each special (the Short lets the viewer "say" it before the build).
+// The comment that asked for each special (shown on the card) and the anchor's set-up line (--story).
 const askedText = new Map(((readJSON(NEW_COMMENTS_FILE)?.comments) || []).map((c) => [c.id, c.text]));
 const asked = (x) => {
   const t = String(askedText.get(x.requestedIn) || '').replace(/s+/g, ' ').trim();
-  return t && !/https?:|www./i.test(t) && t.length <= 140 && t.split(' ').length >= 3 ? { comment: t } : {};
+  return {
+    ...(t && !/https?:|www./i.test(t) && t.length <= 140 && t.split(' ').length >= 3 ? { comment: t } : {}),
+    ...(x.story ? { story: x.story } : {}),
+  };
 };
 (specials.landmarks || []).forEach((l) => {
   const key = `landmark:${l.id}`;

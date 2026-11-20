@@ -138,14 +138,13 @@ function upgradeShot(s, lt) {
 
 // ---------- Timeline ----------
 // The Short tells the day like a story:
-//   1. hook: the best request of the day, in the viewer's own words (a second voice), then it gets built
+//   1. hook: the best request of the day, told by the anchor as a little story (their comment on the card), then it gets built
 //   2. "Day N of adding every commenter…" over the whole city
-//   3. more requests (viewer asks → anchor answers → the building rises with a thud and dust)
+//   3. more requests (the set-up → the building rises with a thud and dust → the pay-off line)
 //   4. a fast montage of everything else that is new, then newcomers, growers, the leaderboard
 //   5. the outro at night, and a last camera glide back to the opening shot, so the Short loops
 // Captions light up word by word with the voice; whooshes, thuds, pops and dings go on an effects track.
-const MAX_STORIES = 3; // full ask → build stories (the rest go into the fast montage)
-const VIEWER_VOICES = ['am_puck', 'af_bella', 'am_liam', 'af_nicole', 'am_echo', 'af_sky', 'bm_lewis', 'am_eric'];
+const MAX_STORIES = 3; // full set-up → build stories (the rest go into the fast montage)
 const RISE = 1.1; // seconds a building takes to rise
 
 /** Word timings for a spoken line: longer words and pauses after punctuation take longer. */
@@ -239,7 +238,6 @@ function buildTimeline(city, ch) {
   const say = (name) => name.replace(/^@/, '');
   const pick = (arr, i) => arr[i % arr.length];
   const art = (w) => (/^[aeiou]/i.test(w) ? 'an' : 'a');
-  const voiceOf = (name) => VIEWER_VOICES[hashId(name) % VIEWER_VOICES.length];
 
   const UPGRADE_LINE = {
     pool: (n) => [`${n}'s house just got a swimming pool!`, 'Got a swimming pool!'],
@@ -280,8 +278,8 @@ function buildTimeline(city, ch) {
     s.kind === 'landmark' ? world.landmarks.has(s.id)
       : s.kind === 'house' ? world.entries.get(s.id)?.recipe
         : world.entries.get(s.id)?.upgradeObjects?.[s.type]);
-  // best stories first: dream houses, then landmarks, then upgrades; a request we can quote beats one we can't
-  const rank = (s) => ({ house: 0, landmark: 1, upgrade: 2 })[s.kind] * 2 + (s.comment ? 0 : 1);
+  // best stories first: dream houses, then landmarks, then upgrades; one with a written set-up line beats one without
+  const rank = (s) => ({ house: 0, landmark: 1, upgrade: 2 })[s.kind] * 2 + (s.story ? 0 : 1);
   const stories = [...specials].sort((a, b) => rank(a) - rank(b));
   const featured = stories.slice(0, MAX_STORIES);
   const rapid = stories.slice(MAX_STORIES);
@@ -291,12 +289,19 @@ function buildTimeline(city, ch) {
     ? `Day ${ch.day} of adding every commenter to my city.${city.residentCount ? ` ${city.residentCount} people live here so far.` : ''}`
     : `This is day ${ch.day} of adding every commenter to my city.${nNew ? ` ${nNew} new ${nNew === 1 ? 'neighbor' : 'neighbors'} moved in today.` : ''}`;
 
-  // one request: the viewer asks (their own words, their own voice), then the anchor answers and it is built
+  // one request: the anchor sets it up like a little story (the daily session writes it: --story), then it is built
+  const setUp = (sp, i) => {
+    if (sp.story) return sp.story;
+    const n = say(sp.kind === 'landmark' ? sp.requestedBy || 'Someone' : sp.name);
+    if (sp.kind === 'house') return pick([`${n} was tired of living in a boring box.`, `${n} wanted a home nobody else has.`, `${n} had a very specific dream.`], i);
+    if (sp.kind === 'landmark') return pick([`${n} thought the city was missing something.`, `${n} had a big idea for the whole town.`], i);
+    return pick([`${n}'s backyard looked a little empty.`, `${n} wanted something extra at home.`], i);
+  };
   const story = (sp, i, hook) => {
     const kind = sp.kind;
     const entry = kind === 'landmark' ? null : world.entries.get(sp.id);
-    if (sp.comment) add('ask', 2.0, { sp, entry, hook }, { text: sp.comment, at: 0.25, voice: voiceOf(sp.name) });
-    const asked = !!sp.comment;
+    const asked = hook || !!sp.story || !!sp.comment;
+    if (asked) add('ask', 2.0, { sp, entry, hook }, { text: setUp(sp, i), at: 0.25 });
     let text;
     if (kind === 'house') {
       text = asked
@@ -577,25 +582,10 @@ function buildTimeline(city, ch) {
     $('c-floors').innerHTML = floorsHtml;
     $('c-floors').style.display = floorsHtml ? '' : 'none';
   }
-  // the viewer's comment, word by word, lit up as their voice reads it
-  function karaokeCard(s, time) {
-    if (!s.cardWords) {
-      $('c-comment').innerHTML = '';
-      s.cardWords = s.words.map((w) => {
-        const span = document.createElement('span');
-        span.textContent = `${w.w} `;
-        $('c-comment').appendChild(span);
-        return span;
-      });
-    } else if ($('c-comment').firstChild !== s.cardWords[0]) {
-      $('c-comment').replaceChildren(...s.cardWords);
-    }
-    s.words.forEach((w, j) => s.cardWords[j].classList.toggle('said', time >= w.t0));
-  }
   // big captions for the anchor's lines
   let capKey = '';
   function caption(s, time) {
-    if (!s?.chunks || s.type === 'ask') return 0;
+    if (!s?.chunks) return 0;
     const c = s.chunks.find((ck) => time >= ck[0].t0 - 0.05 && time < ck.at(-1).t1 + 0.25);
     if (!c) return 0;
     const key = `${scenes.indexOf(s)}:${s.chunks.indexOf(c)}`;
@@ -683,13 +673,9 @@ function buildTimeline(city, ch) {
     const labels = new Map();
 
     if (s.type === 'ask') {
-      if (lastCard !== s) {
-        fillCard(s.sp.name, s.sp.kind === 'landmark' ? 'Asked for a landmark' : 'Asked', '', '');
-        s.cardWords = null;
-      }
-      karaokeCard(s, time);
-      $('c-comment').style.display = '';
-      cardOn = fade(lt, 0.05, s.dur + 10, 0.2);
+      const who = s.sp.kind === 'landmark' ? s.sp.requestedBy : s.sp.name;
+      if (lastCard !== s) fillCard(who || s.sp.name, 'Asked', s.sp.comment || '', '');
+      cardOn = who && s.sp.comment ? fade(lt, 0.15, s.dur + 10, 0.25) : 0;
     } else if (['house', 'landmark', 'upgrade'].includes(s.type)) {
       const prevAsk = scenes[i - 1]?.type === 'ask' && scenes[i - 1].sp === s.sp;
       if (lastCard !== s) {
