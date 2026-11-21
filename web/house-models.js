@@ -571,4 +571,358 @@ export const HOUSE_MODELS = {
     g.add(new THREE.Mesh(k.box(0.4, 1.2, 0.4, H + 0.2).translate(1.8, 0, -1.6), plain('#9a8f84', { flatShading: true })));
     return { body, top: H + 1.4, eave: H, front: 1.4, width: 4.6 };
   },
+
+  // ---------------- Day 9 (2026-11-21) requests ----------------
+
+  /** A blocky voxel house: stone base, plank walls with log corners, a stepped roof, glass windows, a torch and a cube tree (Day 9, @Oliverzinn-k7i). */
+  'block-house'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const H = 1.6 + h; // walls: 2.8 at 1 floor
+    const tex = (base, opts) => new THREE.MeshStandardMaterial({ map: pixelTex(THREE, base, opts), roughness: 0.95 });
+    const planks = (w, hh) => { const m = tex(r.wall, { planks: true }); m.map.repeat.set(w, hh); return m; };
+    // stone foundation and grass blocks round the house
+    const stone = tex('#8a8a86', { vary: 0.25 });
+    stone.map.repeat.set(4.4, 0.6);
+    g.add(new THREE.Mesh(k.box(4.4, 0.6, 4.4, 0), stone));
+    const grassTop = tex('#5fae3a', { vary: 0.2 });
+    const dirt = tex('#8b5a2b', { vary: 0.2 });
+    for (const [x, z] of [[-2.55, 1.6], [2.55, -1.2], [-2.55, -2.0]]) {
+      g.add(new THREE.Mesh(k.box(0.9, 0.6, 0.9, 0).translate(x, 0, z), [dirt, dirt, grassTop, dirt, dirt, dirt]));
+    }
+    // plank walls with log pillars on the corners
+    const body = new THREE.Mesh(k.box(4, H, 4, 0.6), planks(4, H));
+    g.add(body);
+    const log = tex('#5b3d22', { vary: 0.18, stripes: true });
+    for (const [x, z] of [[-2, -2], [2, -2], [-2, 2], [2, 2]]) g.add(new THREE.Mesh(k.box(0.5, H, 0.5, 0.6).translate(x, 0, z), log));
+    // glass windows on every floor, both sides and the back, and a plank door
+    const glass = plain('#bfe3ff', { transparent: true, opacity: 0.75, emissive: '#ffe7a8', emissiveIntensity: 0.15 });
+    for (let y = 1.0; y < 0.6 + H - 0.5; y += k.FLOOR_H) {
+      g.add(new THREE.Mesh(k.box(0.8, 0.7, 0.06, y).translate(1.1, 0, 2.03), glass));
+      for (const s of [-1, 1]) g.add(new THREE.Mesh(k.box(0.06, 0.7, 0.8, y).translate(s * 2.03, 0, 0), glass));
+      g.add(new THREE.Mesh(k.box(0.8, 0.7, 0.06, y).translate(0, 0, -2.03), glass));
+    }
+    const doorM = tex(r.door, { planks: true });
+    doorM.map.repeat.set(1, 2);
+    g.add(new THREE.Mesh(k.box(0.8, 1.6, 0.08, 0.6).translate(-0.8, 0, 2.04), doorM));
+    // stepped roof: three layers of darker planks, like stairs
+    for (let i = 0; i < 3; i++) {
+      const roofM = tex(r.roofColor, { planks: true });
+      roofM.map.repeat.set(4.8, 0.5);
+      g.add(new THREE.Mesh(k.box(4.8, 0.5, 4.8 - i * 1.5, 0.6 + H + i * 0.5), roofM));
+    }
+    // a torch by the door
+    g.add(new THREE.Mesh(k.box(0.1, 0.5, 0.1, 1.5).translate(-1.4, 0, 2.15), plain('#7b5a3c')));
+    g.add(new THREE.Mesh(k.box(0.16, 0.16, 0.16, 2.0).translate(-1.4, 0, 2.15), glowing(r.accent || '#ffd23f', 1.2, 3)));
+    // a cube tree at the side
+    g.add(new THREE.Mesh(k.box(0.4, 1.6, 0.4, 0).translate(2.55, 0, 1.6), log));
+    g.add(new THREE.Mesh(k.box(1.3, 1.1, 1.3, 1.5).translate(2.55, 0, 1.6), tex('#3f8f2f', { vary: 0.3 })));
+    const top = 0.6 + H + 1.5;
+    return { body, top, eave: 0.6 + H, front: 2.1, width: 4.8 };
+  },
+
+  /** A glass tower for donut lovers: a giant pink-iced donut on the roof, a lit donut sign and a donut-shop front (Day 9, @RichardSpruill). */
+  'donut-tower'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const H = 3.2 + h * 1.1;
+    const body = k.windowBox(3.0, H, 3.0, r.wall, 0);
+    g.add(body);
+    g.add(new THREE.Mesh(k.box(3.2, 0.3, 3.2, H), plain('#2b2d42')));
+    // shop front: a pink awning and a glowing band all round the tower
+    g.add(new THREE.Mesh(k.box(3.3, 0.18, 0.8, 1.6).translate(0, 0, 1.75), plain(r.roofColor)));
+    g.add(new THREE.Mesh(k.box(3.06, 0.3, 3.06, H - 0.6), glowing(r.accent, 0.5, 2.2)));
+    g.add(k.door(r.door, 1.52, 0.9, 0));
+    // the giant donut, standing up on the roof so the street sees its hole
+    const R = 1.35, tube = 0.62, cy = H + 0.3 + R + tube;
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.5, 0.5, 12).translate(0, H + 0.3 + 0.25, 0), plain('#2b2d42')));
+    g.add(new THREE.Mesh(new THREE.TorusGeometry(R, tube, 16, 36).translate(0, cy, 0), plain('#d9a066', { roughness: 0.7 })));
+    const icing = new THREE.Mesh(new THREE.TorusGeometry(R, tube * 1.05, 14, 36).translate(0, cy, 0.06), plain(r.roofColor, { roughness: 0.35 }));
+    icing.scale.set(1, 1, 0.72);
+    g.add(icing);
+    const cols = ['#ffffff', '#3a86ff', '#ffd23f', '#5cc55a', '#e63946'];
+    for (let n = 0; n < 40; n++) {
+      const a = (n / 40) * Math.PI * 2, off = (((n * 7) % 5) / 5 - 0.5) * tube;
+      const s = new THREE.Mesh(new THREE.CapsuleGeometry(0.04, 0.12, 2, 4), plain(cols[n % 5]));
+      s.position.set(Math.cos(a) * (R + off), cy + Math.sin(a) * (R + off), tube * 0.8);
+      s.rotation.z = n * 1.3;
+      g.add(s);
+    }
+    return { body, top: cy + R + tube, eave: H, front: 1.6, width: 3.4 };
+  },
+
+  /** A giant strawberry house: red berry with yellow seeds, a leafy green crown, round windows on every floor (Day 9, @ChristianHathaway-h4w). */
+  strawberry(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const H = 2.8 + h; // the berry grows with every floor
+    // a berry outline: round shoulders, pointed bottom (lathe)
+    const pts = [];
+    for (let i = 0; i <= 16; i++) {
+      const t = i / 16;
+      const y = t * H;
+      // from a blunt tip at the ground up to wide shoulders, then rounding in under the leaves
+      const rad = t < 0.72 ? 0.7 + 1.45 * Math.pow(Math.sin((Math.PI / 2) * (t / 0.72)), 0.8) : 2.15 * Math.cos(((t - 0.72) / 0.28) * (Math.PI / 2) * 0.72);
+      pts.push(new THREE.Vector2(Math.max(0.05, rad), y));
+    }
+    pts.push(new THREE.Vector2(0.01, H));
+    const berry = plain(r.wall, { roughness: 0.45 });
+    const body = new THREE.Mesh(new THREE.LatheGeometry(pts, 32).translate(0, 0.15, 0), berry);
+    g.add(body);
+    // seeds all over
+    const seed = plain('#ffd23f');
+    for (let n = 0; n < 70; n++) {
+      const t = 0.1 + ((n * 37) % 80) / 100, a = n * 2.4;
+      const p = pts[Math.round(t * 16)];
+      const s = new THREE.Mesh(new THREE.SphereGeometry(0.06, 6, 4).scale(1, 1.6, 1), seed);
+      s.position.set(Math.cos(a) * p.x * 1.0, p.y + 0.15, Math.sin(a) * p.x * 1.0);
+      g.add(s);
+    }
+    // leafy crown and a stem
+    const leaf = plain(r.roofColor || '#3f9a3a', { flatShading: true });
+    for (let i = 0; i < 8; i++) {
+      const l = new THREE.Mesh(new THREE.ConeGeometry(0.45, 1.6, 4).rotateX(Math.PI / 2).translate(0, 0, 0.8), leaf);
+      l.position.set(0, H + 0.1, 0);
+      l.rotation.set(-0.35, (i / 8) * Math.PI * 2, 0, 'YXZ');
+      g.add(l);
+    }
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 0.9, 8).translate(0, H + 0.55, 0), leaf));
+    // round windows on every floor and a door at the front
+    for (let y = 0.9; y < H - 0.4; y += k.FLOOR_H) {
+      const t = (y - 0.15) / H, rad = pts[Math.round(t * 16)].x;
+      for (const a of [-0.55, 0.55, Math.PI]) {
+        const w = new THREE.Mesh(new THREE.CircleGeometry(0.24, 16), glowing('#fff3c4', 0.3, 1.8));
+        w.position.set(Math.sin(a) * (rad + 0.02), y + 0.3, Math.cos(a) * (rad + 0.02));
+        w.rotation.y = a;
+        g.add(w);
+      }
+    }
+    g.add(k.door(r.door, pts[2].x + 0.05, 0.8, 0.15));
+    return { body, top: H + 1.1, eave: H * 0.75, front: 2.0, width: 4.4 };
+  },
+
+  /** A taco house: a crunchy shell lying on its side, filled with lettuce, tomato, cheese and meat, a door in the end (Day 9, @Ivanna-Gonzalez-12). */
+  taco(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const R = 2.0 + h * 0.25; // a bigger taco with every floor
+    const D = 1.7; // how thick the taco is (front to back)
+    const cy = R + 0.15;
+    const shellM = plain(r.wall, { roughness: 0.8, side: THREE.DoubleSide });
+    // the fold: the lower half of a tube, front to back
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(R, R, D, 32, 1, true, -Math.PI / 2, Math.PI).rotateX(Math.PI / 2).translate(0, cy, 0), shellM);
+    g.add(body);
+    // the two sides of the tortilla: half-moons, with toasted spots
+    for (const z of [-D / 2, D / 2]) {
+      const side = new THREE.Mesh(new THREE.CircleGeometry(R, 32, Math.PI, Math.PI).translate(0, cy, z), shellM);
+      g.add(side);
+      for (let n = 0; n < 9; n++) {
+        const a = Math.PI + 0.35 + ((n * 37) % 100) / 100 * (Math.PI - 0.7), rr = R * (0.35 + ((n * 53) % 60) / 100);
+        g.add(new THREE.Mesh(new THREE.CircleGeometry(0.13, 8).translate(Math.cos(a) * rr, cy + Math.sin(a) * rr, z + Math.sign(z) * 0.01), plain('#c98a2e', { side: THREE.DoubleSide })));
+      }
+    }
+    // the filling along the top: meat, lettuce ruffles poking out, tomato and cheese
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(R * 1.85, 0.5, D * 0.9).translate(0, cy - 0.1, 0), plain('#7a4a2b', { flatShading: true })));
+    const lettuce = plain(r.roofColor || '#6cc24a', { flatShading: true });
+    for (let i = 0; i < 9; i++) {
+      const x = -R * 0.9 + (i * R * 1.8) / 8;
+      for (const z of [-D / 2, D / 2]) g.add(new THREE.Mesh(new THREE.IcosahedronGeometry(0.36, 0).translate(x, cy + 0.25, z * 0.85), lettuce));
+    }
+    for (let i = 0; i < 8; i++) g.add(new THREE.Mesh(k.box(0.3, 0.26, 0.3, cy + 0.3).translate(-R * 0.8 + i * (R * 1.6) / 7, 0, ((i * 31) % 10) / 10 * D * 0.6 - D * 0.3), plain('#e63946')));
+    for (let i = 0; i < 12; i++) g.add(new THREE.Mesh(k.box(0.5, 0.05, 0.08, cy + 0.55).translate(-R * 0.75 + (i % 6) * R * 0.3, 0, i < 6 ? -0.25 : 0.25), plain(r.accent || '#ffd23f')));
+    // a door and round windows on the front half-moon
+    g.add(k.door(r.door, D / 2 + 0.02, 0.8, 0.15));
+    for (const x of [-R * 0.55, R * 0.55]) {
+      const w = new THREE.Mesh(new THREE.CircleGeometry(0.26, 16), glowing('#fff3c4', 0.3, 1.8));
+      w.position.set(x, cy - R * 0.35, D / 2 + 0.03);
+      g.add(w);
+    }
+    return { body, top: cy + 0.9, eave: cy, front: D / 2, width: R * 2 };
+  },
+
+  /** A house inside a roller coaster: the track loops round and over the house, a coaster train races round (Day 9, @ThatFury325Guy). */
+  'coaster-house'(g, r, h, k) {
+    const { THREE, plain } = k;
+    const H = 1.8 + h;
+    const body = k.windowBox(2.4, H, 2.4, r.wall, 0);
+    g.add(body);
+    k.roof(g, 'gable', r.roofColor, 2.7, 2.7, H);
+    g.add(k.door(r.door, 1.22, 0.8, 0));
+    // the track: round the house, up over the roof and through a loop at the side
+    const top = H + 2.2;
+    const pts = [
+      [2.3, 0.6, 2.2], [0, 0.5, 2.5], [-2.3, 0.7, 2.2], [-2.6, top * 0.5, 0], [-2.0, top, -1.6],
+      [0, top + 0.6, -2.3], [1.6, top * 0.8, -2.0], [2.5, 1.6, -1.6], [2.7, 3.2, -0.2], [2.4, 1.3, 0.4], [2.6, 0.8, 1.4],
+    ].map(([x, y, z]) => new THREE.Vector3(x, y, z));
+    const curve = new THREE.CatmullRomCurve3(pts, true, 'catmullrom', 0.5);
+    const rail = plain(r.accent || '#e63946', { metalness: 0.4, roughness: 0.4 });
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 160, 0.09, 6, true), rail));
+    // supports down to the ground
+    for (let i = 0; i < 14; i++) {
+      const p = curve.getPointAt(i / 14);
+      if (p.y < 0.8) continue;
+      g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, p.y, 5).translate(p.x, p.y / 2, p.z), plain('#8d96a3')));
+    }
+    // the coaster train: three little cars
+    const cars = [0, 1, 2].map((i) => {
+      const c = new THREE.Group();
+      c.add(new THREE.Mesh(k.box(0.36, 0.22, 0.5, 0.05), plain(['#ffd23f', '#3a86ff', '#5cc55a'][i])));
+      g.add(c);
+      return c;
+    });
+    const tick = (t) => {
+      cars.forEach((c, i) => {
+        const u = (((t * 0.11 - i * 0.025) % 1) + 1) % 1;
+        c.position.copy(curve.getPointAt(u));
+        c.lookAt(curve.getPointAt((u + 0.01) % 1));
+      });
+    };
+    tick(0);
+    return { body, top: top + 0.9, eave: H, front: 2.6, width: 5.4, tick };
+  },
+
+  /** Two airplanes stacked on top of each other, held up by pillars and a staircase between them (Day 9, @AldenMacek-k2j). */
+  'double-airplane'(g, r, h, k) {
+    const { THREE, plain } = k;
+    const low = new THREE.Group();
+    const a = HOUSE_MODELS.airplane(low, r, Math.max(k.FLOOR_H, h * 0.5), k);
+    g.add(low);
+    const high = new THREE.Group();
+    const r2 = { ...r, accent: r.roofColor || r.accent };
+    const b = HOUSE_MODELS.airplane(high, r2, Math.max(k.FLOOR_H, h * 0.5), k);
+    const lift = a.eave + 1.1;
+    high.position.set(0.3, lift, 0);
+    g.add(high);
+    for (const [x, z] of [[1.2, -0.9], [-1.2, -0.9], [1.2, 0.9], [-1.2, 0.9]]) g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, lift + 1.1, 6).translate(x, (lift + 1.1) / 2, z), plain('#8d96a3')));
+    return { body: a.body, top: lift + b.top, eave: lift + b.eave, front: a.front, width: Math.max(a.width, b.width) };
+  },
+
+  /** A record-player house: the house is the turntable, a giant vinyl record spins on the roof under the tonearm (Day 9, @djvitixofficial). */
+  vinyl(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const H = 1.6 + h;
+    const body = k.windowBox(4.4, H, 4.4, r.wall, 0);
+    g.add(body);
+    g.add(new THREE.Mesh(k.box(4.6, 0.25, 4.6, H), plain(r.roofColor)));
+    g.add(k.door(r.door, 2.22, 0.85, 0));
+    // the record: black with grooves, a coloured label, spinning
+    const rec = new THREE.Group();
+    rec.add(new THREE.Mesh(new THREE.CylinderGeometry(2.05, 2.05, 0.08, 48), plain('#141414', { roughness: 0.25, metalness: 0.3 })));
+    for (let i = 0; i < 7; i++) rec.add(new THREE.Mesh(new THREE.TorusGeometry(0.85 + i * 0.17, 0.008, 4, 48).rotateX(Math.PI / 2).translate(0, 0.045, 0), plain('#3a3a3a')));
+    rec.add(new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 0.1, 32), plain(r.accent || '#e63946')));
+    rec.add(new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.11, 0.12).translate(0.15, 0, 0.25), plain('#ffffff'))); // a stripe on the label, so you see it spin
+    rec.add(new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.3, 8), plain('#c9ccd1', { metalness: 0.7 })));
+    rec.position.set(-0.2, H + 0.35, -0.1);
+    g.add(rec);
+    // the tonearm
+    const arm = plain('#c9ccd1', { metalness: 0.7, roughness: 0.3 });
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.25, 0.4, 16).translate(1.9, H + 0.45, -1.7), arm));
+    const ta = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.4, 6).rotateZ(Math.PI / 2).rotateY(-0.65).translate(1.0, H + 0.68, -0.9), arm);
+    g.add(ta);
+    g.add(new THREE.Mesh(k.box(0.22, 0.12, 0.3, H + 0.52).translate(0.1, 0, -0.15), plain('#2b2d42')));
+    // speakers by the door, lit at night
+    for (const s of [-1, 1]) g.add(new THREE.Mesh(k.box(0.7, 1.0, 0.5, 0).translate(s * 1.6, 0, 2.6), plain('#2b2d42')), new THREE.Mesh(new THREE.CircleGeometry(0.22, 16).translate(s * 1.6, 0.55, 2.86), glowing(r.accent || '#e63946', 0.3, 1.6)));
+    const tick = (t) => { rec.rotation.y = -t * 2.2; };
+    return { body, top: H + 0.9, eave: H, front: 2.9, width: 4.8, tick };
+  },
+
+  /** A fortified house with an anti-air flak cannon turret on the roof: twin barrels that slowly sweep the sky (Day 9, @Dannexzx). */
+  'cannon-fort'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const H = 1.7 + h;
+    const concrete = plain(r.wall, { roughness: 0.95, flatShading: true });
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(2.0, 2.3, H, 8).translate(0, H / 2, 0), concrete);
+    g.add(body);
+    // sandbags round the base and battlements on top
+    for (let i = 0; i < 14; i++) {
+      const a = (i / 14) * Math.PI * 2;
+      g.add(new THREE.Mesh(new THREE.CapsuleGeometry(0.18, 0.35, 2, 6).rotateZ(Math.PI / 2).rotateY(-a).translate(Math.cos(a) * 2.55, 0.2, Math.sin(a) * 2.55), plain('#b59b6d')));
+    }
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2 + 0.2;
+      g.add(new THREE.Mesh(k.box(0.6, 0.45, 0.4, H).translate(Math.cos(a) * 1.85, 0, Math.sin(a) * 1.85), concrete));
+    }
+    // slit windows on every floor, a steel door
+    for (let y = 0.8; y < H - 0.4; y += k.FLOOR_H) for (const a of [0.6, -0.6, Math.PI / 2, -Math.PI / 2, Math.PI]) {
+      const w = new THREE.Mesh(k.box(0.5, 0.18, 0.06, y), glowing('#ffe7a8', 0.2, 1.6));
+      w.position.set(Math.sin(a) * 2.18, 0, Math.cos(a) * 2.18);
+      w.rotation.y = a;
+      g.add(w);
+    }
+    g.add(k.door(r.door, 2.18, 0.85, 0));
+    // the turret: a round base, a shield and twin long barrels pointing at the sky
+    const turret = new THREE.Group();
+    const steel = plain(r.roofColor, { metalness: 0.5, roughness: 0.45 });
+    turret.add(new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.1, 0.5, 16).translate(0, 0.25, 0), steel));
+    turret.add(new THREE.Mesh(k.box(1.6, 1.0, 0.25, 0.5).translate(0, 0, 0.5), steel));
+    const guns = new THREE.Group();
+    for (const s of [-0.28, 0.28]) {
+      guns.add(new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.12, 2.6, 10).translate(s, 1.3, 0), plain('#3b4552', { metalness: 0.6 })));
+      guns.add(new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.3, 10).translate(s, 2.55, 0), plain('#2b2d42')));
+    }
+    guns.position.set(0, 0.9, 0.2);
+    guns.rotation.x = 0.55; // aimed up and forward
+    turret.add(guns);
+    turret.add(new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 6).translate(0.7, 1.4, 0.65), glowing(r.accent || '#ff3b30', 0.8, 2.5)));
+    turret.position.y = H + 0.45;
+    g.add(turret);
+    const tick = (t) => { turret.rotation.y = Math.sin(t * 0.4) * 1.2; guns.rotation.x = 0.45 + Math.sin(t * 0.7) * 0.15; };
+    return { body, top: H + 3.6, eave: H, front: 2.4, width: 5.2, tick };
+  },
+
+  /** A house on a mountain: a rocky peak with snow on top, a little chalet on a ledge and a zigzag path up (Day 9, @Eastonfortniteeee). */
+  mountain(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const M = 3.2 + h * 0.6; // the mountain grows with every floor
+    const rock = plain(r.wall, { flatShading: true, roughness: 1 });
+    const body = new THREE.Mesh(new THREE.ConeGeometry(2.6 + h * 0.12, M, 7, 3).translate(0, M / 2, -0.4), rock);
+    g.add(body);
+    g.add(new THREE.Mesh(new THREE.ConeGeometry(1.7 + h * 0.08, M * 0.7, 6, 2).translate(-1.2, M * 0.35, 0.3), rock));
+    g.add(new THREE.Mesh(new THREE.ConeGeometry(1.4 + h * 0.06, M * 0.55, 6, 2).translate(1.5, M * 0.275, -1.2), rock));
+    g.add(new THREE.Mesh(new THREE.ConeGeometry((2.6 + h * 0.12) * 0.36, M * 0.36, 7).translate(0, M * 0.82 + 0.02, -0.4), plain('#f6f9fb', { flatShading: true }))); // snow cap
+    // the chalet sits on a ledge on the front of the mountain
+    const ly = M * 0.42;
+    g.add(new THREE.Mesh(k.box(2.2, 0.25, 1.6, ly - 0.25).translate(0.6, 0, 1.0), rock));
+    const ch = new THREE.Group();
+    ch.add(new THREE.Mesh(k.box(1.6, 1.0, 1.1, 0), plain('#a0703f')));
+    k.roof(ch, 'gable', r.roofColor, 1.9, 1.4, 1.0);
+    ch.add(new THREE.Mesh(k.box(0.5, 0.4, 0.04, 0.45).translate(0.35, 0, 0.56), glowing('#ffe7a8', 0.3, 2)));
+    ch.add(k.door(r.door, 0.56, 0.55, 0).translateX(-0.4));
+    ch.position.set(0.6, ly, 1.1);
+    g.add(ch);
+    // a zigzag path up the front, and a door into the mountain at the bottom
+    for (let i = 0; i < 5; i++) {
+      const y = (i / 5) * ly;
+      g.add(new THREE.Mesh(k.box(1.3, 0.1, 0.4, y).translate(i % 2 ? 0.9 : -0.3, 0, 2.0 - i * 0.18), plain('#c9b48a')));
+    }
+    g.add(k.door(r.door, 2.0, 0.8, 0).translateX(-1.4));
+    // pine trees on the slopes
+    for (const [x, z, s] of [[-2.1, 1.3, 0.7], [1.9, -1.3, 0.8], [-1.6, -1.9, 0.6]]) {
+      g.add(new THREE.Mesh(new THREE.ConeGeometry(0.4 * s, 1.3 * s, 6).translate(x, 0.65 * s + 0.1, z), plain('#2f6b3a', { flatShading: true })));
+    }
+    return { body, top: M + 0.3, eave: ly + 1, front: 2.2, width: 5.2 };
+  },
 };
+
+/** A little pixel-art texture (16 x 16, crisp): a base colour with noise; planks = board lines, stripes = bark. */
+function pixelTex(THREE, base, { vary = 0.14, planks = false, stripes = false } = {}) {
+  const n = 16;
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = n;
+  const c = cv.getContext('2d');
+  const col = new THREE.Color();
+  let seed = 7;
+  for (let y = 0; y < n; y++) {
+    for (let x = 0; x < n; x++) {
+      seed = (seed * 16807) % 2147483647;
+      let l = ((seed % 1000) / 1000 - 0.5) * vary;
+      if (planks && y % 4 === 3) l -= 0.12;
+      if (planks && y % 4 !== 3 && (x + Math.floor(y / 4) * 5) % 16 === 0) l -= 0.08;
+      if (stripes && x % 4 === 0) l -= 0.1;
+      col.set(base).offsetHSL(0, 0, l);
+      c.fillStyle = col.getStyle();
+      c.fillRect(x, y, 1, 1);
+    }
+  }
+  const t = new THREE.CanvasTexture(cv);
+  t.magFilter = t.minFilter = THREE.NearestFilter;
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  return t;
+}

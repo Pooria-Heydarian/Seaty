@@ -256,7 +256,7 @@
       "id": "airport",
       "type": "airport",
       "kind": "airport",
-      "name": "Airport",
+      "name": "Aviator International Airport",
       "requestedBy": "@Fly4Ever777",
       "requestedById": "UC72l66Gfc4bCEQEASVG6oPQ",
       "requestedIn": "UgxLhPvPjWYrABmRYud4AaABAg",
@@ -590,6 +590,18 @@
       "requestedIn": "UgyKFV1Wq-mBYvGkQ2B4AaABAg",
       "story": "Easton thinks the city is thirsty. Very thirsty.",
       "added": "2026-11-20"
+    },
+    {
+      "id": "logistics-depot",
+      "type": "logistics-depot",
+      "kind": "logistics-depot",
+      "name": "Logistics Depot",
+      "requestedBy": "@theguy-e4x",
+      "requestedById": "UC215ZVSVNB0MmcqcvSUtAPw",
+      "requestedIn": "Ugw5B8IbZXFvIJoN8mV4AaABAg",
+      "story": "The Guy just moved in, with a mission from a friend: the power plant needs deliveries.",
+      "top": 3,
+      "added": "2026-11-21"
     }
   ],
   "upgrades": [
@@ -977,6 +989,77 @@
       "type": "pickup-trucks",
       "requestedIn": "UgwoCVciAi5JJYqiXmx4AaABAg",
       "added": "2026-11-20"
+    },
+    {
+      "resident": "UC-bcGAszcKoylSp-ZnfpRXA",
+      "name": "@Tootdino507",
+      "type": "giant-nugget",
+      "requestedIn": "UgwI8PYCHnd83W8hVKl4AaABAg",
+      "story": "Toot Dino loves the Chicken Shack. But one thing was missing on the roof.",
+      "top": 2,
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UC4sdae2OIEfYQ4PyEEbHn9A",
+      "name": "@Nooni1024",
+      "type": "dog",
+      "requestedIn": "Ugxw8W8qjqvP_Ucha514AaABAg",
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UCKXWTyD95c9W96Co4VMbD4A",
+      "name": "@TheplantWorker",
+      "type": "delivery-truck",
+      "requestedIn": "UgxKrvUKcISb5R2xF3t4AaABAg",
+      "story": "The Plant Worker runs the power plant. Now the job comes with wheels.",
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UC_GtnlGVIQfvWpnr-nZvefQ",
+      "name": "@MrTauntyFace",
+      "type": "dark-portal",
+      "requestedIn": "UgycCAVHDP7l-2xD5T14AaABAg",
+      "story": "Mr Taunty Face wanted a doorway to somewhere... darker.",
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UCUh2iTRVNp77G29R_R6sM4A",
+      "name": "@TwoToThePowerOf999ImSmart",
+      "type": "lava-portal",
+      "requestedIn": "Ugw3r7iWZI441P1OLH54AaABAg",
+      "story": "Two To The Power asked for a portal. A very, very hot one.",
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UChAWadttE4bS9vbelKycZeg",
+      "name": "@Randomguy-213",
+      "type": "tesseract",
+      "requestedIn": "UgzR63Epz612MNWQJrN4AaABAg",
+      "story": "Random Guy wanted a totally average house. With one small extra.",
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UCKgB0kce7yRwStaUsMl_nZQ",
+      "name": "@AverageHuman67",
+      "type": "giant-flag",
+      "requestedIn": "UgzRGjypcse-z4cUvep4AaABAg",
+      "story": "Average Human's mansion was missing something big. Very big.",
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UCX6wVTHYXPiW7mS_UD_leoQ",
+      "name": "@ChristinneeeXD",
+      "type": "capybara-boxing",
+      "requestedIn": "UgwZIS6IoyPBB9alAtx4AaABAg",
+      "story": "Christinne loves capybaras. Now the capybaras want to fight. Politely.",
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UCZkvMk5tejH02mYG1CzPLCw",
+      "name": "@boeing777council",
+      "type": "dog",
+      "requestedIn": "UgwrRBLb2gVUQn7dCet4AaABAg.AdOJTJcNA2VAdSSu1AWw8m",
+      "added": "2026-11-21"
     }
   ],
   "houses": [
@@ -1285,22 +1368,6 @@
       "added": "2026-11-15"
     },
     {
-      "resident": "UCcWjOp-PQpGG_NnjJ2N3DDQ",
-      "name": "@djvitixofficial",
-      "title": "Glass Tower",
-      "recipe": {
-        "shape": "glass",
-        "roof": "flat",
-        "wall": "#6fb7d9",
-        "roofColor": "#3b4552",
-        "door": "#2b2d42",
-        "accent": "#e9f5ff",
-        "extras": []
-      },
-      "requestedIn": "Ugx8aTA1ruAxOMo84HN4AaABAg",
-      "added": "2026-11-16"
-    },
-    {
       "resident": "UCUh2iTRVNp77G29R_R6sM4A",
       "name": "@TwoToThePowerOf999ImSmart",
       "title": "Modern House",
@@ -1352,24 +1419,6 @@
         ]
       },
       "requestedIn": "UgzxpgiQWkv7usP2pc54AaABAg",
-      "added": "2026-11-17"
-    },
-    {
-      "resident": "UCv-a0knslevzeV3tfAHRhFg",
-      "name": "@ShashankShekhar-o3i",
-      "title": "Sky High Tower",
-      "recipe": {
-        "shape": "glass",
-        "roof": "flat",
-        "wall": "#3d5a80",
-        "roofColor": "#293241",
-        "door": "#293241",
-        "accent": "#e0fbfc",
-        "extras": [
-          "satellite-dish"
-        ]
-      },
-      "requestedIn": "Ugws5fA5atWbuBYZOqR4AaABAg",
       "added": "2026-11-17"
     },
     {
@@ -1627,27 +1676,6 @@
       "added": "2026-11-20"
     },
     {
-      "resident": "UC4sdae2OIEfYQ4PyEEbHn9A",
-      "name": "@Nooni1024",
-      "title": "Future Mansion",
-      "recipe": {
-        "shape": "mansion",
-        "roof": "flat",
-        "wall": "#eef3f7",
-        "roofColor": "#1b263b",
-        "door": "#1b263b",
-        "accent": "#00e5ff",
-        "extras": [
-          "fairy-lights",
-          "solar-panels",
-          "fountain"
-        ]
-      },
-      "requestedIn": "Ugz3JFHqDAlYZB8t0LB4AaABAg",
-      "story": "Nooni wanted the biggest, most futuristic home in town. From the year three thousand.",
-      "added": "2026-11-20"
-    },
-    {
       "resident": "UCgrae7IxkL7HBkWbmTiF6Iw",
       "name": "@Dragos-bd9vw",
       "title": "Mini Skyscraper",
@@ -1835,6 +1863,202 @@
       "requestedIn": "Ugwk7wx6GIIO7uO2lPV4AaABAg",
       "story": "Waffle House wanted a home that everyone in town would recognise.",
       "added": "2026-11-20"
+    },
+    {
+      "resident": "UCcam_YVgiCASrKdeczJ5KHQ",
+      "name": "@ThatFury325Guy",
+      "title": "Roller Coaster House",
+      "recipe": {
+        "shape": "coaster-house",
+        "roof": "gable",
+        "wall": "#f7f4ee",
+        "roofColor": "#3a86ff",
+        "door": "#2b2d42",
+        "accent": "#e63946",
+        "extras": []
+      },
+      "requestedIn": "UgyVlW9aAR_5ooQXuU14AaABAg",
+      "story": "That Fury Guy didn't want to live near a roller coaster. That Fury Guy wanted to live inside one.",
+      "top": 1,
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UChmmX8BKeuQHDkOJR3OYX_g",
+      "name": "@Oliverzinn-k7i",
+      "title": "Block House",
+      "recipe": {
+        "shape": "block-house",
+        "roof": "flat",
+        "wall": "#b8874f",
+        "roofColor": "#6b4a2f",
+        "door": "#8a6236",
+        "accent": "#ffd23f",
+        "extras": []
+      },
+      "requestedIn": "Ugy6jh3XReLsScUvIcF4AaABAg",
+      "story": "Oliver wanted a house from a world made entirely of cubes.",
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UCSaVwPsRYNAcfGqtU0XBCKA",
+      "name": "@RichardSpruill",
+      "title": "Donut Tower",
+      "recipe": {
+        "shape": "donut-tower",
+        "roof": "flat",
+        "wall": "#f2e9e4",
+        "roofColor": "#ff7eb6",
+        "door": "#5a3825",
+        "accent": "#ff4fa3",
+        "extras": []
+      },
+      "requestedIn": "Ugz1mQm7grU_QoqjJep4AaABAg",
+      "story": "Richard asked for a skyscraper. A skyscraper... for donuts.",
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UCrRPKuOSMRDihlMR1Jxnn-Q",
+      "name": "@ChristianHathaway-h4w",
+      "title": "Strawberry House",
+      "recipe": {
+        "shape": "strawberry",
+        "roof": "flat",
+        "wall": "#e63946",
+        "roofColor": "#3f9a3a",
+        "door": "#6b3d1f",
+        "accent": "#ffd23f",
+        "extras": []
+      },
+      "requestedIn": "UgyN9_FZGwkVIrm7lOt4AaABAg",
+      "story": "Christian asked for eleven floors. Made of fruit.",
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UCe57Jk3mb4Kjl9bKZ58NyMQ",
+      "name": "@Ivanna-Gonzalez-12",
+      "title": "Taco House",
+      "recipe": {
+        "shape": "taco",
+        "roof": "flat",
+        "wall": "#f2c14e",
+        "roofColor": "#6cc24a",
+        "door": "#7a4a2b",
+        "accent": "#ffd23f",
+        "extras": []
+      },
+      "requestedIn": "Ugz3kUg9cRxvQRAw8Mh4AaABAg",
+      "story": "Ivanna asked, with a lot of e's, for a very tasty home.",
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UCzY5fTPjwWTncXj8RxO9ryQ",
+      "name": "@AldenMacek-k2j",
+      "title": "Double Airplane",
+      "recipe": {
+        "shape": "double-airplane",
+        "roof": "flat",
+        "wall": "#f7f7f5",
+        "roofColor": "#e63946",
+        "door": "#3b4552",
+        "accent": "#3a86ff",
+        "extras": []
+      },
+      "requestedIn": "Ugx3aOgszauJURozUN54AaABAg",
+      "story": "Alden looked at one airplane and thought: not enough.",
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UCcWjOp-PQpGG_NnjJ2N3DDQ",
+      "name": "@djvitixofficial",
+      "title": "Vinyl House",
+      "recipe": {
+        "shape": "vinyl",
+        "roof": "flat",
+        "wall": "#2b2d42",
+        "roofColor": "#141414",
+        "door": "#e63946",
+        "accent": "#ff006e",
+        "extras": []
+      },
+      "requestedIn": "UgwRjnRk1CMtCpX7PQF4AaABAg",
+      "story": "DJ Vitix wanted a home that plays music.",
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UCWeyk5u4maX_oTkkGmgLEmg",
+      "name": "@Dannexzx",
+      "title": "Flak Cannon House",
+      "recipe": {
+        "shape": "cannon-fort",
+        "roof": "flat",
+        "wall": "#8a8f7a",
+        "roofColor": "#556b2f",
+        "door": "#3b4552",
+        "accent": "#ff3b30",
+        "extras": []
+      },
+      "requestedIn": "UgydN0bCAAnIEMdQSKZ4AaABAg",
+      "story": "Dannex wanted a house that guards the sky.",
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UCZYD9tjWBaJgrwaKK6DXp7g",
+      "name": "@Eastonfortniteeee",
+      "title": "Mountain House",
+      "recipe": {
+        "shape": "mountain",
+        "roof": "gable",
+        "wall": "#8d8a85",
+        "roofColor": "#b5523b",
+        "door": "#5b3a24",
+        "accent": "#ffffff",
+        "extras": []
+      },
+      "requestedIn": "UgxpQdUq37ISfH_s_Zd4AaABAg",
+      "story": "Easton didn't want a house on a hill. Easton wanted the whole mountain.",
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UCv-a0knslevzeV3tfAHRhFg",
+      "name": "@ShashankShekhar-o3i",
+      "title": "Fountain Mansion",
+      "recipe": {
+        "shape": "mansion",
+        "roof": "pointed",
+        "wall": "#e9e3f5",
+        "roofColor": "#3d5a80",
+        "door": "#293241",
+        "accent": "#e0fbfc",
+        "extras": [
+          "fountain",
+          "flowers",
+          "fence"
+        ]
+      },
+      "requestedIn": "UgxU80tlM_bLvs6E6RR4AaABAg",
+      "story": "Shashank lived in a sky-high glass tower. Time for something grander.",
+      "added": "2026-11-21"
+    },
+    {
+      "resident": "UC4sdae2OIEfYQ4PyEEbHn9A",
+      "name": "@Nooni1024",
+      "title": "Future Mansion",
+      "recipe": {
+        "shape": "mansion",
+        "roof": "flat",
+        "wall": "#eef3f7",
+        "roofColor": "#1b263b",
+        "door": "#1b263b",
+        "accent": "#00e5ff",
+        "extras": [
+          "fairy-lights",
+          "solar-panels",
+          "fountain",
+          "satellite-dish"
+        ]
+      },
+      "requestedIn": "Ugxw8W8qjqvP_Ucha514AaABAg",
+      "added": "2026-11-21"
     }
   ],
   "invites": [
@@ -1845,6 +2069,14 @@
       "byId": "UCKgB0kce7yRwStaUsMl_nZQ",
       "comment": "UgzRAliHLjssh2Egg7J4AaABAg",
       "added": "2026-11-20T03:05:36.909Z"
+    },
+    {
+      "friend": "@theguy-e4x",
+      "friendId": "UC215ZVSVNB0MmcqcvSUtAPw",
+      "by": "@jjk-x2r",
+      "byId": "UCKXWTyD95c9W96Co4VMbD4A",
+      "comment": "Ugw5B8IbZXFvIJoN8mV4AaABAg",
+      "added": "2026-11-21T02:35:11.816Z"
     }
   ],
   "villages": []

@@ -38,6 +38,13 @@ export const UPGRADE_TYPES = {
   garden: 'a garden beside the house: raised flower beds, vegetables and a watering can',
   golf: 'a putting green with a flag, a sand bunker and a golf cart in the back yard',
   'pickup-trucks': 'two big pickup trucks parked beside the house',
+  'delivery-truck': 'a delivery (logistics) truck parked in the drive with a stack of parcels',
+  'giant-nugget': 'a giant chicken nugget on the roof, with a dip pot',
+  'dark-portal': 'a standing portal of dark stone blocks with a swirling purple glow',
+  'lava-portal': 'a stone portal to the lava dimension with an orange swirl and lava drips',
+  tesseract: 'a glowing hypercube floating over the yard (a door to the 4th dimension)',
+  'giant-flag': 'a giant national flag on a tall pole on the roof (Malaysia for now; tell the session which flag)',
+  'capybara-boxing': 'a capybara boxing ring: two capybaras in boxing gloves'
 };
 
 /** Landmarks with their own 3D model. Any other landmark is built as a generic gold-domed hall with a name sign. */
@@ -67,6 +74,7 @@ export const LANDMARK_TYPES = {
   'hot-dog-stand': 'a hot dog cart with a parasol and a giant hot dog on top',
   'baguette-statue': 'a giant statue of a girl with red drill pigtails holding up a baguette',
   'samurai-statue': 'a samurai statue in dark armour with a katana, stone lanterns and a cherry tree (--color armour)',
+  'logistics-depot': 'a logistics depot: warehouse with loading docks, pallets, a forklift and delivery trucks driving in and out',
   boutique: 'a clothing boutique with mannequins in dresses and a giant gold hanger sign',
   dojo: 'a Japanese martial-arts dojo with a two-tier roof, training dummy and bamboo',
   cinema: 'a movie theater with a glowing marquee, film reel and popcorn bucket',
@@ -125,6 +133,7 @@ const SHAPE_STYLE = {
   mushroom: 'fantasy', rocket: 'fantasy', igloo: 'fantasy', treehouse: 'fantasy', pyramid: 'fantasy', lighthouse: 'fantasy',
   'gem-head': 'fantasy', 'chess-knight': 'fantasy', bunker: 'fantasy', caravan: 'fantasy',
   'white-house': 'villa', rainbow: 'fantasy', 'space-station': 'fantasy', 'glass-spire': 'tower', donut: 'fantasy', airplane: 'fantasy', 'capybara-head': 'fantasy', roach: 'fantasy', 'lake-house': 'old',
+  'block-house': 'fantasy', 'donut-tower': 'tower', strawberry: 'fantasy', taco: 'fantasy', 'coaster-house': 'fantasy', 'double-airplane': 'fantasy', vinyl: 'tower', 'cannon-fort': 'fantasy', mountain: 'villa',
 };
 /** The neighbourhood of a house recipe (no recipe = classic). A classic shape with a flat roof counts as modern (Tower Row). */
 export function houseStyle(recipe) {
@@ -159,7 +168,7 @@ const LANDMARK_PLAN = {
   stadium: ['sports', 'L'], ballpark: ['sports', 'L'], 'race-track': ['sports', 'L'],
   farm: ['country', 'L'], 'lemon-farm': ['country', 'L'], castle: ['country', 'L'], dam: ['country', 'L'],
   'power-plant': ['industry', 'L'], 'spaghetti-factory': ['industry', 'L'], 'watermelon-factory': ['industry', 'L'], 'toy-factory': ['industry', 'L'],
-  'black-hole-reactor': ['industry', 'L'], 'bus-depot': ['industry', 'M'],
+  'black-hole-reactor': ['industry', 'L'], 'bus-depot': ['industry', 'M'], 'logistics-depot': ['industry', 'M'],
   airport: ['transport', 'L'], 'space-center': ['transport', 'L'],
   rail: ['station', 'L'], railway: ['station', 'L'],
 };
@@ -183,6 +192,15 @@ export function landmarkPlan(def) {
 
 /** Building shapes. */
 export const HOUSE_SHAPES = {
+  'block-house': 'a blocky voxel house: stone base, plank walls, log corners, stepped roof, a torch and a cube tree',
+  'donut-tower': 'a glass tower with a giant iced donut on the roof and a donut-shop front',
+  strawberry: 'a giant strawberry with seeds, a leafy crown and round windows',
+  taco: 'a taco: a crunchy shell lying on its side, full of lettuce, tomato, cheese and meat',
+  'coaster-house': 'a house with a roller coaster looping round and over it, cars racing round',
+  'double-airplane': 'two airplanes stacked on top of each other on pillars',
+  vinyl: 'a record-player house: a giant vinyl record spinning on the roof under a tonearm, speakers by the door',
+  'cannon-fort': 'a round fortified house with a twin-barrel anti-air cannon turret on the roof',
+  mountain: 'a rocky mountain with a snow cap, a chalet on a ledge and a zigzag path',
   classic: 'a normal house (use this when they only ask for colours, a roof or extras)',
   cottage: 'a cosy wide cottage with timber beams',
   mansion: 'a grand mansion: main house with two side wings, white columns at the entrance and steps',

@@ -52,12 +52,15 @@ camera.fov = 50;
 camera.updateProjectionMatrix();
 
 const ready = (async () => {
-  const [city, changes, specials] = await Promise.all([
+  const [city, changes, specials, news] = await Promise.all([
     getJSON('data/city.json'),
     getJSON('data/changes.json').catch(() => null),
     getJSON('data/specials.json').catch(() => null),
+    getJSON('data/news.json').catch(() => null),
   ]);
   const ch = changes || { day: 1, newResidents: [], grew: [], top: [], residentCount: city.residentCount, totalFloors: city.totalFloors, floorsAdded: 0, firstReport: true };
+  // news of the day (data/news.json): only on the day it was written for
+  if (news?.date && news.date === ch.date) ch.news = news.items || [];
   world.build(city, { labelTop: 0, specials });
   await document.fonts.ready;
   return buildTimeline(city, ch);
@@ -357,6 +360,13 @@ function buildTimeline(city, ch) {
     garden: (n) => [`${n} has a garden now: flowers, cabbages and tomatoes.`, 'Got a garden!'],
     golf: (n) => [`Fore! ${n} has a putting green and a golf cart.`, 'Got a golf green!'],
     'pickup-trucks': (n) => [`Two big trucks are parked at ${n}'s place now.`, 'Got two pickup trucks!'],
+    'delivery-truck': (n) => [`${n} is in the delivery business now. The truck is ready to roll.`, 'Got a delivery truck!'],
+    'giant-nugget': (n) => [`Yes, that is a giant chicken nugget on ${n}'s roof. With dip.`, 'Got a giant nugget!'],
+    'dark-portal': (n) => [`${n}'s backyard now leads to another dimension. Enter at your own risk.`, 'Got a dark portal!'],
+    'lava-portal': (n) => [`Careful, it's hot! ${n} has a portal to the lava dimension.`, 'Got a lava portal!'],
+    tesseract: (n) => [`${n} lives in a normal house... with a door to the fourth dimension.`, 'Got a tesseract!'],
+    'giant-flag': (n) => [`A giant flag of Malaysia now flies over ${n}'s mansion.`, 'Got a giant flag!'],
+    'capybara-boxing': (n) => [`Ding ding! Capybara boxing has started at ${n}'s place.`, 'Got a capybara boxing ring!'],
     'big-cats': (n) => [`${n} adopted a lion and a tiger!`, 'Got a lion and a tiger!'],
     trophy: (n) => [`${n} won the weekly challenge! A golden trophy now stands in the front yard.`, 'Won the weekly challenge trophy!'],
   };
@@ -459,6 +469,12 @@ function buildTimeline(city, ch) {
       text: f > 1 ? `The tallest building in Seaty still belongs to ${say(t1.resident.name)}, with ${f} floors.` : 'Everyone has one floor so far. Who will build the first tower?',
       at: 0.4,
     });
+  }
+  // the news of the day (new city plan, Christmas…), just before the outro; the Christmas scenes are at night
+  for (const n of ch.news || []) {
+    if (n.scene === 'tree' && !world.christmasTree) continue;
+    if (n.scene === 'santa' && !world.sleigh) continue;
+    add(`news-${n.scene}`, 3.6, { night: n.scene === 'tree' || n.scene === 'santa' }, { text: n.text, at: 0.3 });
   }
   const outro = add('outro', 4.4, {}, { text: 'Want your own house? Just comment. Every new video you comment on adds a floor. See you tomorrow!', at: 0.4 });
   // the loop: after the voice, glide back to the opening shot
@@ -631,6 +647,21 @@ function buildTimeline(city, ch) {
       }
       case 'challenge':
         return orbit(new THREE.Vector3(0, 0, 0), overviewDist() * (0.75 - 0.08 * k), 0.9 + k * 0.6, 34);
+      case 'news-layout':
+        // high over the lake and the river, slowly turning: the whole new plan
+        return orbit(new THREE.Vector3(-1.5 * 16, 0, 1 * 16), overviewDist() * (1.25 - 0.12 * k), 0.35 + k * 0.4, 56);
+      case 'news-tree': {
+        const p = world.christmasTree.position;
+        return orbit(new THREE.Vector3(p.x, 11, p.z), 44 - 10 * easeOut(k), 0.5 + k * 0.55, 18);
+      }
+      case 'news-santa': {
+        // in front of the sleigh and a little above, looking back at it as it flies towards us over the city lights
+        const { pos: target, heading } = world.sleighAt(s.start + lt);
+        const fwd = new THREE.Vector3(Math.sin(heading), 0, Math.cos(heading));
+        const side = new THREE.Vector3(Math.cos(heading), 0, -Math.sin(heading));
+        const pos = target.clone().addScaledVector(fwd, 24 - 4 * k).addScaledVector(side, 9).add(new THREE.Vector3(0, 14, 0));
+        return { pos, target: target.clone().add(new THREE.Vector3(0, -6, 0)) };
+      }
     }
   }
   // one drone flight between two shots: straight across, rising in an arc over the roofs in the middle
@@ -757,10 +788,11 @@ function buildTimeline(city, ch) {
     }
 
     // Day/night: the outro is at night; the very end flashes back to day for the loop.
-    const night = time >= outro.start + 0.18 && time < total - 0.12;
+    const nightStart = (scenes.find((s) => s.night) || outro).start;
+    const night = time >= nightStart + 0.18 && time < total - 0.12;
     if (night !== world.night) world.setNight(night);
     const flashAt = (c) => Math.max(0, 1 - Math.abs(time - c) / 0.18);
-    $('flash').style.opacity = (0.85 * Math.max(flashAt(outro.start + 0.18), flashAt(total - 0.12))).toFixed(3);
+    $('flash').style.opacity = (0.85 * Math.max(flashAt(nightStart + 0.18), flashAt(total - 0.12))).toFixed(3);
 
     // Camera
     const p = pose(i, lt);

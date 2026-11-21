@@ -2578,6 +2578,312 @@ export function createExtraModels({ THREE, M, mat, FLOOR_H, glow, shadowAll }) {
 
   const day8Landmarks = { 'samurai-statue': samuraiStatue };
 
+
+  // ---------------- Day 9 (2026-11-21) requests ----------------
+
+  /** A small box truck (delivery van): cab, cargo box with a stripe, wheels. */
+  const boxTruck = (color, stripe = '#ffd23f') => {
+    const t = new THREE.Group();
+    t.add(mesh(box(0.85, 0.95, 1.5, 0, 0.18, -0.25), M('#f2f2ee')));
+    t.add(mesh(box(0.87, 0.18, 1.52, 0, 0.6, -0.25), M(stripe)));
+    t.add(mesh(box(0.8, 0.62, 0.6, 0, 0.18, 0.8), M(color, { roughness: 0.4 })), mesh(box(0.72, 0.26, 0.05, 0, 0.5, 1.11), GLASS));
+    for (const z of [-0.6, 0.15, 0.85]) for (const x of [-0.43, 0.43]) t.add(mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.12, 10).rotateZ(Math.PI / 2).translate(x, 0.15, z), DARK));
+    t.add(mesh(box(0.12, 0.08, 0.04, -0.28, 0.32, 1.11), glow('#fff3c4', 0.5, 2)), mesh(box(0.12, 0.08, 0.04, 0.28, 0.32, 1.11), glow('#fff3c4', 0.5, 2)));
+    return t;
+  };
+
+  Object.assign(upgrades, {
+    /** A delivery truck parked in the drive, with a stack of parcels (@TheplantWorker). */
+    'delivery-truck'() {
+      const g = new THREE.Group();
+      const t = boxTruck('#2a6fb5');
+      g.add(t);
+      for (let i = 0; i < 4; i++) g.add(mesh(box(0.3, 0.24, 0.3, -0.75 + (i % 2) * 0.32, Math.floor(i / 2) * 0.24, -0.9), M('#c8995c')));
+      shadowAll(g);
+      g.position.set(-2.3, 0.27, 1.4);
+      return g;
+    },
+
+    /** A giant golden chicken nugget sitting on the roof, with a dip pot beside it (@Tootdino507). */
+    'giant-nugget'(entry) {
+      const g = new THREE.Group();
+      const crumb = M('#d9a441', { flatShading: true, roughness: 0.9 });
+      const nug = mesh(new THREE.DodecahedronGeometry(0.9, 1), crumb);
+      nug.scale.set(1.35, 0.7, 1.0);
+      nug.position.y = 0.6;
+      g.add(nug);
+      for (let i = 0; i < 18; i++) {
+        const a = i * 2.39, y = 0.35 + ((i * 37) % 10) / 22;
+        g.add(mesh(new THREE.DodecahedronGeometry(0.12, 0).translate(Math.cos(a) * 1.05, y + 0.15, Math.sin(a) * 0.75), M('#c98a2e', { flatShading: true })));
+      }
+      g.add(mesh(new THREE.CylinderGeometry(0.28, 0.24, 0.3, 14).translate(1.35, 0.15, 0.4), WHITE), mesh(new THREE.CylinderGeometry(0.25, 0.25, 0.04, 14).translate(1.35, 0.29, 0.4), M('#e63946')));
+      shadowAll(g);
+      // sits on the roof ridge (just over the walls), not on top of chimney smoke
+      g.userData.tick = (t) => { g.position.y = Math.max(1.2, (entry?.height ?? 2.5) + 0.55); nug.rotation.y = Math.sin(t * 0.6) * 0.15; };
+      g.userData.tick(0);
+      return g;
+    },
+
+    /** A portal of dark stone blocks with a swirling purple glow, sparks drifting out (@MrTauntyFace). */
+    'dark-portal'() { return portal('#7a2cff', '#c58bff', '#1b1028', -1.35); },
+
+    /** A stone portal to the lava dimension: glowing orange swirl, lava drips and a smouldering crack in the ground (@TwoToThePowerOf999ImSmart). */
+    'lava-portal'() { return portal('#ff5a1f', '#ffc04a', '#2b1a14', -1.35, true); },
+
+    /** A glowing hypercube floating over the yard: a cube turning inside a cube, a door to the 4th dimension (@Randomguy-213). */
+    tesseract() {
+      const g = new THREE.Group();
+      // a cube of glowing bars inside a bigger one, joined at the corners
+      const barM = glow('#7df9ff', 0.7, 2.4), strutM = glow('#b28dff', 0.6, 2.2);
+      const frame = (size, th, m) => {
+        const f = new THREE.Group(), h = size / 2;
+        for (const a of [-h, h]) for (const b of [-h, h]) {
+          f.add(mesh(new THREE.BoxGeometry(size + th, th, th).translate(0, a, b), m));
+          f.add(mesh(new THREE.BoxGeometry(th, size + th, th).translate(a, 0, b), m));
+          f.add(mesh(new THREE.BoxGeometry(th, th, size + th).translate(a, b, 0), m));
+        }
+        return f;
+      };
+      const outer = frame(1.2, 0.07, barM), inner = frame(0.6, 0.06, barM);
+      const core = mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), glow('#7df9ff', 0.4, 1.6));
+      core.material.transparent = true;
+      core.material.opacity = 0.3;
+      const cube = new THREE.Group();
+      cube.add(outer, inner, core);
+      // the struts between the two cubes' corners
+      for (const x of [-1, 1]) for (const y of [-1, 1]) for (const z of [-1, 1]) {
+        const a = new THREE.Vector3(x, y, z).multiplyScalar(0.3), b = new THREE.Vector3(x, y, z).multiplyScalar(0.6);
+        const st = mesh(new THREE.CylinderGeometry(0.03, 0.03, a.distanceTo(b), 5), strutM);
+        st.position.copy(a.clone().add(b).multiplyScalar(0.5));
+        st.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
+        cube.add(st);
+      }
+      cube.position.y = 1.6;
+      g.add(cube);
+      g.add(mesh(new THREE.CylinderGeometry(0.45, 0.55, 0.12, 16), DARK), mesh(new THREE.TorusGeometry(0.42, 0.03, 6, 24).rotateX(Math.PI / 2).translate(0, 0.13, 0), glow('#7df9ff', 0.6, 2.2)));
+      g.position.set(2.2, 0.27, 2.2);
+      g.userData.tick = (t) => {
+        cube.rotation.set(t * 0.5, t * 0.7, 0);
+        inner.rotation.set(-t * 1.1, t * 0.4, t * 0.6);
+        core.rotation.copy(inner.rotation);
+        cube.position.y = 1.6 + Math.sin(t * 1.3) * 0.12;
+      };
+      g.userData.tick(0);
+      return g;
+    },
+
+    /** A giant flag of Malaysia on a tall pole on the roof, waving (@AverageHuman67). */
+    'giant-flag'(entry) {
+      const g = new THREE.Group();
+      const cv = document.createElement('canvas');
+      cv.width = 560; cv.height = 280;
+      const c = cv.getContext('2d');
+      for (let i = 0; i < 14; i++) { c.fillStyle = i % 2 ? '#ffffff' : '#cc0001'; c.fillRect(0, (i * 280) / 14, 560, 280 / 14 + 1); }
+      c.fillStyle = '#010066'; c.fillRect(0, 0, 280, 160);
+      // crescent and 14-point star
+      c.fillStyle = '#ffcc00';
+      c.beginPath(); c.arc(100, 80, 56, 0, Math.PI * 2); c.fill();
+      c.fillStyle = '#010066';
+      c.beginPath(); c.arc(118, 80, 48, 0, Math.PI * 2); c.fill();
+      c.fillStyle = '#ffcc00';
+      c.beginPath();
+      for (let i = 0; i < 28; i++) { const a = (i / 28) * Math.PI * 2 - Math.PI / 2, rr = i % 2 ? 22 : 52; c.lineTo(200 + Math.cos(a) * rr, 80 + Math.sin(a) * rr); }
+      c.closePath(); c.fill();
+      const tex = new THREE.CanvasTexture(cv);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      g.add(mesh(new THREE.CylinderGeometry(0.06, 0.08, 4.2, 8).translate(0, 2.1, 0), M('#c9ccd1', { metalness: 0.7 })));
+      g.add(mesh(new THREE.SphereGeometry(0.12, 8, 6).translate(0, 4.25, 0), M('#ffd23f', { metalness: 0.6 })));
+      const geo = new THREE.PlaneGeometry(2.8, 1.4, 16, 4).translate(1.4, 3.35, 0);
+      const flag = mesh(geo, new THREE.MeshStandardMaterial({ map: tex, side: THREE.DoubleSide, roughness: 0.8 }));
+      g.add(flag);
+      const base = geo.attributes.position.array.slice();
+      shadowAll(g);
+      g.position.set(-0.8, 0, -0.6);
+      g.userData.tick = (t) => {
+        g.position.y = Math.max(1.5, (entry?.roofTop ?? 3) - 0.3);
+        const p = geo.attributes.position.array;
+        for (let i = 0; i < p.length; i += 3) p[i + 2] = Math.sin(base[i] * 2.2 - t * 4) * 0.12 * (base[i] / 2.8);
+        geo.attributes.position.needsUpdate = true;
+      };
+      g.userData.tick(0);
+      return g;
+    },
+
+    /** A capybara boxing ring: ropes, corner posts, two capybaras in red and blue gloves, a little crowd sign (@ChristinneeeXD). */
+    'capybara-boxing'() {
+      const g = new THREE.Group();
+      g.add(mesh(box(1.9, 0.3, 1.9), M('#3a5fb0')), mesh(box(1.8, 0.04, 1.8, 0, 0.3), M('#f1ede4')));
+      const posts = [[-0.9, -0.9, '#e63946'], [0.9, 0.9, '#3a86ff'], [-0.9, 0.9, '#f1ede4'], [0.9, -0.9, '#f1ede4']];
+      for (const [x, z, c] of posts) g.add(mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.75, 6).translate(x, 0.67, z), M(c)));
+      for (const y of [0.55, 0.75, 0.95]) {
+        for (const [ax, az, bx, bz] of [[-0.9, -0.9, 0.9, -0.9], [0.9, -0.9, 0.9, 0.9], [0.9, 0.9, -0.9, 0.9], [-0.9, 0.9, -0.9, -0.9]]) {
+          const len = Math.hypot(bx - ax, bz - az);
+          const rope = mesh(new THREE.CylinderGeometry(0.015, 0.015, len, 4).rotateZ(Math.PI / 2), M('#ffffff'));
+          rope.position.set((ax + bx) / 2, y, (az + bz) / 2);
+          rope.rotation.y = Math.atan2(-(bz - az), bx - ax);
+          g.add(rope);
+        }
+      }
+      const fighters = ['#e63946', '#3a86ff'].map((glove, i) => {
+        const f = new THREE.Group();
+        const fur = M('#a0703f');
+        f.add(mesh(new THREE.CapsuleGeometry(0.16, 0.3, 4, 8).rotateZ(Math.PI / 2).translate(0, 0.22, 0), fur));
+        f.add(mesh(new THREE.BoxGeometry(0.22, 0.2, 0.2).translate(0.28, 0.32, 0), fur), mesh(new THREE.BoxGeometry(0.08, 0.08, 0.14).translate(0.4, 0.3, 0), M('#5c3a22')));
+        for (const z of [-0.1, 0.1]) f.add(mesh(new THREE.SphereGeometry(0.07, 8, 6).translate(0.36, 0.22, z), M(glove)));
+        f.position.set(i ? 0.35 : -0.35, 0.32, 0);
+        f.rotation.y = i ? Math.PI : 0;
+        g.add(f);
+        return f;
+      });
+      shadowAll(g);
+      g.position.set(2.2, 0.27, 2.2);
+      g.userData.tick = (t) => fighters.forEach((f, i) => {
+        const hop = Math.abs(Math.sin(t * 5 + i * 1.6));
+        f.position.y = 0.32 + hop * 0.08;
+        f.position.x = (i ? 0.35 : -0.35) + Math.sin(t * 3 + i * Math.PI) * 0.06;
+      });
+      g.userData.tick(0);
+      return g;
+    },
+  });
+
+  /** A standing portal: a frame of dark stone blocks with a swirling glow, sparks drifting out (dark-portal, lava-portal). */
+  function portal(c1, c2, stone, x, lava = false) {
+    const g = new THREE.Group();
+    const block = M(stone, { flatShading: true, roughness: 0.9 });
+    for (let i = 0; i < 4; i++) for (const s of [-1, 1]) g.add(mesh(box(0.36, 0.36, 0.36, s * 0.7, i * 0.36, 0), block));
+    for (let i = -2; i <= 2; i++) g.add(mesh(box(0.36, 0.36, 0.36, i * 0.35, 1.44, 0), block), mesh(box(0.36, 0.2, 0.36, i * 0.35, -0.2 + 0.2, 0), block));
+    const swirl = new THREE.Group();
+    swirl.position.y = 0.82;
+    swirl.add(mesh(new THREE.PlaneGeometry(1.04, 1.25), glow(c1, 0.8, 2.4)));
+    for (let i = 0; i < 4; i++) swirl.add(mesh(new THREE.TorusGeometry(0.12 + i * 0.12, 0.03, 6, 20, Math.PI * 1.3).rotateZ(i * 1.7).translate(0, 0, 0.02 + i * 0.005), glow(c2, 0.6, 2)));
+    g.add(swirl);
+    const sparks = [];
+    for (let i = 0; i < 6; i++) { const s = mesh(new THREE.SphereGeometry(0.05, 6, 4), glow(c2, 1, 3)); g.add(s); sparks.push(s); }
+    if (lava) g.add(mesh(new THREE.CircleGeometry(0.5, 16).rotateX(-Math.PI / 2).translate(0, 0.02, 0.6), glow('#ff5a1f', 0.6, 2)));
+    shadowAll(g);
+    g.position.set(x, 0.27, -2.45);
+    g.rotation.y = Math.PI / 2;
+    g.userData.view = Math.PI / 2 + 0.35;
+    g.userData.tick = (t) => {
+      swirl.children.forEach((c, i) => { if (i) c.rotation.z = (i % 2 ? 1 : -1) * t * 1.4; });
+      sparks.forEach((s, i) => {
+        const k = (((t * 0.5 + i / 6) % 1) + 1) % 1;
+        s.position.set(Math.cos(i * 2.1) * 0.4, (lava ? 0.9 - k * 0.8 : 0.4 + k * 1.2), 0.15 + k * 0.5);
+        s.scale.setScalar(1 - k * 0.7);
+      });
+    };
+    g.userData.tick(0);
+    return g;
+  }
+
+  /** Logistics depot: a big warehouse with loading docks, pallets, a forklift and delivery trucks driving in and out (@theguy-e4x). */
+  function logisticsDepot(def, floors = 1) {
+    const g = new THREE.Group();
+    g.add(mesh(box(11.4, 0.05, 11.4), M('#7d838a')));
+    const H = 3.2 + dy(floors) * 0.5;
+    const body = mesh(box(9.6, H, 5.0, 0, 0, -2.8), M(def.color || '#e4e1da'));
+    g.add(body, mesh(box(9.8, 0.35, 5.2, 0, H, -2.8), M(def.accent || '#2a6fb5')));
+    // loading docks with roll-up doors and a canopy
+    for (let i = 0; i < 4; i++) g.add(mesh(box(1.6, 2.0, 0.08, -3.3 + i * 2.2, 0.4, -0.26), M('#5c6670')), mesh(box(1.9, 0.4, 0.3, -3.3 + i * 2.2, 0, -0.1), M('#3b4552')));
+    g.add(mesh(box(9.8, 0.12, 1.2, 0, 2.6, 0.2), M('#c9ccd1')));
+    // the sign
+    const cv = document.createElement('canvas');
+    cv.width = 512; cv.height = 96;
+    const c = cv.getContext('2d');
+    c.fillStyle = '#2a6fb5'; c.fillRect(0, 0, 512, 96);
+    c.fillStyle = '#ffffff'; c.font = '900 64px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.fillText('LOGISTICS', 256, 52);
+    const tex = new THREE.CanvasTexture(cv);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    g.add(mesh(new THREE.PlaneGeometry(5, 0.95).translate(0, H - 0.7, -0.27), new THREE.MeshStandardMaterial({ map: tex, emissive: '#ffffff', emissiveMap: tex, emissiveIntensity: 0.35 })));
+    // pallets of boxes and a forklift
+    for (let i = 0; i < 6; i++) {
+      const x = 3.2 + (i % 2) * 1.1, z = 1.6 + Math.floor(i / 2) * 1.1;
+      g.add(mesh(box(0.9, 0.12, 0.9, x, 0, z), M('#a47148')), mesh(box(0.8, 0.6 + (i % 3) * 0.25, 0.8, x, 0.12, z), M('#c8995c')));
+    }
+    const fork = new THREE.Group();
+    fork.add(mesh(box(0.7, 0.5, 1.0, 0, 0.2), M('#ffc300')), mesh(box(0.06, 1.4, 0.06, -0.25, 0.2, 0.55), DARK), mesh(box(0.06, 1.4, 0.06, 0.25, 0.2, 0.55), DARK));
+    fork.add(mesh(box(0.6, 0.05, 0.6, 0, 0.3, 0.85), DARK));
+    fork.position.set(1.6, 0, 2.0);
+    g.add(fork);
+    // trucks: two at the docks, one driving round the yard
+    const parked = [boxTruck('#e63946', '#ffffff'), boxTruck('#2a9d8f', '#ffffff')];
+    parked.forEach((t, i) => { t.scale.setScalar(1.6); t.position.set(-3.3 + i * 2.2, 0, 2.0); t.rotation.y = Math.PI; g.add(t); });
+    const mover = boxTruck('#2a6fb5');
+    mover.scale.setScalar(1.6);
+    g.add(mover);
+    shadowAll(g);
+    g.userData.tick = (t) => {
+      const a = (((t * 0.1) % 1) + 1) % 1 * Math.PI * 2;
+      mover.position.set(-0.5 + Math.cos(a) * 3.6, 0, 3.2 + Math.sin(a) * 1.4);
+      mover.rotation.y = -a;
+      fork.position.x = 1.6 + Math.sin(t * 0.8) * 0.5;
+    };
+    g.userData.tick(0);
+    return { group: g, body, height: H + 1 };
+  }
+
+  /** The space center, now with a colony on the moon: a rocket launches from the second pad, flies up to the moon and back (@GLITCHPROBGAMING). */
+  function spaceCenterMoon(def, floors = 1) {
+    const base = spaceCenter(def, floors);
+    const g = base.group;
+    // a second pad with the shuttle that makes the trip
+    g.add(mesh(box(2.4, 0.4, 2.4, 3.2, 0, -3.2), M('#8d96a3')));
+    const shuttle = new THREE.Group();
+    shuttle.add(mesh(new THREE.CylinderGeometry(0.32, 0.32, 2.4, 14).translate(0, 1.2, 0), M('#f7f7f5')));
+    shuttle.add(mesh(new THREE.ConeGeometry(0.32, 0.7, 14).translate(0, 2.75, 0), M('#e63946')));
+    for (let i = 0; i < 3; i++) { const f = mesh(box(0.06, 0.6, 0.45, 0, 0, 0.4), M('#e63946')); f.rotation.y = (i / 3) * Math.PI * 2; shuttle.add(f); }
+    const flame = mesh(new THREE.ConeGeometry(0.28, 1.0, 10).rotateX(Math.PI).translate(0, -0.45, 0), glow('#ffb84a', 2, 4));
+    shuttle.add(flame);
+    g.add(shuttle);
+    // the moon, high in the northern sky, with domes, a flag and a landing pad
+    const moon = new THREE.Group();
+    const rock = new THREE.MeshStandardMaterial({ color: '#d8d6cf', emissive: '#8f8c84', emissiveIntensity: 0.35, roughness: 1, flatShading: true, fog: false });
+    moon.add(mesh(new THREE.IcosahedronGeometry(9, 2), rock));
+    for (let i = 0; i < 14; i++) {
+      const v = new THREE.Vector3(Math.sin(i * 2.3), Math.cos(i * 1.7), Math.sin(i * 0.9 + 1)).normalize();
+      const cr = mesh(new THREE.CircleGeometry(0.8 + (i % 3) * 0.5, 12), new THREE.MeshStandardMaterial({ color: '#b5b2a9', fog: false }));
+      cr.position.copy(v.clone().multiplyScalar(9.05));
+      cr.lookAt(v.clone().multiplyScalar(20));
+      moon.add(cr);
+    }
+    const colony = new THREE.Group();
+    const domeM = new THREE.MeshStandardMaterial({ color: '#bfe3ff', emissive: '#7fc8ff', emissiveIntensity: 0.6, transparent: true, opacity: 0.75, fog: false });
+    for (const [x, z, r] of [[0, 0, 1.6], [2.2, 0.8, 1.0], [-1.9, 1.2, 0.9]]) colony.add(mesh(new THREE.SphereGeometry(r, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2).translate(x, 0, z), domeM));
+    colony.add(mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.2, 6).translate(0.6, 1.1, -1.6), M('#ffffff')));
+    colony.add(mesh(new THREE.PlaneGeometry(0.9, 0.55).translate(1.05, 1.9, -1.6), new THREE.MeshStandardMaterial({ color: '#3a86ff', emissive: '#3a86ff', emissiveIntensity: 0.4, side: THREE.DoubleSide, fog: false })));
+    colony.position.set(0, 8.7, 0);
+    moon.add(colony);
+    moon.rotation.set(0.5, 0, -0.35); // the colony faces the city
+    const moonPos = new THREE.Vector3(-20, 85, -55);
+    moon.position.copy(moonPos);
+    g.add(moon);
+    const pad = new THREE.Vector3(3.2, 0.4, -3.2);
+    const landing = moonPos.clone().add(new THREE.Vector3(0, 9.5, 0).applyEuler(moon.rotation));
+    const ctrl = new THREE.Vector3(pad.x, 60, pad.z);
+    const curve = new THREE.QuadraticBezierCurve3(pad, ctrl, landing);
+    const baseTick = g.userData.tick;
+    g.userData.tick = (t) => {
+      baseTick?.(t);
+      moon.rotation.y = Math.sin(t * 0.05) * 0.1;
+      const c = (((t % 30) + 30) % 30); // a 30 s trip: 4 s countdown, 14 s to the moon, a stay, then the next rocket
+      if (c < 4) { shuttle.position.copy(pad); shuttle.rotation.set(0, 0, 0); flame.visible = c > 3; shuttle.visible = true; }
+      else if (c < 18) {
+        const u = (c - 4) / 14, p = curve.getPoint(u), q = curve.getPoint(Math.min(1, u + 0.01));
+        shuttle.position.copy(p);
+        shuttle.lookAt(q);
+        shuttle.rotateX(Math.PI / 2);
+        flame.visible = true;
+        shuttle.visible = true;
+      } else { shuttle.visible = c < 24; shuttle.position.copy(landing); flame.visible = false; }
+    };
+    g.userData.tick(0);
+    return base;
+  }
+
+  const day9Landmarks = { 'logistics-depot': logisticsDepot, 'space-center': spaceCenterMoon };
+
   return {
     upgrades,
     landmarks: {
@@ -2588,6 +2894,7 @@ export function createExtraModels({ THREE, M, mat, FLOOR_H, glow, shadowAll }) {
       ...day5Landmarks,
       ...day6Landmarks,
       ...day8Landmarks,
+      ...day9Landmarks,
     },
   };
 }

@@ -156,6 +156,27 @@
     "house:UC7Qs7Pl5zIDtGHnCVf_RmRw:2026-11-20:{\"shape\":\"lake-house\",\"roof\":\"gable\",\"wall\":\"#9c6b43\",\"roofColor\":\"#3b4552\",\"door\":\"#4a3020\",\"accent\":\"#e76f51\",\"extras\":[]}": "2026-11-20",
     "house:UCSJL3D3GkGUZ_d3FmorAecQ:2026-11-20:{\"shape\":\"white-house\",\"roof\":\"pointed\",\"wall\":\"#f7f5ef\",\"roofColor\":\"#c9ccd1\",\"door\":\"#3b2a1f\",\"accent\":\"#b22234\",\"extras\":[]}": "2026-11-20",
     "house:UCb9VhnHBBHozOxWA-Bhnazg:2026-11-20:{\"shape\":\"classic\",\"roof\":\"pointed\",\"wall\":\"#ffffff\",\"roofColor\":\"#d62828\",\"door\":\"#d62828\",\"accent\":\"#d62828\",\"extras\":[\"flag\",\"hearts\",\"flowers\"]}": "2026-11-20",
-    "challenge:1:winner": "2026-11-20"
+    "challenge:1:winner": "2026-11-20",
+    "landmark:logistics-depot": "2026-11-21",
+    "upgrade:UC-bcGAszcKoylSp-ZnfpRXA:giant-nugget": "2026-11-21",
+    "upgrade:UC4sdae2OIEfYQ4PyEEbHn9A:dog": "2026-11-21",
+    "upgrade:UCKXWTyD95c9W96Co4VMbD4A:delivery-truck": "2026-11-21",
+    "upgrade:UC_GtnlGVIQfvWpnr-nZvefQ:dark-portal": "2026-11-21",
+    "upgrade:UCUh2iTRVNp77G29R_R6sM4A:lava-portal": "2026-11-21",
+    "upgrade:UChAWadttE4bS9vbelKycZeg:tesseract": "2026-11-21",
+    "upgrade:UCKgB0kce7yRwStaUsMl_nZQ:giant-flag": "2026-11-21",
+    "upgrade:UCX6wVTHYXPiW7mS_UD_leoQ:capybara-boxing": "2026-11-21",
+    "upgrade:UCZkvMk5tejH02mYG1CzPLCw:dog": "2026-11-21",
+    "house:UCcam_YVgiCASrKdeczJ5KHQ:2026-11-21:{\"shape\":\"coaster-house\",\"roof\":\"gable\",\"wall\":\"#f7f4ee\",\"roofColor\":\"#3a86ff\",\"door\":\"#2b2d42\",\"accent\":\"#e63946\",\"extras\":[]}": "2026-11-21",
+    "house:UChmmX8BKeuQHDkOJR3OYX_g:2026-11-21:{\"shape\":\"block-house\",\"roof\":\"flat\",\"wall\":\"#b8874f\",\"roofColor\":\"#6b4a2f\",\"door\":\"#8a6236\",\"accent\":\"#ffd23f\",\"extras\":[]}": "2026-11-21",
+    "house:UCSaVwPsRYNAcfGqtU0XBCKA:2026-11-21:{\"shape\":\"donut-tower\",\"roof\":\"flat\",\"wall\":\"#f2e9e4\",\"roofColor\":\"#ff7eb6\",\"door\":\"#5a3825\",\"accent\":\"#ff4fa3\",\"extras\":[]}": "2026-11-21",
+    "house:UCrRPKuOSMRDihlMR1Jxnn-Q:2026-11-21:{\"shape\":\"strawberry\",\"roof\":\"flat\",\"wall\":\"#e63946\",\"roofColor\":\"#3f9a3a\",\"door\":\"#6b3d1f\",\"accent\":\"#ffd23f\",\"extras\":[]}": "2026-11-21",
+    "house:UCe57Jk3mb4Kjl9bKZ58NyMQ:2026-11-21:{\"shape\":\"taco\",\"roof\":\"flat\",\"wall\":\"#f2c14e\",\"roofColor\":\"#6cc24a\",\"door\":\"#7a4a2b\",\"accent\":\"#ffd23f\",\"extras\":[]}": "2026-11-21",
+    "house:UCzY5fTPjwWTncXj8RxO9ryQ:2026-11-21:{\"shape\":\"double-airplane\",\"roof\":\"flat\",\"wall\":\"#f7f7f5\",\"roofColor\":\"#e63946\",\"door\":\"#3b4552\",\"accent\":\"#3a86ff\",\"extras\":[]}": "2026-11-21",
+    "house:UCcWjOp-PQpGG_NnjJ2N3DDQ:2026-11-21:{\"shape\":\"vinyl\",\"roof\":\"flat\",\"wall\":\"#2b2d42\",\"roofColor\":\"#141414\",\"door\":\"#e63946\",\"accent\":\"#ff006e\",\"extras\":[]}": "2026-11-21",
+    "house:UCWeyk5u4maX_oTkkGmgLEmg:2026-11-21:{\"shape\":\"cannon-fort\",\"roof\":\"flat\",\"wall\":\"#8a8f7a\",\"roofColor\":\"#556b2f\",\"door\":\"#3b4552\",\"accent\":\"#ff3b30\",\"extras\":[]}": "2026-11-21",
+    "house:UCZYD9tjWBaJgrwaKK6DXp7g:2026-11-21:{\"shape\":\"mountain\",\"roof\":\"gable\",\"wall\":\"#8d8a85\",\"roofColor\":\"#b5523b\",\"door\":\"#5b3a24\",\"accent\":\"#ffffff\",\"extras\":[]}": "2026-11-21",
+    "house:UCv-a0knslevzeV3tfAHRhFg:2026-11-21:{\"shape\":\"mansion\",\"roof\":\"pointed\",\"wall\":\"#e9e3f5\",\"roofColor\":\"#3d5a80\",\"door\":\"#293241\",\"accent\":\"#e0fbfc\",\"extras\":[\"fountain\",\"flowers\",\"fence\"]}": "2026-11-21",
+    "house:UC4sdae2OIEfYQ4PyEEbHn9A:2026-11-21:{\"shape\":\"mansion\",\"roof\":\"flat\",\"wall\":\"#eef3f7\",\"roofColor\":\"#1b263b\",\"door\":\"#1b263b\",\"accent\":\"#00e5ff\",\"extras\":[\"fairy-lights\",\"solar-panels\",\"fountain\",\"satellite-dish\"]}": "2026-11-21"
   }
 }

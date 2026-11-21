@@ -90,6 +90,7 @@ export const ADDRESS = {
   // hills, river and fields
   castle: { place: 'Uetliberg', district: 'country', at: [[[-12, 7], [-11, 7], [-12, 8], [-11, 8]]] },
   dam: { place: 'Limmat weir', district: 'country', at: [[[-7, -9], [-6, -9], [-7, -8], [-6, -8]]] },
+  'logistics-depot': { place: 'Industrial Quarter', district: 'industry', at: [[[-13, -10]], [[-14, -10]]] },
   'power-plant': { place: 'Industrial Quarter', district: 'industry', at: [[[-12, -10], [-11, -10], [-12, -9], [-11, -9]]] },
   farm: { place: 'Farmland', district: 'country', at: [[[8, -10], [9, -10], [8, -9], [9, -9]]] },
   'lemon-farm': { place: 'Farmland', district: 'country', at: [[[-14, 4], [-13, 4], [-14, 5], [-13, 5]]] },

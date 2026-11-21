@@ -269,13 +269,25 @@ export function decorate(world, glow) {
     sleigh.add(d);
     deer.push(d);
   }
+  // a lantern on the front of the sleigh, and a warm light on Santa and the reindeer at night
+  sleigh.add(new THREE.Mesh(new THREE.SphereGeometry(0.22, 10, 8).translate(0.7, 1.6, 1.6), glow('#ffd58a', 1.5, 4)));
+  const sleighLight = new THREE.PointLight('#ffd9a0', 0, 30, 1.4);
+  sleighLight.position.set(0, 4, 4);
+  sleigh.add(sleighLight);
+  ticks.push(() => { sleighLight.intensity = world.night ? 180 : 0; });
   sleigh.traverse((o) => { if (o.isMesh) o.castShadow = true; });
   scene.add(sleigh);
-  const ringR = Math.max(90, world.radius * 1.15);
-  ticks.push((t) => {
+  const ringR = Math.max(70, world.radius * 0.75); // right over the city
+  /** Where the sleigh is at time t, and which way it faces (the Short's camera follows it with this). */
+  world.sleighAt = (t) => {
+    t = Math.max(0, t);
     const a = t * 0.12;
-    sleigh.position.set(Math.cos(a) * ringR, 48 + Math.sin(t * 0.8) * 2, Math.sin(a) * ringR);
-    sleigh.rotation.y = -a; // facing along the circle
+    return { pos: new THREE.Vector3(Math.cos(a) * ringR, 40 + Math.sin(t * 0.8) * 2, Math.sin(a) * ringR), heading: -a };
+  };
+  ticks.push((t) => {
+    const at = world.sleighAt(t);
+    sleigh.position.copy(at.pos);
+    sleigh.rotation.y = at.heading; // facing along the circle
     deer.forEach((d, k) => { d.position.y = Math.sin(t * 6 + k) * 0.25; });
   });
   world.sleigh = sleigh;
