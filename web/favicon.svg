@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Seaty logo: a little skyline (two towers and a house) on the lake, on the site's orange -->
+  <rect width="64" height="64" rx="14" fill="#ff7a45"/>
+  <!-- left tower -->
+  <rect x="9" y="25" width="13" height="26" rx="1.5" fill="#fff"/>
+  <!-- tall right tower -->
+  <rect x="41" y="12" width="14" height="39" rx="1.5" fill="#fff"/>
+  <!-- the house with its roof -->
+  <path d="M22 33 L31.5 23 L41 33 V51 H22 Z" fill="#fff"/>
+  <path d="M19.5 34 L31.5 21.5 L43.5 34" fill="none" stroke="#0b1220" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+  <!-- lit windows -->
+  <g fill="#ffd23f">
+    <rect x="12" y="29" width="3" height="3"/><rect x="16.5" y="29" width="3" height="3"/>
+    <rect x="12" y="35" width="3" height="3"/><rect x="16.5" y="35" width="3" height="3"/>
+    <rect x="44" y="16" width="3" height="3"/><rect x="49" y="16" width="3" height="3"/>
+    <rect x="44" y="22" width="3" height="3"/><rect x="49" y="22" width="3" height="3"/>
+    <rect x="44" y="28" width="3" height="3"/><rect x="49" y="28" width="3" height="3"/>
+    <rect x="44" y="34" width="3" height="3"/><rect x="49" y="34" width="3" height="3"/>
+  </g>
+  <!-- the door -->
+  <rect x="29" y="40" width="5" height="11" rx="1" fill="#0b1220"/>
+  <!-- the lake -->
+  <path d="M0 50 H64 V50 A14 14 0 0 1 64 50 V50 Q64 64 50 64 H14 Q0 64 0 50 Z" fill="#2b78c4"/>
+  <path d="M8 56.5 Q12 53.5 16 56.5 T24 56.5 T32 56.5 T40 56.5 T48 56.5 T56 56.5" fill="none" stroke="#bfe3ff" stroke-width="2.2" stroke-linecap="round"/>
+</svg>
