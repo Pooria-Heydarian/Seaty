@@ -18,6 +18,16 @@ export function isChristmas(date = new Date(), search = (typeof location !== 'un
   return (m === 10 && d >= 20) || m === 11 || (m === 0 && d <= 6);
 }
 
+/** Christmas tab icon: swaps the page's favicon for the festive one (favicon-xmas.svg / -32.png). */
+export function festiveIcon() {
+  if (typeof document === 'undefined') return;
+  for (const l of document.querySelectorAll('link[rel="icon"]')) {
+    const href = l.getAttribute('href') || '';
+    if (href.endsWith('favicon.svg')) l.setAttribute('href', href.replace('favicon.svg', 'favicon-xmas.svg'));
+    else if (href.endsWith('favicon-32.png')) l.setAttribute('href', href.replace('favicon-32.png', 'favicon-xmas-32.png'));
+  }
+}
+
 /** The snowy colour of each ground material (world.js tags them with userData.snow). */
 function snowGround(scene) {
   scene.traverse((o) => {

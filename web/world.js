@@ -8,7 +8,7 @@ import { LOT, BLOCK, ROAD, PITCH, LOT_OFFSETS, createCityLayout } from './layout
 import { createHouseKit } from './houses.js';
 import { cleanHouseRecipe, NEIGHBOURHOODS } from './catalog.js';
 import { createExtraModels } from './extra-models.js';
-import { isChristmas, decorate } from './christmas.js';
+import { isChristmas, decorate, festiveIcon } from './christmas.js';
 export { LOT, BLOCK, PITCH };
 
 // ---------- Layout constants ----------
@@ -1091,6 +1091,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     world.setNight(false);
     // Christmas decorations, from 20 November to 6 January (christmas.js)
     world.season = isChristmas() ? decorate(world, glow) : null;
+    if (world.season) festiveIcon(); // the Christmas tab icon
   };
 
   /** Camera pose that shows the whole city. */
