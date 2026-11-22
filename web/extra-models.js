@@ -2884,6 +2884,249 @@ export function createExtraModels({ THREE, M, mat, FLOOR_H, glow, shadowAll }) {
 
   const day9Landmarks = { 'logistics-depot': logisticsDepot, 'space-center': spaceCenterMoon };
 
+
+  // ---------------- Day 10 (2026-11-22) requests ----------------
+
+  Object.assign(upgrades, {
+    /** A helicopter circling round the house above the roof, rotors spinning (@immortal_snaiI). */
+    helicopter(entry) {
+      const g = new THREE.Group();
+      const heli = new THREE.Group();
+      heli.add(mesh(new THREE.CapsuleGeometry(0.42, 0.7, 6, 12).rotateZ(Math.PI / 2), M('#1c1c22', { metalness: 0.4, roughness: 0.35 })));
+      heli.add(mesh(new THREE.SphereGeometry(0.36, 12, 8, 0, Math.PI).rotateY(Math.PI / 2).translate(0.5, 0.05, 0), GLASS));
+      heli.add(mesh(new THREE.CylinderGeometry(0.06, 0.12, 1.5, 8).rotateZ(Math.PI / 2).translate(-1.15, 0.1, 0), M('#d4af37', { metalness: 0.6 })));
+      heli.add(mesh(box(0.06, 0.45, 0.25, -1.85, 0.05, 0), M('#d4af37', { metalness: 0.6 })));
+      for (const z of [-0.32, 0.32]) heli.add(mesh(box(1.3, 0.04, 0.06, 0, -0.55, z), DARK));
+      const rotor = new THREE.Group();
+      for (let i = 0; i < 2; i++) { const blade = mesh(box(2.8, 0.03, 0.14, 0, 0, 0), DARK); blade.rotation.y = (i * Math.PI) / 2; rotor.add(blade); }
+      rotor.position.y = 0.55;
+      heli.add(rotor, mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.2, 6).translate(0, 0.45, 0), DARK));
+      const tail = new THREE.Group();
+      tail.add(mesh(box(0.03, 0.5, 0.06, 0, -0.25, 0), DARK));
+      tail.position.set(-1.85, 0.25, 0.16);
+      heli.add(tail);
+      heli.add(mesh(new THREE.SphereGeometry(0.06, 6, 4).translate(-1.85, 0.32, 0), glow('#ff3b30', 1, 3)));
+      g.add(heli);
+      shadowAll(g);
+      g.userData.view = 0.6;
+      g.userData.tick = (t) => {
+        const a = t * 0.6, R = 3.6;
+        // the group sits just over the roof (the Short aims there), the helicopter circles round it
+        g.position.y = Math.max(3, (entry?.roofTop ?? 4) + 1.2);
+        heli.position.set(Math.cos(a) * R, Math.sin(t * 1.3) * 0.2, Math.sin(a) * R);
+        heli.rotation.set(0, -a - Math.PI / 2, 0.08);
+        rotor.rotation.y = t * 18;
+        tail.rotation.z = t * 22;
+      };
+      g.userData.tick(0);
+      return g;
+    },
+
+    /** A giant grass block sitting on top of the roof: dirt sides, a grass top, a few pixels of texture (@Oliverzinn-k7i). */
+    'giant-block'(entry) {
+      const g = new THREE.Group();
+      const S = 1.5;
+      g.add(mesh(box(S, S * 0.8, S, 0, 0, 0), M('#8b5a2b', { roughness: 1 })));
+      g.add(mesh(box(S + 0.02, S * 0.2, S + 0.02, 0, S * 0.8, 0), M('#5fae3a', { roughness: 1 })));
+      // pixels: lighter dirt specks and grass drips down the sides
+      const speck = M('#a8743e'), drip = M('#5fae3a');
+      for (let i = 0; i < 14; i++) {
+        const side = i % 4, u = (((i * 37) % 10) / 10 - 0.45) * S * 0.8, v = 0.1 + ((i * 53) % 10) / 10 * S * 0.6;
+        const p = [[u, v, S / 2 + 0.01], [u, v, -S / 2 - 0.01], [S / 2 + 0.01, v, u], [-S / 2 - 0.01, v, u]][side];
+        g.add(mesh(box(side < 2 ? 0.18 : 0.02, 0.18, side < 2 ? 0.02 : 0.18, p[0], p[1], p[2]), speck));
+      }
+      for (let i = 0; i < 8; i++) { const x = -S / 2 + 0.1 + i * 0.18; g.add(mesh(box(0.18, 0.12 + (i % 3) * 0.08, 0.02, x, S * 0.8 - 0.12 - (i % 3) * 0.08, S / 2 + 0.01), drip)); }
+      shadowAll(g);
+      g.userData.tick = () => { g.position.y = Math.max(1.5, (entry?.roofTop ?? 3) - 0.05); };
+      g.userData.tick(0);
+      return g;
+    },
+
+    /** A robot guard at the front door: a boxy silver robot with a glowing visor that scans left and right (@Nooni1024). */
+    'robot-guard'() {
+      const g = new THREE.Group();
+      const metal = M('#c9ccd1', { metalness: 0.7, roughness: 0.3 });
+      const robot = new THREE.Group();
+      for (const x of [-0.13, 0.13]) robot.add(mesh(box(0.14, 0.45, 0.16, x, 0, 0), DARK));
+      robot.add(mesh(box(0.55, 0.55, 0.36, 0, 0.45, 0), metal));
+      robot.add(mesh(box(0.3, 0.12, 0.02, 0, 0.7, 0.19), glow('#00e5ff', 0.6, 2.4)));
+      for (const x of [-0.36, 0.36]) robot.add(mesh(box(0.12, 0.45, 0.12, x, 0.48, 0), metal));
+      const head = new THREE.Group();
+      head.add(mesh(box(0.38, 0.3, 0.32, 0, 0, 0), metal));
+      head.add(mesh(box(0.3, 0.08, 0.02, 0, 0.13, 0.17), glow('#ff3b30', 1, 3)));
+      head.add(mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.25, 4).translate(0, 0.42, 0), DARK), mesh(new THREE.SphereGeometry(0.04, 6, 4).translate(0, 0.56, 0), glow('#00e5ff', 1, 3)));
+      head.position.y = 1.0;
+      robot.add(head);
+      g.add(robot);
+      shadowAll(g);
+      g.position.set(1.4, 0.27, 2.6);
+      g.userData.tick = (t) => { head.rotation.y = Math.sin(t * 0.9) * 0.9; };
+      g.userData.tick(0);
+      return g;
+    },
+
+    /** A Christmas tree in the yard: three tiers of pine, coloured lights, red baubles and a gold star (@ConnorLukach). */
+    'xmas-tree'() {
+      const g = new THREE.Group();
+      const pine = M('#1f5a36', { flatShading: true });
+      g.add(mesh(new THREE.CylinderGeometry(0.1, 0.13, 0.4, 6).translate(0, 0.2, 0), M('#6b4a2f')));
+      for (let i = 0; i < 3; i++) g.add(mesh(new THREE.ConeGeometry(0.9 - i * 0.22, 0.9, 9).translate(0, 0.65 + i * 0.5, 0), pine));
+      const cols = ['#e63946', '#ffd23f', '#3a86ff', '#ffffff'];
+      for (let i = 0; i < 22; i++) {
+        const y = 0.45 + (i / 22) * 1.4, a = i * 2.1, rr = 0.85 * (1 - (y - 0.3) / 1.9) + 0.05;
+        g.add(mesh(new THREE.SphereGeometry(0.06, 6, 4).translate(Math.cos(a) * rr, y, Math.sin(a) * rr), glow(cols[i % 4], 0.8, 2.6)));
+      }
+      const star = mesh(new THREE.OctahedronGeometry(0.2, 0).scale(1, 1.3, 0.4).translate(0, 2.25, 0), glow('#ffd23f', 1, 3));
+      g.add(star);
+      for (let i = 0; i < 3; i++) g.add(mesh(box(0.3, 0.22, 0.3, -0.55 + i * 0.5, 0, 0.75), M(['#e63946', '#3a86ff', '#5cc55a'][i])));
+      shadowAll(g);
+      g.position.set(-2.45, 0.27, 2.35);
+      g.userData.tick = (t) => { star.rotation.y = t * 1.2; };
+      return g;
+    },
+  });
+
+  /** Chocolate factory: a brown factory with a sawtooth roof, a chimney puffing cocoa smoke, a chocolate river with a waterfall and a giant bar on the roof (@RichardSpruill). */
+  function chocolateFactory(def, floors = 1) {
+    const g = new THREE.Group();
+    g.add(mesh(box(11.4, 0.05, 11.4), M('#c9b49a')));
+    const H = 3.4 + dy(floors) * 0.5;
+    const brick = M(def.color || '#7a4a2b', { roughness: 0.85 });
+    const body = mesh(box(8.4, H, 5.4, -0.8, 0, -2.4), brick);
+    g.add(body);
+    // a sawtooth roof: four sloping panels, each with a strip of skylight
+    for (let i = 0; i < 4; i++) {
+      const x = -4.1 + i * 2.1;
+      const panel = mesh(new THREE.BoxGeometry(2.25, 0.18, 5.4), M('#5a3018'));
+      panel.position.set(x + 0.05, H + 0.55, -2.4);
+      panel.rotation.z = 0.48;
+      g.add(panel, mesh(box(0.12, 1.05, 5.4, x - 1.0, H, -2.4), glow('#ffe7a8', 0.3, 1.8)));
+    }
+    // windows, purple doors, a candy-stripe awning
+    for (let i = 0; i < 5; i++) g.add(mesh(box(0.9, 0.9, 0.06, -4.0 + i * 1.6, 1.4, 0.32), glow('#ffd58a', 0.35, 2)));
+    g.add(mesh(box(1.6, 1.8, 0.08, 2.4, 0, 0.32), M('#7b2cbf')), mesh(box(2.0, 0.2, 0.7, 2.4, 1.9, 0.6), M('#e63946')));
+    // the chimney and its cocoa smoke
+    g.add(mesh(new THREE.CylinderGeometry(0.45, 0.6, H + 3.5, 12).translate(3.6, (H + 3.5) / 2, -4.2), M('#5a3018')));
+    const puffs = [];
+    for (let i = 0; i < 5; i++) { const p = mesh(new THREE.IcosahedronGeometry(0.6, 1), M('#a0703f', { transparent: true, opacity: 0.8 })); g.add(p); puffs.push(p); }
+    // the giant chocolate bar on the roof, half unwrapped
+    const bar = new THREE.Group();
+    bar.add(mesh(box(3.4, 0.4, 1.6, 0, 0, 0), M('#4a2a14', { roughness: 0.4 })));
+    for (let i = 0; i < 4; i++) for (const z of [-0.4, 0.4]) bar.add(mesh(box(0.72, 0.12, 0.66, -1.25 + i * 0.83, 0.4, z), M('#5c3a1e', { roughness: 0.4 })));
+    bar.add(mesh(box(1.7, 0.6, 1.7, 0.95, -0.05, 0), M('#e63946')), mesh(box(1.72, 0.2, 1.72, 0.95, 0.15, 0), M('#ffd23f')));
+    bar.position.set(-1.2, H + 1.4, -2.4);
+    bar.rotation.z = 0.12;
+    g.add(bar);
+    // the chocolate river in front, with a waterfall from a pipe
+    const river = M('#5c3317', { roughness: 0.15, metalness: 0.1 });
+    g.add(mesh(box(9.6, 0.12, 1.6, 0, 0.02, 3.6), river));
+    g.add(mesh(box(9.8, 0.25, 0.12, 0, 0, 2.75), M('#c9b49a')), mesh(box(9.8, 0.25, 0.12, 0, 0, 4.45), M('#c9b49a')));
+    g.add(mesh(new THREE.CylinderGeometry(0.3, 0.3, 2.4, 10).rotateX(Math.PI / 2).translate(-3.8, 2.2, 1.4), M('#c9ccd1', { metalness: 0.6 })));
+    const fall = mesh(box(0.45, 2.1, 0.3, -3.8, 0.1, 2.75), river);
+    g.add(fall);
+    // a little bridge over the river
+    g.add(mesh(box(1.4, 0.15, 2.2, 1.8, 0.35, 3.6), M('#f1ede4')));
+    shadowAll(g);
+    g.userData.tick = (t) => {
+      puffs.forEach((p, i) => {
+        const k = (((t * 0.3 + i / 5) % 1) + 1) % 1;
+        p.position.set(3.6 + k * 1.6, H + 3.6 + k * 3.5, -4.2 - k * 0.6);
+        p.scale.setScalar(0.6 + k * 1.1);
+        p.material.opacity = 0.8 * (1 - k);
+      });
+      fall.scale.y = 1 + Math.sin(t * 6) * 0.03;
+    };
+    g.userData.tick(0);
+    return { group: g, body, height: H + 3.6 };
+  }
+
+  /** Taco bar: a little street-food stand with a striped awning, a giant taco on the roof, stools and a menu board (@Liam-n8l8x). */
+  function tacoBar(def, floors = 1) {
+    const g = new THREE.Group();
+    g.add(mesh(box(11, 0.05, 11), M('#e9dcc4')));
+    const H = 4.2 + dy(floors) * 0.5;
+    const body = mesh(box(7.5, H, 5, 0, 0, -1.5), M(def.color || '#f4a261'));
+    g.add(body);
+    g.add(mesh(box(7.6, 1.2, 0.3, 0, 1.4, 1.1), M('#2a9d8f')), mesh(box(6.2, 1.6, 0.1, 0, 2.6, 1.0), M('#2b3440')));
+    // striped awning
+    for (let i = 0; i < 8; i++) g.add(mesh(box(0.95, 0.15, 2.2, -3.32 + i * 0.95, H - 0.4, 2.0), M(i % 2 ? '#ffffff' : '#e63946')));
+    // stools in front of the counter
+    for (let i = 0; i < 4; i++) {
+      const x = -2.4 + i * 1.6;
+      g.add(mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.2, 6).translate(x, 0.6, 2.4), DARK), mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.15, 14).translate(x, 1.2, 2.4), M('#e63946')));
+    }
+    // the giant taco on the roof
+    const taco = new THREE.Group();
+    const R = 1.6;
+    taco.add(mesh(new THREE.CylinderGeometry(R, R, 1.2, 24, 1, true, -Math.PI / 2, Math.PI).rotateX(Math.PI / 2), M('#f2c14e', { side: THREE.DoubleSide })));
+    for (const z of [-0.6, 0.6]) taco.add(mesh(new THREE.CircleGeometry(R, 24, Math.PI, Math.PI).translate(0, 0, z), M('#f2c14e', { side: THREE.DoubleSide })));
+    for (let i = 0; i < 7; i++) taco.add(mesh(new THREE.IcosahedronGeometry(0.32, 0).translate(-1.3 + i * 0.43, 0.15, (i % 2 ? 0.45 : -0.45)), M('#6cc24a', { flatShading: true })));
+    for (let i = 0; i < 5; i++) taco.add(mesh(box(0.25, 0.22, 0.25, -1.0 + i * 0.5, 0.05, 0), M('#e63946')));
+    taco.position.set(0, H + R + 0.1, -1.5);
+    g.add(taco);
+    // a menu board on a stand
+    g.add(mesh(box(1.4, 1.8, 0.1, 4.6, 0.5, 2.4), M('#2b2d42')), mesh(box(1.1, 1.4, 0.02, 4.6, 0.7, 2.46), glow('#ffd23f', 0.3, 1.5)));
+    shadowAll(g);
+    g.userData.tick = (t) => { taco.rotation.y = Math.sin(t * 0.6) * 0.3; };
+    return { group: g, body, height: H + R * 2 + 0.3 };
+  }
+
+  /** Logistics hub (the bigger depot, 2 x 2 blocks): two warehouses, eight loading docks, stacks of containers, a crane and trucks driving round the yard (@theguy-e4x). */
+  function logisticsHub(def, floors = 1) {
+    const g = new THREE.Group();
+    g.add(mesh(box(11.6, 0.05, 11.6), M('#7d838a')));
+    const H = 2.2 + dy(floors) * 0.3;
+    const wall = M(def.color || '#e4e1da'), roof = M(def.accent || '#2a6fb5');
+    const halls = [-2.9, 2.9].map((x) => {
+      const b = mesh(box(5.2, H, 3.4, x, 0, -3.6), wall);
+      g.add(b, mesh(box(5.3, 0.25, 3.5, x, H, -3.6), roof));
+      for (let i = 0; i < 4; i++) g.add(mesh(box(0.9, 1.2, 0.05, x - 1.8 + i * 1.2, 0.2, -1.87), M('#5c6670')));
+      return b;
+    });
+    // the sign
+    const cv = document.createElement('canvas');
+    cv.width = 512; cv.height = 96;
+    const c = cv.getContext('2d');
+    c.fillStyle = '#2a6fb5'; c.fillRect(0, 0, 512, 96);
+    c.fillStyle = '#ffffff'; c.font = '900 60px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.fillText('LOGISTICS HUB', 256, 52);
+    const tex = new THREE.CanvasTexture(cv);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    g.add(mesh(new THREE.PlaneGeometry(5, 0.95).translate(0, H + 0.9, -3.6), new THREE.MeshStandardMaterial({ map: tex, emissive: '#ffffff', emissiveMap: tex, emissiveIntensity: 0.35, side: THREE.DoubleSide })));
+    g.add(mesh(box(0.15, 1.0, 0.15, -1.8, H, -3.6), DARK), mesh(box(0.15, 1.0, 0.15, 1.8, H, -3.6), DARK));
+    // stacks of shipping containers
+    const CC = ['#c0392b', '#2d6fb5', '#2f8f5b', '#e0a43a', '#7a5cff'];
+    for (let i = 0; i < 12; i++) {
+      const x = -4.6 + (i % 4) * 1.3, z = 2.2 + Math.floor(i / 4) * 0.7, n = 1 + ((i * 7) % 3);
+      for (let k2 = 0; k2 < n; k2++) g.add(mesh(box(1.2, 0.55, 0.6, x, k2 * 0.56, z), M(CC[(i + k2) % 5])));
+    }
+    // a gantry crane over the containers
+    const crane = new THREE.Group();
+    for (const x of [-5.2, -0.2]) for (const z of [1.6, 4.2]) crane.add(mesh(box(0.15, 2.8, 0.15, x, 0, z), M('#ffc300')));
+    crane.add(mesh(box(5.3, 0.2, 0.2, -2.7, 2.8, 1.6), M('#ffc300')), mesh(box(5.3, 0.2, 0.2, -2.7, 2.8, 4.2), M('#ffc300')));
+    const trolley = mesh(box(0.6, 0.3, 2.8, -2.7, 2.65, 2.9), M('#2b2d42'));
+    crane.add(trolley);
+    g.add(crane);
+    // trucks: parked at the docks and two driving round the yard
+    const T = 0.8;
+    for (let i = 0; i < 4; i++) { const t = boxTruck(['#e63946', '#2a9d8f', '#2a6fb5', '#f4a261'][i], '#ffffff'); t.scale.setScalar(T); t.position.set(-4.7 + i * 1.2 + (i > 1 ? 3.2 : 0), 0, -0.8); t.rotation.y = Math.PI; g.add(t); }
+    const movers = [boxTruck('#2a6fb5'), boxTruck('#e63946')];
+    movers.forEach((m) => { m.scale.setScalar(T); g.add(m); });
+    shadowAll(g);
+    g.userData.tick = (t) => {
+      movers.forEach((m, i) => {
+        const a = ((((t * 0.08 + i * 0.5) % 1) + 1) % 1) * Math.PI * 2;
+        m.position.set(2.2 + Math.cos(a) * 2.6, 0, 2.6 + Math.sin(a) * 1.6);
+        m.rotation.y = -a;
+      });
+      trolley.position.x = Math.sin(t * 0.5) * 1.8;
+    };
+    g.userData.tick(0);
+    return { group: g, body: halls[0], height: H + 2.2 };
+  }
+
+  const day10Landmarks = { 'chocolate-factory': chocolateFactory, 'taco-bar': tacoBar, 'logistics-hub': logisticsHub };
+
   return {
     upgrades,
     landmarks: {
@@ -2895,6 +3138,7 @@ export function createExtraModels({ THREE, M, mat, FLOOR_H, glow, shadowAll }) {
       ...day6Landmarks,
       ...day8Landmarks,
       ...day9Landmarks,
+      ...day10Landmarks,
     },
   };
 }

@@ -124,6 +124,40 @@ export function decorate(world, glow) {
   });
   world.christmasTree = tree;
 
+  // ---- the power plant dressed for Christmas (asked for by @TheplantWorker): strings of lights from a star on top
+  // down to the ground all round it, like a giant light tree ----
+  {
+    const plant = [...world.landmarks.values()].find((l) => l.def.type === 'power-plant');
+    if (plant) {
+      const bb = new THREE.Box3().setFromObject(plant.outer);
+      const c = bb.getCenter(new THREE.Vector3());
+      const topY = bb.max.y + 1.5;
+      const rx = (bb.max.x - bb.min.x) / 2 + 1, rz = (bb.max.z - bb.min.z) / 2 + 1;
+      const bulbsW = [], bulbsR = [], bulbsG = [];
+      const n = 16;
+      for (let i = 0; i < n; i++) {
+        const a = (i / n) * Math.PI * 2;
+        const end = new THREE.Vector3(c.x + Math.cos(a) * rx, 0.3, c.z + Math.sin(a) * rz);
+        const top = new THREE.Vector3(c.x, topY, c.z);
+        for (let k = 1; k < 26; k++) {
+          const f = k / 26;
+          const p = top.clone().lerp(end, f);
+          p.y -= Math.sin(Math.PI * f) * 1.2; // a little sag
+          (k % 3 === 0 ? bulbsR : k % 3 === 1 ? bulbsW : bulbsG).push(mat4(p.x, p.y, p.z));
+        }
+      }
+      const geo = new THREE.SphereGeometry(0.32, 6, 5);
+      instanced(geo, glow('#fff1c2', 0.7, 3.4), bulbsW);
+      instanced(geo, glow('#ff4a4a', 0.7, 3), bulbsR);
+      instanced(geo, glow('#4cd964', 0.7, 3), bulbsG);
+      const pstar = new THREE.Mesh(new THREE.OctahedronGeometry(2.2, 0), glow('#ffd34d', 1.2, 4));
+      pstar.scale.set(1, 1.25, 0.45);
+      pstar.position.set(c.x, topY + 1.6, c.z);
+      scene.add(pstar);
+      ticks.push((t) => { pstar.rotation.y = t * 0.5; });
+    }
+  }
+
   // ---- Christmas market huts: two rows on the lawn next to the tree, and a little market on the Central square ----
   const huts = [];
   const market = [-1, 3];

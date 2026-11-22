@@ -746,10 +746,15 @@ export const HOUSE_MODELS = {
     g.add(k.door(r.door, 1.22, 0.8, 0));
     // the track: round the house, up over the roof and through a loop at the side
     const top = H + 2.2;
+    // round the front, straight through the top floor (in one side, out the other), over the back and down
+    const ty = H - 0.55; // the tunnel through the top floor
     const pts = [
-      [2.3, 0.6, 2.2], [0, 0.5, 2.5], [-2.3, 0.7, 2.2], [-2.6, top * 0.5, 0], [-2.0, top, -1.6],
-      [0, top + 0.6, -2.3], [1.6, top * 0.8, -2.0], [2.5, 1.6, -1.6], [2.7, 3.2, -0.2], [2.4, 1.3, 0.4], [2.6, 0.8, 1.4],
+      [2.3, 0.6, 2.2], [0, 0.5, 2.5], [-2.3, 0.7, 2.2], [-2.7, ty * 0.6, 1.0], [-2.3, ty, 0],
+      [0, ty, 0], [2.3, ty, 0], [2.7, top * 0.8, -1.0], [1.4, top + 0.5, -2.3], [-1.4, top * 0.7, -2.4],
+      [-2.6, 1.4, -1.6], [-0.4, 0.8, -2.6], [2.2, 0.6, -2.3], [2.7, 0.6, 0.6],
     ].map(([x, y, z]) => new THREE.Vector3(x, y, z));
+    // dark tunnel openings where the track goes in and out of the house
+    for (const sd of [-1, 1]) g.add(new THREE.Mesh(k.box(0.04, 0.6, 0.7, ty - 0.3).translate(sd * 1.22, 0, 0), plain('#14161c')));
     const curve = new THREE.CatmullRomCurve3(pts, true, 'catmullrom', 0.5);
     const rail = plain(r.accent || '#e63946', { metalness: 0.4, roughness: 0.4 });
     g.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 160, 0.09, 6, true), rail));
@@ -897,6 +902,187 @@ export const HOUSE_MODELS = {
       g.add(new THREE.Mesh(new THREE.ConeGeometry(0.4 * s, 1.3 * s, 6).translate(x, 0.65 * s + 0.1, z), plain('#2f6b3a', { flatShading: true })));
     }
     return { body, top: M + 0.3, eave: ly + 1, front: 2.2, width: 5.2 };
+  },
+
+  // ---------------- Day 10 (2026-11-22) requests ----------------
+
+  /** A tower of airplanes: one plane stacked on the next for every floor, round a steel mast (Day 10, @Fly4Ever777). */
+  'plane-stack'(g, r, h, k) {
+    const { THREE, plain } = k;
+    const n = Math.max(1, Math.round(h / k.FLOOR_H)); // one plane per floor
+    const step = 1.15;
+    const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.3, n * step + 1.4, 10).translate(0, (n * step + 1.4) / 2, 0), plain('#8d96a3', { metalness: 0.5 }));
+    g.add(mast);
+    const cols = [r.accent, r.roofColor, '#ffd23f', '#5cc55a'];
+    for (let i = 0; i < n; i++) {
+      const sub = new THREE.Group();
+      HOUSE_MODELS.airplane(sub, { ...r, accent: cols[i % cols.length] }, k.FLOOR_H, k);
+      sub.scale.setScalar(0.62);
+      sub.position.y = i * step - 0.55;
+      sub.rotation.y = (i % 2 ? 1 : -1) * 0.3 + i * 0.12;
+      g.add(sub);
+    }
+    g.add(k.door(r.door, 0.31, 0.7, 0));
+    const top = (n - 1) * step + 2.6;
+    return { body: mast, top, eave: top - 1, front: 1.2, width: 4.4 };
+  },
+
+  /** A 3D printer printing the house: a frame and gantry, the print head moving over the half-printed top floor, a filament spool (Day 10, @3Dprinter.and.trains). */
+  'printer-house'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const H = 1.8 + h; // the printed house
+    const frameH = H + 1.4;
+    const frame = plain(r.roofColor, { metalness: 0.4, roughness: 0.45 });
+    // the print bed
+    g.add(new THREE.Mesh(k.box(4.4, 0.3, 4.4, 0), plain('#2b2d42')));
+    g.add(new THREE.Mesh(k.box(4.0, 0.06, 4.0, 0.3), plain('#5c6670', { metalness: 0.6 })));
+    // the house being printed: layer lines all the way up, the top layer still open
+    const body = new THREE.Mesh(k.box(2.8, H - 0.4, 2.6, 0.36), plain(r.wall, { roughness: 0.6 }));
+    g.add(body);
+    for (let y = 0.5; y < H - 0.05; y += 0.18) g.add(new THREE.Mesh(k.box(2.84, 0.025, 2.64, y), plain(new THREE.Color(r.wall).multiplyScalar(0.82).getStyle())));
+    g.add(new THREE.Mesh(k.box(2.8, 0.25, 2.6, H - 0.04).translate(-0.7, 0, 0).scale(0.5, 1, 1), plain(r.wall))); // half of the last layer
+    for (let y = 0.9; y < H - 0.6; y += k.FLOOR_H) for (const x of [-0.7, 0.7]) g.add(new THREE.Mesh(k.box(0.55, 0.5, 0.05, y).translate(x, 0, 1.31), glowing('#fff3c4', 0.25, 1.8)));
+    g.add(k.door(r.door, 1.31, 0.75, 0.36));
+    // the frame: four posts and the gantry on top
+    for (const [x, z] of [[-2.05, -2.05], [2.05, -2.05], [-2.05, 2.05], [2.05, 2.05]]) g.add(new THREE.Mesh(k.box(0.22, frameH, 0.22, 0).translate(x, 0, z), frame));
+    for (const z of [-2.05, 2.05]) g.add(new THREE.Mesh(k.box(4.3, 0.22, 0.22, frameH).translate(0, 0, z), frame));
+    const bridge = new THREE.Group();
+    bridge.add(new THREE.Mesh(k.box(0.24, 0.24, 4.3, frameH - 0.3), frame));
+    const head = new THREE.Group();
+    head.add(new THREE.Mesh(k.box(0.6, 0.6, 0.6, frameH - 0.65), plain(r.accent || '#ff7a45')));
+    head.add(new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.35, 10).rotateX(Math.PI).translate(0, frameH - 0.82, 0), plain('#c9ccd1', { metalness: 0.7 })));
+    head.add(new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 6).translate(0, frameH - 1.0, 0), glowing('#ff9b3d', 1, 3)));
+    // the nozzle reaches down to the top of the print
+    head.add(new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, Math.max(0.1, frameH - 1.0 - H), 6).translate(0, (frameH - 1.0 + H) / 2, 0), plain('#c9ccd1')));
+    bridge.add(head);
+    g.add(bridge);
+    // the filament spool on the side, with a strand up to the head
+    const spool = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.22, 10, 24).rotateY(Math.PI / 2).translate(2.35, 1.0, -1.2), plain(r.accent || '#ff7a45'));
+    g.add(spool, new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.6, 10).rotateZ(Math.PI / 2).translate(2.35, 1.0, -1.2), plain('#2b2d42')));
+    const tick = (t) => {
+      bridge.position.x = Math.sin(t * 0.9) * 1.1;
+      head.position.z = Math.sin(t * 1.7) * 1.0;
+      spool.rotation.x = t * 1.2;
+    };
+    tick(0);
+    return { body, top: frameH + 0.3, eave: H, front: 2.2, width: 4.6, tick };
+  },
+
+  /** A chocolate house: chocolate-bar walls, a milk-chocolate roof with dripping white icing, candy canes and gumdrops (Day 10, @prabhasishbhattacharya9226). */
+  'chocolate-house'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const H = 1.6 + h;
+    const choc = plain(r.wall, { roughness: 0.35 });
+    const chocLight = plain(new THREE.Color(r.wall).multiplyScalar(1.25).getStyle(), { roughness: 0.35 });
+    const body = new THREE.Mesh(k.box(3.6, H, 3.0, 0), choc);
+    g.add(body);
+    // chocolate-bar squares on the front and the sides
+    for (let y = 0.25; y < H - 0.3; y += 0.62) {
+      for (let x = -1.45; x <= 1.46; x += 0.72) g.add(new THREE.Mesh(k.box(0.6, 0.52, 0.08, y).translate(x, 0, 1.52), chocLight), new THREE.Mesh(k.box(0.6, 0.52, 0.08, y).translate(x, 0, -1.52), chocLight));
+      for (let z = -1.15; z <= 1.16; z += 0.76) for (const s of [-1, 1]) g.add(new THREE.Mesh(k.box(0.08, 0.52, 0.62, y).translate(s * 1.82, 0, z), chocLight));
+    }
+    // the roof: milk chocolate, white icing dripping over the edge
+    const roofG = new THREE.Group();
+    k.roof(roofG, 'gable', r.roofColor, 4.0, 3.4, H);
+    g.add(roofG);
+    const icing = plain('#fff8f0', { roughness: 0.3 });
+    g.add(new THREE.Mesh(k.box(4.1, 0.14, 3.5, H - 0.05), icing));
+    for (let i = 0; i < 14; i++) {
+      const x = -1.9 + i * 0.29, len = 0.15 + ((i * 37) % 7) * 0.05;
+      for (const z of [1.72, -1.72]) g.add(new THREE.Mesh(new THREE.CapsuleGeometry(0.06, len, 2, 6).translate(x, H - 0.05 - len / 2, z), icing));
+    }
+    // wafer door, lit windows of white chocolate
+    g.add(k.door(r.door, 1.58, 0.85, 0));
+    for (let y = 0.9; y < H - 0.5; y += k.FLOOR_H) for (const x of [-1.1, 1.1]) g.add(new THREE.Mesh(k.box(0.5, 0.45, 0.05, y).translate(x, 0, 1.6), glowing('#fff3c4', 0.3, 1.8)));
+    // candy canes by the door and gumdrops along the front
+    for (const x of [-0.75, 0.75]) {
+      for (let i = 0; i < 6; i++) g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.2, 8).translate(x, 0.1 + i * 0.2, 1.95), plain(i % 2 ? '#ffffff' : '#e63946')));
+      g.add(new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.09, 6, 10, Math.PI).translate(x + 0.2 * Math.sign(x), 1.2, 1.95), plain('#e63946')));
+    }
+    ['#e63946', '#5cc55a', '#ffd23f', '#9b5de5', '#3a86ff'].forEach((c, i) => g.add(new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2).translate(-1.6 + i * 0.8, 0, 2.4), plain(c, { roughness: 0.2 }))));
+    return { body, top: H + 1.4, eave: H, front: 1.7, width: 4.2 };
+  },
+
+  /** A pizza-slice house: a giant slice for a floor plan, crust at the back, cheese and pepperoni on top, the layers showing on the sides (Day 10, @sportyzbak). */
+  'pizza-house'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const H = 1.6 + h; // the building under the topping
+    // the slice: tip at the front, the crust curve at the back
+    const s = new THREE.Shape();
+    s.moveTo(0, -2.6);
+    s.lineTo(-2.3, 1.7);
+    s.quadraticCurveTo(0, 2.6, 2.3, 1.7);
+    s.lineTo(0, -2.6);
+    const slice = (depth, y, color, opts = {}) => {
+      const geo = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: false, curveSegments: 16 });
+      geo.rotateX(-Math.PI / 2);
+      geo.translate(0, y, 0);
+      const m = new THREE.Mesh(geo, plain(color, opts));
+      g.add(m);
+      return m;
+    };
+    const body = slice(H, 0, r.wall); // the dough-coloured walls
+    slice(0.2, H, '#e63946'); // sauce
+    slice(0.22, H + 0.2, r.accent || '#ffd23f', { roughness: 0.5 }); // cheese
+    // the crust along the back curve
+    const crust = new THREE.CatmullRomCurve3([[-2.3, -1.7], [-1.2, -2.25], [0, -2.4], [1.2, -2.25], [2.3, -1.7]].map(([x, z]) => new THREE.Vector3(x, H + 0.35, z)));
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(crust, 24, 0.38, 10, false), plain(r.roofColor, { roughness: 0.8 })));
+    // pepperoni, olives and basil on the cheese
+    for (const [x, z] of [[0, 1.2], [-0.8, -0.3], [0.8, -0.2], [0, -1.3], [-1.3, -1.3], [1.3, -1.4]]) g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.06, 18).translate(x, H + 0.45, z), plain('#b5302a')));
+    for (const [x, z] of [[-0.4, 0.4], [0.5, 0.7], [0.3, -0.9], [-0.9, -0.9]]) g.add(new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.045, 6, 12).rotateX(Math.PI / 2).translate(x, H + 0.46, z), plain('#2b2d42')));
+    for (const [x, z] of [[0.35, 0.1], [-0.3, -1.6]]) g.add(new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 6).scale(1, 0.25, 0.6).translate(x, H + 0.46, z), plain('#3f9a3a')));
+    // door and windows on the long sides (the slice points at the street)
+    const door = k.door(r.door, 0, 0.8, 0);
+    door.rotation.y = 1.08; // flat on the right-hand side wall
+    door.position.set(1.17, 0, 0.45);
+    g.add(door);
+    for (let y = 0.8; y < H - 0.4; y += k.FLOOR_H) for (const sd of [-1, 1]) {
+      const w = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.45), glowing('#fff3c4', 0.3, 1.8));
+      w.position.set(sd * 1.6, y + 0.25, -0.35);
+      w.rotation.y = sd * 1.09;
+      w.translateZ(0.03);
+      g.add(w);
+    }
+    return { body, top: H + 0.9, eave: H, front: 2.6, width: 4.8 };
+  },
+
+  /** A Christmas cabin: a log cabin with a snowy roof, a wreath on the door, coloured lights on the eaves and snowy pines (Day 10, @ConnorLukach). */
+  'christmas-cabin'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const H = 1.5 + h;
+    const log = plain(r.wall, { roughness: 0.9 });
+    const logDark = plain(new THREE.Color(r.wall).multiplyScalar(0.8).getStyle(), { roughness: 0.9 });
+    const body = new THREE.Mesh(k.box(3.6, H, 2.8, 0), log);
+    g.add(body);
+    // stacked logs, their ends sticking out at the corners
+    for (let y = 0.15, i = 0; y < H; y += 0.3, i++) {
+      for (const z of [1.42, -1.42]) g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 3.9, 8).rotateZ(Math.PI / 2).translate(0, y, z), i % 2 ? log : logDark));
+      for (const x of [1.82, -1.82]) g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 3.1, 8).rotateX(Math.PI / 2).translate(x, y + 0.15, 0), i % 2 ? logDark : log));
+    }
+    // a steep roof covered in snow, a stone chimney
+    const roofG = new THREE.Group();
+    k.roof(roofG, 'gable', r.roofColor, 4.2, 3.4, H);
+    g.add(roofG);
+    const snow = new THREE.Group();
+    k.roof(snow, 'gable', '#f6f9fb', 4.3, 3.5, H + 0.12);
+    g.add(snow);
+    g.add(new THREE.Mesh(k.box(0.55, 1.6, 0.55, H + 0.4).translate(1.2, 0, -0.6), plain('#8a8580', { flatShading: true })));
+    g.add(new THREE.Mesh(k.box(0.62, 0.12, 0.62, H + 2.0).translate(1.2, 0, -0.6), plain('#f6f9fb')));
+    // the door with a wreath, warm windows, lights along the eave
+    g.add(k.door(r.door, 1.58, 0.85, 0));
+    g.add(new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.08, 8, 16).translate(0, 1.15, 1.66), plain('#2a9d5c')));
+    g.add(new THREE.Mesh(new THREE.SphereGeometry(0.06, 6, 4).translate(0, 0.95, 1.7), plain('#e63946')));
+    for (let y = 0.8; y < H - 0.4; y += k.FLOOR_H) for (const x of [-1.15, 1.15]) g.add(new THREE.Mesh(k.box(0.55, 0.5, 0.05, y).translate(x, 0, 1.6), glowing('#ffcf7a', 0.4, 2.2)));
+    const bulbs = ['#e63946', '#ffd23f', '#3a86ff', '#5cc55a'];
+    for (let i = 0; i < 16; i++) g.add(new THREE.Mesh(new THREE.SphereGeometry(0.07, 6, 4).translate(-2.0 + i * 0.27, H - 0.12, 1.72), glowing(bulbs[i % 4], 0.8, 2.6)));
+    // snowy pines either side
+    for (const [x, z, s] of [[-2.55, 1.6, 1], [2.55, 1.9, 0.8], [-2.5, -1.8, 0.9]]) {
+      for (let i = 0; i < 3; i++) {
+        g.add(new THREE.Mesh(new THREE.ConeGeometry((0.6 - i * 0.15) * s, 0.8 * s, 7).translate(x, (0.5 + i * 0.45) * s, z), plain('#2f6b3a', { flatShading: true })));
+        g.add(new THREE.Mesh(new THREE.ConeGeometry((0.35 - i * 0.08) * s, 0.3 * s, 7).translate(x, (0.78 + i * 0.45) * s, z), plain('#f6f9fb', { flatShading: true })));
+      }
+    }
+    return { body, top: H + 2.2, eave: H, front: 1.8, width: 4.4 };
   },
 };
 

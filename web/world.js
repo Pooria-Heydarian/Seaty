@@ -1383,9 +1383,9 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     };
     const movers = [];
     /** A vehicle of n cars along a path: loops round, or runs to the end and back. */
-    const vehicle = (path, { cars, len, w, h, body, speed, loop, phase, yAt }) => {
+    const vehicle = (path, { cars, len, w, h, body, speed, loop, phase, yAt, make }) => {
       const wk = walker(path);
-      const parts = [...Array(cars)].map(() => car(body, len, w, h));
+      const parts = [...Array(cars)].map((_, i) => (make ? make(i) : car(body, len, w, h)));
       const span = cars * (len + 0.4);
       movers.push((t) => {
         let s;
@@ -1408,6 +1408,69 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
       for (let i = 0; i < n; i++) vehicle(tl.path, { cars: 2, len: 5.4, w: 2.3, h: 3.0, body: mats.tram, speed: 5, loop: tl.loop, phase: i / n, yAt: heightAt });
     });
     (L.rails || []).forEach((rl, i) => vehicle(rl.path, { cars: 3, len: 7.4, w: 2.7, h: 3.3, body: mats.train, speed: 11, loop: false, phase: i * 0.37, yAt: () => 0.2 }));
+    // logistics (asked for by @TheplantWorker, Day 10): a freight train of containers on the west line to the industry,
+    // delivery trucks on the avenues, a container ship on the lake
+    const CC = ['#c0392b', '#2d6fb5', '#2f8f5b', '#e0a43a', '#7a5cff'];
+    const freightCar = (i) => {
+      const g = new THREE.Group();
+      if (i === 0) { // the locomotive
+        g.add(new THREE.Mesh(new THREE.BoxGeometry(2.6, 2.4, 6.4).translate(0, 1.55, 0), new THREE.MeshStandardMaterial({ color: '#2b2d42', roughness: 0.5 })));
+        g.add(new THREE.Mesh(new THREE.BoxGeometry(2.62, 0.5, 6.42).translate(0, 1.9, 0), new THREE.MeshStandardMaterial({ color: '#ffc300' })));
+      } else {
+        g.add(new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.3, 7.2).translate(0, 0.55, 0), mats.roof));
+        g.add(new THREE.Mesh(new THREE.BoxGeometry(2.5, 2.3, 6.8).translate(0, 1.85, 0), new THREE.MeshStandardMaterial({ color: CC[i % CC.length], roughness: 0.6 })));
+      }
+      g.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+      scene.add(g);
+      return g;
+    };
+    const westLine = (L.rails || [])[0];
+    if (westLine) vehicle(westLine.path, { cars: 6, len: 7.4, speed: 8, loop: false, phase: 0.62, yAt: () => 0.2, make: freightCar });
+    const lorry = (color) => {
+      const g = new THREE.Group();
+      const m = (geo, c) => new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: c, roughness: 0.5 }));
+      g.add(m(new THREE.BoxGeometry(2.0, 2.0, 4.2).translate(0, 1.3, -0.6), '#f2f2ee'), m(new THREE.BoxGeometry(2.02, 0.4, 4.22).translate(0, 1.7, -0.6), color));
+      g.add(m(new THREE.BoxGeometry(1.9, 1.5, 1.4).translate(0, 1.05, 2.2), color), m(new THREE.BoxGeometry(1.7, 0.6, 0.05).translate(0, 1.4, 2.92), '#28323e'));
+      for (const z of [-2, -0.6, 2.1]) for (const x of [-1, 1]) g.add(m(new THREE.CylinderGeometry(0.38, 0.38, 0.3, 10).rotateZ(Math.PI / 2).translate(x, 0.38, z), '#2b2d42'));
+      g.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+      scene.add(g);
+      return g;
+    };
+    (L.roads || []).forEach((rd, ri) => {
+      const wk = walker(rd.path);
+      if (wk.total < 40) return;
+      for (let i = 0; i < 2; i++) {
+        const t0 = lorry(CC[(ri * 2 + i) % CC.length]);
+        movers.push((t) => {
+          const cyc = (((t * 7 + (ri * 0.37 + i * 0.5) * 2 * wk.total) % (2 * wk.total)) + 2 * wk.total) % (2 * wk.total);
+          const back = cyc > wk.total;
+          const p = wk.at(back ? 2 * wk.total - cyc : cyc);
+          const side = back ? -1.25 : 1.25; // keep right
+          t0.position.set(p.x + Math.cos(p.yaw) * side, 0.04, p.z - Math.sin(p.yaw) * side);
+          t0.rotation.y = p.yaw + (back ? Math.PI : 0);
+        });
+      }
+    });
+    // the container ship, sailing up and down the lake
+    if (L.lake?.length) {
+      const ship = new THREE.Group();
+      const sm = (geo, c) => new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: c, roughness: 0.6 }));
+      ship.add(sm(new THREE.BoxGeometry(4.2, 1.6, 15).translate(0, 0.4, 0), '#7a1f1f'));
+      ship.add(sm(new THREE.ConeGeometry(2.1, 3, 4, 1).rotateX(Math.PI / 2).rotateZ(Math.PI / 4).scale(1, 0.55, 1).translate(0, 0.65, 9), '#7a1f1f'));
+      ship.add(sm(new THREE.BoxGeometry(4.22, 0.4, 15.02).translate(0, 1.0, 0), '#f2f2ee'));
+      ship.add(sm(new THREE.BoxGeometry(3.4, 2.6, 2.4).translate(0, 2.4, -6), '#f2f2ee'), sm(new THREE.BoxGeometry(3.42, 0.5, 2.42).translate(0, 3.2, -6), '#28323e'));
+      for (let i = 0; i < 12; i++) ship.add(sm(new THREE.BoxGeometry(1.25, 0.9, 2.6).translate(-1.3 + (i % 3) * 1.3, 1.65 + Math.floor(i / 6) * 0.92, -2.8 + (Math.floor(i / 3) % 2) * 2.8 + (i >= 6 ? 0 : 0)), CC[i % CC.length]));
+      for (let i = 0; i < 6; i++) ship.add(sm(new THREE.BoxGeometry(1.25, 0.9, 2.6).translate(-1.3 + (i % 3) * 1.3, 1.65, 3 + Math.floor(i / 3) * 2.8), CC[(i + 2) % CC.length]));
+      ship.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+      scene.add(ship);
+      const lakePath = walker([[3.4 * PITCH, 7 * PITCH], [8.5 * PITCH, 12.5 * PITCH], [13 * PITCH, 19.5 * PITCH]]);
+      movers.push((t) => {
+        const T = lakePath.total, cyc = ((t * 2.2) % (2 * T) + 2 * T) % (2 * T), back = cyc > T;
+        const p = lakePath.at(back ? 2 * T - cyc : cyc);
+        ship.position.set(p.x, 0.05 + Math.sin(t * 0.8) * 0.06, p.z);
+        ship.rotation.y = p.yaw + (back ? Math.PI : 0);
+      });
+    }
     world.transit = (t) => movers.forEach((f) => f(t));
     world.transit(0);
   }

@@ -44,7 +44,11 @@ export const UPGRADE_TYPES = {
   'lava-portal': 'a stone portal to the lava dimension with an orange swirl and lava drips',
   tesseract: 'a glowing hypercube floating over the yard (a door to the 4th dimension)',
   'giant-flag': 'a giant national flag on a tall pole on the roof (Malaysia for now; tell the session which flag)',
-  'capybara-boxing': 'a capybara boxing ring: two capybaras in boxing gloves'
+  'capybara-boxing': 'a capybara boxing ring: two capybaras in boxing gloves',
+  helicopter: 'a helicopter circling round the house above the roof',
+  'giant-block': 'a giant grass block (dirt with a grass top) sitting on the roof',
+  'robot-guard': 'a robot guard at the front door with a scanning visor',
+  'xmas-tree': 'a Christmas tree in the yard with lights, baubles, presents and a star'
 };
 
 /** Landmarks with their own 3D model. Any other landmark is built as a generic gold-domed hall with a name sign. */
@@ -75,6 +79,9 @@ export const LANDMARK_TYPES = {
   'baguette-statue': 'a giant statue of a girl with red drill pigtails holding up a baguette',
   'samurai-statue': 'a samurai statue in dark armour with a katana, stone lanterns and a cherry tree (--color armour)',
   'logistics-depot': 'a logistics depot: warehouse with loading docks, pallets, a forklift and delivery trucks driving in and out',
+  'logistics-hub': 'a big logistics hub (2 x 2 blocks): two warehouses, eight docks, container stacks, a gantry crane, trucks',
+  'chocolate-factory': 'a chocolate factory: sawtooth roof, cocoa smoke, a chocolate river with a waterfall, a giant bar on the roof',
+  'taco-bar': 'a taco bar: a street-food stand with a striped awning, stools and a giant taco on the roof',
   boutique: 'a clothing boutique with mannequins in dresses and a giant gold hanger sign',
   dojo: 'a Japanese martial-arts dojo with a two-tier roof, training dummy and bamboo',
   cinema: 'a movie theater with a glowing marquee, film reel and popcorn bucket',
@@ -133,6 +140,7 @@ const SHAPE_STYLE = {
   mushroom: 'fantasy', rocket: 'fantasy', igloo: 'fantasy', treehouse: 'fantasy', pyramid: 'fantasy', lighthouse: 'fantasy',
   'gem-head': 'fantasy', 'chess-knight': 'fantasy', bunker: 'fantasy', caravan: 'fantasy',
   'white-house': 'villa', rainbow: 'fantasy', 'space-station': 'fantasy', 'glass-spire': 'tower', donut: 'fantasy', airplane: 'fantasy', 'capybara-head': 'fantasy', roach: 'fantasy', 'lake-house': 'old',
+  'plane-stack': 'fantasy', 'printer-house': 'fantasy', 'chocolate-house': 'fantasy', 'pizza-house': 'fantasy', 'christmas-cabin': 'old',
   'block-house': 'fantasy', 'donut-tower': 'tower', strawberry: 'fantasy', taco: 'fantasy', 'coaster-house': 'fantasy', 'double-airplane': 'fantasy', vinyl: 'tower', 'cannon-fort': 'fantasy', mountain: 'villa',
 };
 /** The neighbourhood of a house recipe (no recipe = classic). A classic shape with a flat roof counts as modern (Tower Row). */
@@ -162,13 +170,13 @@ const LANDMARK_PLAN = {
   museum: ['civic', 'M'], school: ['civic', 'M'], hospital: ['civic', 'M'], 'fire-station': ['civic', 'M'], mosque: ['civic', 'M'],
   library: ['civic', 'M'], university: ['civic', 'M'], 'gothic-church': ['civic', 'M'], 'police-station': ['civic', 'M'], church: ['civic', 'M'], temple: ['civic', 'M'], 'post-office': ['civic', 'M'], 'art-school': ['civic', 'M'],
   'jewelry-store': ['main', 'M'], 'pet-store': ['main', 'M'], 'mma-gym': ['main', 'M'], skyscraper: ['main', 'M'], boutique: ['main', 'M'], cinema: ['main', 'M'], 'construction-site': ['main', 'M'], 'game-store': ['main', 'M'], motel: ['main', 'M'], gym: ['main', 'M'], 'car-show': ['main', 'M'], mall: ['main', 'M'],
-  bakery: ['local', 'S'], 'corner-shop': ['local', 'S'], market: ['local', 'S'], cafe: ['local', 'S'], 'hot-dog-stand': ['local', 'S'], pizzeria: ['local', 'S'], dojo: ['local', 'S'], pharmacy: ['local', 'S'], florist: ['local', 'S'],
+  bakery: ['local', 'S'], 'taco-bar': ['local', 'S'], 'corner-shop': ['local', 'S'], market: ['local', 'S'], cafe: ['local', 'S'], 'hot-dog-stand': ['local', 'S'], pizzeria: ['local', 'S'], dojo: ['local', 'S'], pharmacy: ['local', 'S'], florist: ['local', 'S'],
   statue: ['plaza', 'M'], 'baguette-statue': ['plaza', 'M'], 'samurai-statue': ['plaza', 'M'], fountain: ['plaza', 'M'], monument: ['plaza', 'M'],
   park: ['leisure', 'L'], 'theme-park': ['leisure', 'L'], zoo: ['hill', 'L'], aquarium: ['leisure', 'M'], circus: ['leisure', 'M'], 'capybara-adoption': ['hill', 'M'],
   stadium: ['sports', 'L'], ballpark: ['sports', 'L'], 'race-track': ['sports', 'L'],
   farm: ['country', 'L'], 'lemon-farm': ['country', 'L'], castle: ['country', 'L'], dam: ['country', 'L'],
   'power-plant': ['industry', 'L'], 'spaghetti-factory': ['industry', 'L'], 'watermelon-factory': ['industry', 'L'], 'toy-factory': ['industry', 'L'],
-  'black-hole-reactor': ['industry', 'L'], 'bus-depot': ['industry', 'M'], 'logistics-depot': ['industry', 'M'],
+  'black-hole-reactor': ['industry', 'L'], 'bus-depot': ['industry', 'M'], 'logistics-depot': ['industry', 'M'], 'logistics-hub': ['industry', 'L'], 'chocolate-factory': ['industry', 'L'],
   airport: ['transport', 'L'], 'space-center': ['transport', 'L'],
   rail: ['station', 'L'], railway: ['station', 'L'],
 };
@@ -192,6 +200,11 @@ export function landmarkPlan(def) {
 
 /** Building shapes. */
 export const HOUSE_SHAPES = {
+  'plane-stack': 'a tower of airplanes: one plane stacked on the next for every floor, round a mast',
+  'printer-house': 'a 3D printer printing the house: frame, gantry, moving print head, filament spool',
+  'chocolate-house': 'a chocolate house: chocolate-bar walls, an iced roof, candy canes and gumdrops',
+  'pizza-house': 'a pizza-slice house: slice floor plan, crust at the back, cheese and pepperoni on top',
+  'christmas-cabin': 'a Christmas log cabin: snowy roof, wreath, coloured lights, snowy pines',
   'block-house': 'a blocky voxel house: stone base, plank walls, log corners, stepped roof, a torch and a cube tree',
   'donut-tower': 'a glass tower with a giant iced donut on the roof and a donut-shop front',
   strawberry: 'a giant strawberry with seeds, a leafy crown and round windows',

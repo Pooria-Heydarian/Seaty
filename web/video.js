@@ -367,6 +367,10 @@ function buildTimeline(city, ch) {
     tesseract: (n) => [`${n} lives in a normal house... with a door to the fourth dimension.`, 'Got a tesseract!'],
     'giant-flag': (n) => [`A giant flag of Malaysia now flies over ${n}'s mansion.`, 'Got a giant flag!'],
     'capybara-boxing': (n) => [`Ding ding! Capybara boxing has started at ${n}'s place.`, 'Got a capybara boxing ring!'],
+    helicopter: (n) => [`Hear that? ${n}'s helicopter is circling the mansion.`, 'Got a helicopter!'],
+    'giant-block': (n) => [`One giant grass block, placed right on top of ${n}'s roof.`, 'Got a giant grass block!'],
+    'robot-guard': (n) => [`Nobody gets past ${n}'s new robot guard.`, 'Got a robot guard!'],
+    'xmas-tree': (n) => [`${n}'s yard is ready for Christmas, presents and all.`, 'Got a Christmas tree!'],
     'big-cats': (n) => [`${n} adopted a lion and a tiger!`, 'Got a lion and a tiger!'],
     trophy: (n) => [`${n} won the weekly challenge! A golden trophy now stands in the front yard.`, 'Won the weekly challenge trophy!'],
   };

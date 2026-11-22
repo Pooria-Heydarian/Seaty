@@ -51,7 +51,7 @@
       "id": "nuclear-power-plant",
       "type": "power-plant",
       "name": "Nuclear Power Plant",
-      "requestedBy": "@jjk-x2r",
+      "requestedBy": "@TheplantWorker",
       "requestedById": "UCKXWTyD95c9W96Co4VMbD4A",
       "requestedIn": "UgyvMdyGernqY6-MxZF4AaABAg",
       "added": "2026-11-15"
@@ -479,7 +479,7 @@
       "type": "dam",
       "kind": "dam",
       "name": "Dam",
-      "requestedBy": "@jjk-x2r",
+      "requestedBy": "@TheplantWorker",
       "requestedById": "UCKXWTyD95c9W96Co4VMbD4A",
       "requestedIn": "UgzTanC06WOSsZbrR-h4AaABAg",
       "added": "2026-11-17"
@@ -593,7 +593,7 @@
     },
     {
       "id": "logistics-depot",
-      "type": "logistics-depot",
+      "type": "logistics-hub",
       "kind": "logistics-depot",
       "name": "Logistics Depot",
       "requestedBy": "@theguy-e4x",
@@ -602,6 +602,29 @@
       "story": "The Guy just moved in, with a mission from a friend: the power plant needs deliveries.",
       "top": 3,
       "added": "2026-11-21"
+    },
+    {
+      "id": "chocolate-factory",
+      "type": "chocolate-factory",
+      "kind": "chocolate-factory",
+      "name": "Chocolate Factory",
+      "requestedBy": "@RichardSpruill",
+      "requestedById": "UCSaVwPsRYNAcfGqtU0XBCKA",
+      "requestedIn": "UgwtHD08G19iS81LTt54AaABAg",
+      "story": "Richard already lives under a giant donut. Now Richard wants to make the sweets too.",
+      "top": 3,
+      "added": "2026-11-22"
+    },
+    {
+      "id": "taco-bar",
+      "type": "taco-bar",
+      "kind": "taco-bar",
+      "name": "Taco Bar",
+      "requestedBy": "@Liam-n8l8x",
+      "requestedById": "UCTXNzVkHrIJh82Qx_2UqO2A",
+      "requestedIn": "UgzEqDaJdaFrQulUhAJ4AaABAg",
+      "story": "Liam already has a garage. Now Liam wants somewhere to eat.",
+      "added": "2026-11-22"
     }
   ],
   "upgrades": [
@@ -838,7 +861,7 @@
     },
     {
       "resident": "UCKXWTyD95c9W96Co4VMbD4A",
-      "name": "@jjk-x2r",
+      "name": "@TheplantWorker",
       "type": "shelter",
       "requestedIn": "UgzTanC06WOSsZbrR-h4AaABAg",
       "added": "2026-11-17"
@@ -1060,6 +1083,58 @@
       "type": "dog",
       "requestedIn": "UgwrRBLb2gVUQn7dCet4AaABAg.AdOJTJcNA2VAdSSu1AWw8m",
       "added": "2026-11-21"
+    },
+    {
+      "resident": "UC3EbWVsoRRZmwM2zz7bbkgA",
+      "name": "@immortal_snaiI",
+      "type": "helicopter",
+      "requestedIn": "UgycXV4M3DPNMWGZDUx4AaABAg",
+      "story": "Immortal Snail's mansion has everything. Except a way to arrive in style.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UChmmX8BKeuQHDkOJR3OYX_g",
+      "name": "@Oliverzinn-k7i",
+      "type": "giant-block",
+      "requestedIn": "UgxcUfPBTpY3HRFdHLN4AaABAg",
+      "story": "Oliver wanted one more block on top. A really big one.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UC4sdae2OIEfYQ4PyEEbHn9A",
+      "name": "@Nooni1024",
+      "type": "robot-guard",
+      "requestedIn": "UgxwuPQ47R6HyLtKqMt4AaABAg",
+      "story": "Nooni's Future Mansion needed someone to keep watch.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCgDf7IYRCZ9MXVMjPXnZkEw",
+      "name": "@ConnorLukach",
+      "type": "xmas-tree",
+      "requestedIn": "UgyfcuZEThv9sUFGTHd4AaABAg",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCZYD9tjWBaJgrwaKK6DXp7g",
+      "name": "@Eastonfortniteeee",
+      "type": "dog",
+      "requestedIn": "Ugx1SNzbXXnE1oDLQhl4AaABAg",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCUh2iTRVNp77G29R_R6sM4A",
+      "name": "@TwoToThePowerOf999ImSmart",
+      "type": "garage",
+      "requestedIn": "Ugyg4mEVWn1Q6AA3ab94AaABAg",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCfWk05rrCaL7AcglbQPAneA",
+      "name": "@EvanWR",
+      "type": "garden",
+      "requestedIn": "Ugwm9gaaL2QealOCfm14AaABAg",
+      "added": "2026-11-22"
     }
   ],
   "houses": [
@@ -1540,22 +1615,6 @@
       "added": "2026-11-19"
     },
     {
-      "resident": "UC72l66Gfc4bCEQEASVG6oPQ",
-      "name": "@Fly4Ever777",
-      "title": "Airplane House",
-      "recipe": {
-        "shape": "airplane",
-        "roof": "pointed",
-        "wall": "#f7f7f5",
-        "roofColor": "#b5523b",
-        "door": "#3b4552",
-        "accent": "#3a86ff",
-        "extras": []
-      },
-      "requestedIn": "Ugx7_rlsIFfCIPapLTR4AaABAg",
-      "added": "2026-11-19"
-    },
-    {
       "resident": "UCZm0diFKnMvsNQ--CtXCsNA",
       "name": "@Kirupa_49",
       "title": "Classy Mansion",
@@ -1865,24 +1924,6 @@
       "added": "2026-11-20"
     },
     {
-      "resident": "UCcam_YVgiCASrKdeczJ5KHQ",
-      "name": "@ThatFury325Guy",
-      "title": "Roller Coaster House",
-      "recipe": {
-        "shape": "coaster-house",
-        "roof": "gable",
-        "wall": "#f7f4ee",
-        "roofColor": "#3a86ff",
-        "door": "#2b2d42",
-        "accent": "#e63946",
-        "extras": []
-      },
-      "requestedIn": "UgyVlW9aAR_5ooQXuU14AaABAg",
-      "story": "That Fury Guy didn't want to live near a roller coaster. That Fury Guy wanted to live inside one.",
-      "top": 1,
-      "added": "2026-11-21"
-    },
-    {
       "resident": "UChmmX8BKeuQHDkOJR3OYX_g",
       "name": "@Oliverzinn-k7i",
       "title": "Block House",
@@ -2059,6 +2100,132 @@
       },
       "requestedIn": "Ugxw8W8qjqvP_Ucha514AaABAg",
       "added": "2026-11-21"
+    },
+    {
+      "resident": "UC72l66Gfc4bCEQEASVG6oPQ",
+      "name": "@Fly4Ever777",
+      "title": "Plane Tower",
+      "recipe": {
+        "shape": "plane-stack",
+        "roof": "pointed",
+        "wall": "#f7f7f5",
+        "roofColor": "#e63946",
+        "door": "#3b4552",
+        "accent": "#3a86ff",
+        "extras": []
+      },
+      "requestedIn": "Ugxj3RAKhIcq8I3NbOh4AaABAg",
+      "story": "Fly For Ever already lives in an airplane. Fly For Ever asked for fifty more.",
+      "top": 1,
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCpD3u7o7qCaDE5Hui4Xo1bQ",
+      "name": "@prabhasishbhattacharya9226",
+      "title": "Chocolate House",
+      "recipe": {
+        "shape": "chocolate-house",
+        "roof": "gable",
+        "wall": "#5a3218",
+        "roofColor": "#8b5a2b",
+        "door": "#d9a066",
+        "accent": "#fff8f0",
+        "extras": []
+      },
+      "requestedIn": "UgxnUgrUNbv1oahPJ8h4AaABAg",
+      "story": "Prabhasish was sure this wish was too silly to build. It was not.",
+      "top": 2,
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCI8b8ICBoDHgI_-IjKo1xfA",
+      "name": "@3Dprinter.and.trains",
+      "title": "3D Printer House",
+      "recipe": {
+        "shape": "printer-house",
+        "roof": "flat",
+        "wall": "#7fb8e6",
+        "roofColor": "#3b4552",
+        "door": "#2b2d42",
+        "accent": "#ff7a45",
+        "extras": []
+      },
+      "requestedIn": "Ugwz-dhLIAP8Ge-4lm54AaABAg",
+      "story": "A brand new citizen moved in, and their house is still being made. Layer by layer.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCy9dEl3MN3X7d3yPj5QYL_Q",
+      "name": "@sportyzbak",
+      "title": "Pizza House",
+      "recipe": {
+        "shape": "pizza-house",
+        "roof": "flat",
+        "wall": "#e9c58f",
+        "roofColor": "#c98a4b",
+        "door": "#7a4a2b",
+        "accent": "#ffd23f",
+        "extras": []
+      },
+      "requestedIn": "Ugyy-3aMS-5__B8yWOB4AaABAg",
+      "story": "Sporty just moved in and asked for a house shaped like dinner.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCgDf7IYRCZ9MXVMjPXnZkEw",
+      "name": "@ConnorLukach",
+      "title": "Christmas Cabin",
+      "recipe": {
+        "shape": "christmas-cabin",
+        "roof": "gable",
+        "wall": "#a0703f",
+        "roofColor": "#7a2e22",
+        "door": "#3b2a1f",
+        "accent": "#e63946",
+        "extras": [
+          "smoke"
+        ]
+      },
+      "requestedIn": "Ugz7g_0lV7vR4e-osfh4AaABAg",
+      "story": "Connor wanted to keep every floor, but make it feel like Christmas.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCPQ1yZdOTjoWi957Y0DF41A",
+      "name": "@AugustBOfficial",
+      "title": "Christmas Skyscraper",
+      "recipe": {
+        "shape": "glass",
+        "roof": "flat",
+        "wall": "#6fb7d9",
+        "roofColor": "#1b263b",
+        "door": "#1b263b",
+        "accent": "#ffd23f",
+        "extras": [
+          "fairy-lights",
+          "star"
+        ]
+      },
+      "requestedIn": "UgxZ9uK4H12FkIw6Zfl4AaABAg",
+      "story": "August just moved in and wanted a modern tower, dressed for the holidays.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCcam_YVgiCASrKdeczJ5KHQ",
+      "name": "@ThatFury325Guy",
+      "title": "Coaster Tunnel House",
+      "recipe": {
+        "shape": "coaster-house",
+        "roof": "gable",
+        "wall": "#f7f4ee",
+        "roofColor": "#3a86ff",
+        "door": "#2b2d42",
+        "accent": "#e63946",
+        "extras": []
+      },
+      "requestedIn": "UgyLSoEvkcLE4bGvbFR4AaABAg",
+      "story": "That Fury Guy loves the roller coaster house. But the ride should go right through it.",
+      "added": "2026-11-22"
     }
   ],
   "invites": [
@@ -2073,7 +2240,7 @@
     {
       "friend": "@theguy-e4x",
       "friendId": "UC215ZVSVNB0MmcqcvSUtAPw",
-      "by": "@jjk-x2r",
+      "by": "@TheplantWorker",
       "byId": "UCKXWTyD95c9W96Co4VMbD4A",
       "comment": "Ugw5B8IbZXFvIJoN8mV4AaABAg",
       "added": "2026-11-21T02:35:11.816Z"
