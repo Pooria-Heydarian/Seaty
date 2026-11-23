@@ -625,6 +625,18 @@
       "requestedIn": "UgzEqDaJdaFrQulUhAJ4AaABAg",
       "story": "Liam already has a garage. Now Liam wants somewhere to eat.",
       "added": "2026-11-22"
+    },
+    {
+      "id": "pet-rock-factory",
+      "type": "pet-rock-factory",
+      "kind": "pet-rock-factory",
+      "name": "Pet Rock Factory",
+      "requestedBy": "@AI-content-stealer",
+      "requestedById": "UCQukfRTtmIA8xjTrkX4YZ0A",
+      "requestedIn": "Ugw1pGpNASHHB83LwMl4AaABAg",
+      "story": "A new citizen had a business idea. A very serious business idea. About rocks.",
+      "top": 3,
+      "added": "2026-11-22"
     }
   ],
   "upgrades": [
@@ -1135,6 +1147,75 @@
       "type": "garden",
       "requestedIn": "Ugwm9gaaL2QealOCfm14AaABAg",
       "added": "2026-11-22"
+    },
+    {
+      "resident": "UCokDX41I395Q2_gelfohECw",
+      "name": "@geniuly_2020",
+      "type": "roof-pizza",
+      "requestedIn": "UgyByicNKlRli1LZCAZ4AaABAg",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCO1sS7PfSbpOBkCxaRRnwFA",
+      "name": "@mateosadventure",
+      "type": "rooftop-sign",
+      "text": "GAMER",
+      "requestedIn": "Ugz7GarnAvhDmBbGQDp4AaABAg",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UC_GtnlGVIQfvWpnr-nZvefQ",
+      "name": "@MrTauntyFace",
+      "type": "weathervane",
+      "requestedIn": "UgwpC2OFmwSOGlWGesl4AaABAg",
+      "story": "Mr Taunty Face asked for a new friend on the roof. A golden one.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCZYD9tjWBaJgrwaKK6DXp7g",
+      "name": "@Eastonfortniteeee",
+      "type": "yard-sign",
+      "text": "GET OFF MY LAWN",
+      "requestedIn": "UgxuwfirSQdlWpFyp7t4AaABAg",
+      "story": "Easton has had enough of people walking on the grass.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCTFf6UXQXcMuslCJiH2uTOQ",
+      "name": "@hasmask9103",
+      "type": "pool",
+      "requestedIn": "UgzdeHYhHcatxhhnKS54AaABAg",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCTFf6UXQXcMuslCJiH2uTOQ",
+      "name": "@hasmask9103",
+      "type": "giant-apple-tree",
+      "requestedIn": "UgzdeHYhHcatxhhnKS54AaABAg",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UChmmX8BKeuQHDkOJR3OYX_g",
+      "name": "@Oliverzinn-k7i",
+      "type": "roof-zombie",
+      "requestedIn": "UgwKTk7CnvtPnaoXs3N4AaABAg",
+      "story": "Oliver's giant grass block looked a little lonely up there.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCv-a0knslevzeV3tfAHRhFg",
+      "name": "@ShashankShekhar-o3i",
+      "type": "3d-printer",
+      "requestedIn": "UgwgWKk12Jr9qsrGntF4AaABAg",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCHE8xiyg7V_fhFetyu2OF5w",
+      "name": "@atrainjourney",
+      "type": "toy-train",
+      "requestedIn": "Ugxc39DxbSvteewnPzN4AaABAg",
+      "story": "A new citizen joined, and had one wish for the garden. Choo choo.",
+      "added": "2026-11-22"
     }
   ],
   "houses": [
@@ -1349,22 +1430,6 @@
         "extras": []
       },
       "requestedIn": "UgyPIQNamlL7IZi7yKd4AaABAg.AdBxFmnIJv8AdBxJzaZ9JK",
-      "added": "2026-11-15"
-    },
-    {
-      "resident": "UCVNoIdSeaoW2eEnaZ61pAEQ",
-      "name": "@Get_jin_in_use",
-      "title": "Japanese Café House",
-      "recipe": {
-        "shape": "japanese-cafe",
-        "roof": "pointed",
-        "wall": "#6b4630",
-        "roofColor": "#3b4552",
-        "door": "#2b2d42",
-        "accent": "#1d3557",
-        "extras": []
-      },
-      "requestedIn": "UgzoKrPQ73EKwV5wnZt4AaABAg",
       "added": "2026-11-15"
     },
     {
@@ -1903,27 +1968,6 @@
       "added": "2026-11-20"
     },
     {
-      "resident": "UCb9VhnHBBHozOxWA-Bhnazg",
-      "name": "@WaffleHousefunny",
-      "title": "Medic House",
-      "recipe": {
-        "shape": "classic",
-        "roof": "pointed",
-        "wall": "#ffffff",
-        "roofColor": "#d62828",
-        "door": "#d62828",
-        "accent": "#d62828",
-        "extras": [
-          "flag",
-          "hearts",
-          "flowers"
-        ]
-      },
-      "requestedIn": "Ugwk7wx6GIIO7uO2lPV4AaABAg",
-      "story": "Waffle House wanted a home that everyone in town would recognise.",
-      "added": "2026-11-20"
-    },
-    {
       "resident": "UChmmX8BKeuQHDkOJR3OYX_g",
       "name": "@Oliverzinn-k7i",
       "title": "Block House",
@@ -2155,23 +2199,6 @@
       "added": "2026-11-22"
     },
     {
-      "resident": "UCy9dEl3MN3X7d3yPj5QYL_Q",
-      "name": "@sportyzbak",
-      "title": "Pizza House",
-      "recipe": {
-        "shape": "pizza-house",
-        "roof": "flat",
-        "wall": "#e9c58f",
-        "roofColor": "#c98a4b",
-        "door": "#7a4a2b",
-        "accent": "#ffd23f",
-        "extras": []
-      },
-      "requestedIn": "Ugyy-3aMS-5__B8yWOB4AaABAg",
-      "story": "Sporty just moved in and asked for a house shaped like dinner.",
-      "added": "2026-11-22"
-    },
-    {
       "resident": "UCgDf7IYRCZ9MXVMjPXnZkEw",
       "name": "@ConnorLukach",
       "title": "Christmas Cabin",
@@ -2225,6 +2252,321 @@
       },
       "requestedIn": "UgyLSoEvkcLE4bGvbFR4AaABAg",
       "story": "That Fury Guy loves the roller coaster house. But the ride should go right through it.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCqWkjwCxSpY8fB05rN-eEWQ",
+      "name": "@mesdake",
+      "title": "Pickle Jar House",
+      "recipe": {
+        "shape": "pickle-jar",
+        "roof": "flat",
+        "wall": "#5a8f2e",
+        "roofColor": "#c9ccd1",
+        "door": "#6b4630",
+        "accent": "#ffd23f",
+        "extras": []
+      },
+      "requestedIn": "UgzJoRLAgtf6hqtA8tR4AaABAg",
+      "story": "Mesdake just moved in, with a very specific dream. It involves pickles. And a cat.",
+      "top": 1,
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCrbpSlXxFZI5AHSJMjy65fg",
+      "name": "@Miniancur",
+      "title": "Train House",
+      "recipe": {
+        "shape": "train-house",
+        "roof": "flat",
+        "wall": "#2b2d42",
+        "roofColor": "#e63946",
+        "door": "#ffd23f",
+        "accent": "#ffd23f",
+        "extras": []
+      },
+      "requestedIn": "Ugybson2Hnw3KhqoRUV4AaABAg",
+      "story": "Miniancur wanted a house that doesn't stay still.",
+      "top": 2,
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCKXWTyD95c9W96Co4VMbD4A",
+      "name": "@TheplantWorker",
+      "title": "Christmas Hotel",
+      "recipe": {
+        "shape": "chalet-hotel",
+        "roof": "gable",
+        "wall": "#8a5a3a",
+        "roofColor": "#6b2e22",
+        "door": "#3b2a1f",
+        "accent": "#ffd23f",
+        "extras": [
+          "smoke"
+        ]
+      },
+      "requestedIn": "Ugwzdy5BEh0Fp-zilNV4AaABAg",
+      "story": "The Plant Worker wanted somewhere cozy for Christmas. Somewhere with lots of rooms.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCerCGZ_mQ83Z5qN2dSBhXag",
+      "name": "@Süßer_Fisch",
+      "title": "Paper House",
+      "recipe": {
+        "shape": "paper-house",
+        "roof": "gable",
+        "wall": "#f7f5ef",
+        "roofColor": "#e9e5da",
+        "door": "#5b6b80",
+        "accent": "#ff6fa5",
+        "extras": []
+      },
+      "requestedIn": "Ugz4HYY28-prS33EDXh4AaABAg",
+      "story": "Sweet Fish just moved in, and asked for a house you could fold.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCokDX41I395Q2_gelfohECw",
+      "name": "@geniuly_2020",
+      "title": "Pizza Treehouse",
+      "recipe": {
+        "shape": "treehouse",
+        "roof": "gable",
+        "wall": "#a0703f",
+        "roofColor": "#6b4630",
+        "door": "#3b2a1f",
+        "accent": "#ffd23f",
+        "extras": []
+      },
+      "requestedIn": "UgyByicNKlRli1LZCAZ4AaABAg",
+      "story": "Geniuly wanted to live up in a tree. With a snack on top.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCoUznR_Fas_BHuFpO_7pwdg",
+      "name": "@Graysonart4321",
+      "title": "Apartment Block",
+      "recipe": {
+        "shape": "classic",
+        "roof": "flat",
+        "wall": "#d9cbb6",
+        "roofColor": "#3b4552",
+        "door": "#2b2d42",
+        "accent": "#e76f51",
+        "extras": [
+          "satellite-dish",
+          "flowers"
+        ]
+      },
+      "requestedIn": "UgxHgt7fnQvyXR36bl14AaABAg",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCO1sS7PfSbpOBkCxaRRnwFA",
+      "name": "@mateosadventure",
+      "title": "Gamer House",
+      "recipe": {
+        "shape": "classic",
+        "roof": "flat",
+        "wall": "#2b2d42",
+        "roofColor": "#7b2cbf",
+        "door": "#7b2cbf",
+        "accent": "#00e5ff",
+        "extras": [
+          "fairy-lights",
+          "satellite-dish"
+        ]
+      },
+      "requestedIn": "Ugz7GarnAvhDmBbGQDp4AaABAg",
+      "story": "Mateo wanted to be the city's number one gamer. Everyone should know it.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCeccx1l21T7xZdwW8RmH3WA",
+      "name": "@Karso-official2",
+      "title": "Blue Bakery House",
+      "recipe": {
+        "shape": "bakery-house",
+        "roof": "gable",
+        "wall": "#3a86ff",
+        "roofColor": "#1d3557",
+        "door": "#6b4630",
+        "accent": "#e63946",
+        "extras": []
+      },
+      "requestedIn": "UgwNJT599dp41RODkPl4AaABAg",
+      "story": "Karso wanted a blue house. One that smells like fresh bread.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCy9dEl3MN3X7d3yPj5QYL_Q",
+      "name": "@sportyzbak",
+      "title": "Pizza Stack",
+      "recipe": {
+        "shape": "pizza-house",
+        "roof": "flat",
+        "wall": "#e9c58f",
+        "roofColor": "#c98a4b",
+        "door": "#7a4a2b",
+        "accent": "#ffd23f",
+        "extras": []
+      },
+      "requestedIn": "Ugw6Js3TA6k3hLnLGMl4AaABAg",
+      "story": "Sporty loves the pizza house. But one pizza is never enough.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCSSPppscUWaFnc90xWV1Zqg",
+      "name": "@IronProductions-forever",
+      "title": "Hero Tower",
+      "recipe": {
+        "shape": "hero-tower",
+        "roof": "flat",
+        "wall": "#c9ccd1",
+        "roofColor": "#b5302a",
+        "door": "#2b2d42",
+        "accent": "#3fb6e8",
+        "extras": []
+      },
+      "requestedIn": "UgxcUyrNjd2rX-lH6Uh4AaABAg",
+      "story": "Iron Productions just moved in, and wanted a tower fit for heroes.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCiEp7Ix6OW1PPOCcvuRU-Ng",
+      "name": "@EliBenjamin-f1b",
+      "title": "Greenhouse Home",
+      "recipe": {
+        "shape": "greenhouse",
+        "roof": "flat",
+        "wall": "#f7f7f5",
+        "roofColor": "#3f9a3a",
+        "door": "#2b2d42",
+        "accent": "#ff6fa5",
+        "extras": []
+      },
+      "requestedIn": "UgxVvJU4pNlBC8Uand14AaABAg",
+      "story": "Eli wanted a home where the plants come first.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCBfk8wxWrYurdlZW3WxooiQ",
+      "name": "@JakeMarx-k1w",
+      "title": "Croissant House",
+      "recipe": {
+        "shape": "croissant",
+        "roof": "flat",
+        "wall": "#d9963a",
+        "roofColor": "#b5651d",
+        "door": "#6b3d1f",
+        "accent": "#ffd23f",
+        "extras": []
+      },
+      "requestedIn": "UgynhmxC_nBdFMFD7uV4AaABAg",
+      "story": "Jake is new here, and Jake's dream home is... flaky.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCVNoIdSeaoW2eEnaZ61pAEQ",
+      "name": "@Get_jin_in_use",
+      "title": "Black Castle",
+      "recipe": {
+        "shape": "castle",
+        "roof": "flat",
+        "wall": "#2f2f35",
+        "roofColor": "#1a1a1e",
+        "door": "#5b3a24",
+        "accent": "#c9d6e3",
+        "extras": [
+          "flag"
+        ]
+      },
+      "requestedIn": "UgwhvvhY144l1xIwzDR4AaABAg",
+      "story": "Get Jin is still upset about the fire. Get Jin wants a fortress now.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCfWk05rrCaL7AcglbQPAneA",
+      "name": "@EvanWR",
+      "title": "Jenga Tower",
+      "recipe": {
+        "shape": "jenga",
+        "roof": "flat",
+        "wall": "#d9b27c",
+        "roofColor": "#b5864d",
+        "door": "#6b4630",
+        "accent": "#ffd23f",
+        "extras": []
+      },
+      "requestedIn": "UgxjZnc4tj3D9SVDmCt4AaABAg",
+      "story": "Evan asked two days in a row. This time Evan wanted a house you should never pull a block from.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCglB7sCkQ7DCj6jHrnSEtJA",
+      "name": "@FawazJamal-b7y",
+      "title": "Cat House",
+      "recipe": {
+        "shape": "cat-house",
+        "roof": "flat",
+        "wall": "#8b5a2b",
+        "roofColor": "#6b4630",
+        "door": "#3b2a1f",
+        "accent": "#ff8c1a",
+        "extras": []
+      },
+      "requestedIn": "UgxWoOsOIFWk6wCwCRZ4AaABAg",
+      "story": "Fawaz just moved in and described a brown cat with orange eyes. A very big one.",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCw3JB39VniYr70sdG953TeA",
+      "name": "@CollettePrice-o5d",
+      "title": "Toy Factory House",
+      "recipe": {
+        "shape": "toy-house",
+        "roof": "flat",
+        "wall": "#7fb8e6",
+        "roofColor": "#e63946",
+        "door": "#ffd23f",
+        "accent": "#ffd23f",
+        "extras": []
+      },
+      "requestedIn": "UgwHQyc0sxHxbWkXEf14AaABAg",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCb9VhnHBBHozOxWA-Bhnazg",
+      "name": "@WaffleHousefunny",
+      "title": "Desert Spire",
+      "recipe": {
+        "shape": "glass-spire",
+        "roof": "flat",
+        "wall": "#cfd8e3",
+        "roofColor": "#8d96a3",
+        "door": "#2b2d42",
+        "accent": "#ffd23f",
+        "extras": []
+      },
+      "requestedIn": "UgwUm52ui23pQRE00X94AaABAg",
+      "added": "2026-11-22"
+    },
+    {
+      "resident": "UCDlXlce48pr-UNcVpkrAt-A",
+      "name": "@JasmineSanchez-e9m",
+      "title": "Ant Hill",
+      "recipe": {
+        "shape": "ant-hill",
+        "roof": "flat",
+        "wall": "#9a6a3a",
+        "roofColor": "#7a4a2b",
+        "door": "#3b2a1f",
+        "accent": "#ffd23f",
+        "extras": []
+      },
+      "requestedIn": "UgykTr0uZ7cZrREkCi54AaABAg",
+      "story": "Jasmine just moved in. Jasmine's family is very, very big. And very, very small.",
       "added": "2026-11-22"
     }
   ],

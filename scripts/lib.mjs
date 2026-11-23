@@ -42,6 +42,8 @@ export function writeJSON(file, data) {
 }
 
 export function today() {
+  // SEATY_DATE=YYYY-MM-DD: a second update on the same UTC day gets the next day, so it does not overwrite the last one
+  if (/^\d{4}-\d{2}-\d{2}$/.test(process.env.SEATY_DATE || "")) return process.env.SEATY_DATE;
   return new Date().toISOString().slice(0, 10);
 }
 

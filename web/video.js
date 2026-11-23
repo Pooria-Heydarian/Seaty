@@ -371,6 +371,12 @@ function buildTimeline(city, ch) {
     'giant-block': (n) => [`One giant grass block, placed right on top of ${n}'s roof.`, 'Got a giant grass block!'],
     'robot-guard': (n) => [`Nobody gets past ${n}'s new robot guard.`, 'Got a robot guard!'],
     'xmas-tree': (n) => [`${n}'s yard is ready for Christmas, presents and all.`, 'Got a Christmas tree!'],
+    weathervane: (n) => [`A golden rooster now tells ${n} which way the wind blows.`, 'Got a weathervane!'],
+    'roof-pizza': (n) => [`There's a giant pizza slice on ${n}'s roof. Of course there is.`, 'Got a roof pizza!'],
+    'yard-sign': (n) => [`${n} put up a sign. The neighbours have been warned.`, 'Got a yard sign!'],
+    'roof-zombie': (n) => [`Something is standing on ${n}'s roof... and it's not a snowman.`, 'Got a roof zombie!'],
+    '3d-printer': (n) => [`${n}'s yard has a 3D printer now. What is it printing?`, 'Got a 3D printer!'],
+    'toy-train': (n) => [`All aboard! A toy train now circles ${n}'s house.`, 'Got a toy train!'],
     'big-cats': (n) => [`${n} adopted a lion and a tiger!`, 'Got a lion and a tiger!'],
     trophy: (n) => [`${n} won the weekly challenge! A golden trophy now stands in the front yard.`, 'Won the weekly challenge trophy!'],
   };

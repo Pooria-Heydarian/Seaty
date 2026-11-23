@@ -112,7 +112,7 @@ switch (cmd) {
     const r = resident(a);
     if (!UPGRADE_TYPES[b]) fail(`Unknown upgrade "${b}". Options: ${Object.keys(UPGRADE_TYPES).join(', ')}`);
     if (specials.upgrades.some((u) => same(u.resident, r) && u.type === b)) fail(`${r.name} already has the ${b}.`);
-    specials.upgrades.push({ resident: r.id, name: r.name, type: b, ...(typeof flags.text === 'string' ? { text: flags.text.trim().slice(0, 10) } : {}), ...(flags.comment ? { requestedIn: flags.comment } : {}), ...story(), added: date });
+    specials.upgrades.push({ resident: r.id, name: r.name, type: b, ...(typeof flags.text === 'string' ? { text: flags.text.trim().slice(0, b === 'yard-sign' ? 20 : 10) } : {}), ...(flags.comment ? { requestedIn: flags.comment } : {}), ...story(), added: date });
     save();
     console.log(`✓ ${r.name} got the ${b}`);
     break;

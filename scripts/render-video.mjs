@@ -48,7 +48,7 @@ await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const port = server.address().port;
 
 // ---- browser ----
-const url = `http://127.0.0.1:${port}/${pageName}?render=1${site ? `&site=${encodeURIComponent(site)}` : ''}`;
+const url = `http://127.0.0.1:${port}/${pageName}${pageName.includes("?") ? "&" : "?"}render=1${site ? `&site=${encodeURIComponent(site)}` : ''}`;
 let browser, page;
 let injected = null; // voice lengths + mouth envelopes, given to every (re)opened page
 // Opens the timeline page. Long renders sometimes lose the headless browser; the frame loop then

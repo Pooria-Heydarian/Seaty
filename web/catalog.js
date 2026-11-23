@@ -48,7 +48,13 @@ export const UPGRADE_TYPES = {
   helicopter: 'a helicopter circling round the house above the roof',
   'giant-block': 'a giant grass block (dirt with a grass top) sitting on the roof',
   'robot-guard': 'a robot guard at the front door with a scanning visor',
-  'xmas-tree': 'a Christmas tree in the yard with lights, baubles, presents and a star'
+  'xmas-tree': 'a Christmas tree in the yard with lights, baubles, presents and a star',
+  weathervane: 'a rooster weathervane on the roof that turns with the wind',
+  'roof-pizza': 'a giant pizza slice sitting on the roof',
+  'yard-sign': 'a wooden yard sign with their words on it (--text, up to 20 letters)',
+  'roof-zombie': 'a blocky zombie standing on the roof (on top of a giant block if they have one)',
+  '3d-printer': 'a 3D printer in the yard printing a little model',
+  'toy-train': 'a toy train going round and round the house on its own track'
 };
 
 /** Landmarks with their own 3D model. Any other landmark is built as a generic gold-domed hall with a name sign. */
@@ -82,6 +88,7 @@ export const LANDMARK_TYPES = {
   'logistics-hub': 'a big logistics hub (2 x 2 blocks): two warehouses, eight docks, container stacks, a gantry crane, trucks',
   'chocolate-factory': 'a chocolate factory: sawtooth roof, cocoa smoke, a chocolate river with a waterfall, a giant bar on the roof',
   'taco-bar': 'a taco bar: a street-food stand with a striped awning, stools and a giant taco on the roof',
+  'pet-rock-factory': 'a pet rock factory: a giant googly-eyed rock on the roof, a belt of little pet rocks',
   boutique: 'a clothing boutique with mannequins in dresses and a giant gold hanger sign',
   dojo: 'a Japanese martial-arts dojo with a two-tier roof, training dummy and bamboo',
   cinema: 'a movie theater with a glowing marquee, film reel and popcorn bucket',
@@ -140,6 +147,7 @@ const SHAPE_STYLE = {
   mushroom: 'fantasy', rocket: 'fantasy', igloo: 'fantasy', treehouse: 'fantasy', pyramid: 'fantasy', lighthouse: 'fantasy',
   'gem-head': 'fantasy', 'chess-knight': 'fantasy', bunker: 'fantasy', caravan: 'fantasy',
   'white-house': 'villa', rainbow: 'fantasy', 'space-station': 'fantasy', 'glass-spire': 'tower', donut: 'fantasy', airplane: 'fantasy', 'capybara-head': 'fantasy', roach: 'fantasy', 'lake-house': 'old',
+  'chalet-hotel': 'old', 'paper-house': 'fantasy', 'bakery-house': 'old', 'hero-tower': 'tower', greenhouse: 'villa', croissant: 'fantasy', 'train-house': 'fantasy', jenga: 'fantasy', 'cat-house': 'fantasy', 'toy-house': 'fantasy', 'pickle-jar': 'fantasy', 'ant-hill': 'fantasy',
   'plane-stack': 'fantasy', 'printer-house': 'fantasy', 'chocolate-house': 'fantasy', 'pizza-house': 'fantasy', 'christmas-cabin': 'old',
   'block-house': 'fantasy', 'donut-tower': 'tower', strawberry: 'fantasy', taco: 'fantasy', 'coaster-house': 'fantasy', 'double-airplane': 'fantasy', vinyl: 'tower', 'cannon-fort': 'fantasy', mountain: 'villa',
 };
@@ -176,7 +184,7 @@ const LANDMARK_PLAN = {
   stadium: ['sports', 'L'], ballpark: ['sports', 'L'], 'race-track': ['sports', 'L'],
   farm: ['country', 'L'], 'lemon-farm': ['country', 'L'], castle: ['country', 'L'], dam: ['country', 'L'],
   'power-plant': ['industry', 'L'], 'spaghetti-factory': ['industry', 'L'], 'watermelon-factory': ['industry', 'L'], 'toy-factory': ['industry', 'L'],
-  'black-hole-reactor': ['industry', 'L'], 'bus-depot': ['industry', 'M'], 'logistics-depot': ['industry', 'M'], 'logistics-hub': ['industry', 'L'], 'chocolate-factory': ['industry', 'L'],
+  'black-hole-reactor': ['industry', 'L'], 'bus-depot': ['industry', 'M'], 'logistics-depot': ['industry', 'M'], 'logistics-hub': ['industry', 'L'], 'chocolate-factory': ['industry', 'L'], 'pet-rock-factory': ['industry', 'L'],
   airport: ['transport', 'L'], 'space-center': ['transport', 'L'],
   rail: ['station', 'L'], railway: ['station', 'L'],
 };
@@ -200,10 +208,22 @@ export function landmarkPlan(def) {
 
 /** Building shapes. */
 export const HOUSE_SHAPES = {
+  'chalet-hotel': 'a cozy Christmas hotel: stone ground floor, wooden floors, snowy roof, balconies with lights, a little garden',
+  'paper-house': 'a folded-paper house with creases and a paper crane on top',
+  'bakery-house': 'a house with a little bakery downstairs: striped awning, bread in the window, a pretzel sign',
+  'hero-tower': 'a superhero-style glass skyscraper with a slanted crown, a glowing stripe and a landing pad',
+  greenhouse: 'a glass greenhouse house full of plants on every floor, with an arched glass roof',
+  croissant: 'a croissant house: a golden crescent of pastry rolls',
+  'train-house': 'a little train (locomotive + home carriage) driving round an oval track on the plot',
+  jenga: 'a Jenga tower: a layer of three wooden blocks per floor, a few pushed out',
+  'cat-house': 'a giant sitting cat with glowing eyes and a door in its chest',
+  'toy-house': 'a toy factory house: toy blocks, a rainbow sawtooth roof, rainbow smoke, a belt of gift boxes',
+  'pickle-jar': 'a giant jar of pickles with a metal lid and a cat sitting on top',
+  'ant-hill': 'an ant hill: an earth mound with tunnel holes and ants marching up and down',
   'plane-stack': 'a tower of airplanes: one plane stacked on the next for every floor, round a mast',
   'printer-house': 'a 3D printer printing the house: frame, gantry, moving print head, filament spool',
   'chocolate-house': 'a chocolate house: chocolate-bar walls, an iced roof, candy canes and gumdrops',
-  'pizza-house': 'a pizza-slice house: slice floor plan, crust at the back, cheese and pepperoni on top',
+  'pizza-house': 'a stack of pizza slices: one pizza for every floor',
   'christmas-cabin': 'a Christmas log cabin: snowy roof, wreath, coloured lights, snowy pines',
   'block-house': 'a blocky voxel house: stone base, plank walls, log corners, stepped roof, a torch and a cube tree',
   'donut-tower': 'a glass tower with a giant iced donut on the roof and a donut-shop front',

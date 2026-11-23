@@ -3127,6 +3127,196 @@ export function createExtraModels({ THREE, M, mat, FLOOR_H, glow, shadowAll }) {
 
   const day10Landmarks = { 'chocolate-factory': chocolateFactory, 'taco-bar': tacoBar, 'logistics-hub': logisticsHub };
 
+
+  // ---------------- Day 11 (2026-11-23) requests ----------------
+
+  /** A sign board with text drawn on a canvas (yard signs). */
+  const textBoard = (text, w, hgt, bg, fg, border) => {
+    const cv = document.createElement('canvas');
+    cv.width = 512; cv.height = Math.round(512 * (hgt / w));
+    const c = cv.getContext('2d');
+    c.fillStyle = bg; c.fillRect(0, 0, cv.width, cv.height);
+    c.strokeStyle = border; c.lineWidth = 14; c.strokeRect(7, 7, cv.width - 14, cv.height - 14);
+    c.fillStyle = fg; c.textAlign = 'center'; c.textBaseline = 'middle';
+    const words = text.split(' ');
+    const lines = words.length > 2 ? [words.slice(0, Math.ceil(words.length / 2)).join(' '), words.slice(Math.ceil(words.length / 2)).join(' ')] : [text];
+    let px = 120;
+    do { c.font = `900 ${px}px Inter, Arial, sans-serif`; px -= 4; } while (lines.some((l) => c.measureText(l).width > cv.width - 50) && px > 20);
+    lines.forEach((l, i) => c.fillText(l, cv.width / 2, cv.height / 2 + (i - (lines.length - 1) / 2) * px * 1.1));
+    const tex = new THREE.CanvasTexture(cv);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.8 });
+  };
+
+  Object.assign(upgrades, {
+    /** A rooster weathervane on the roof: a pole, the compass arms and a rooster that turns with the wind (@MrTauntyFace). */
+    weathervane(entry) {
+      const g = new THREE.Group();
+      const iron = M('#2b2d42', { metalness: 0.6, roughness: 0.4 });
+      g.add(mesh(new THREE.CylinderGeometry(0.04, 0.05, 1.6, 6).translate(0, 0.8, 0), iron));
+      for (const r of [0, Math.PI / 2]) { const arm = mesh(box(1.0, 0.04, 0.04, 0, 1.1, 0), iron); arm.rotation.y = r; g.add(arm); }
+      const vane = new THREE.Group();
+      const gold = M('#d4af37', { metalness: 0.7, roughness: 0.3 });
+      vane.add(mesh(new THREE.SphereGeometry(0.2, 10, 8).scale(1.3, 1, 0.3).translate(0, 0, 0), gold)); // body
+      vane.add(mesh(new THREE.SphereGeometry(0.1, 8, 6).scale(1, 1, 0.4).translate(0.25, 0.22, 0), gold)); // head
+      vane.add(mesh(new THREE.ConeGeometry(0.04, 0.1, 4).rotateZ(-Math.PI / 2).translate(0.38, 0.22, 0), M('#ffb703'))); // beak
+      vane.add(mesh(box(0.12, 0.1, 0.03, 0.25, 0.3, 0), M('#e63946'))); // comb
+      for (let i = 0; i < 3; i++) { const f = mesh(new THREE.ConeGeometry(0.08, 0.35, 4).translate(-0.28, 0.12 + i * 0.06, 0), gold); f.rotation.z = 0.6 - i * 0.3; vane.add(f); } // tail
+      vane.add(mesh(box(0.45, 0.03, 0.03, 0.05, -0.25, 0), gold), mesh(new THREE.ConeGeometry(0.06, 0.15, 4).rotateZ(-Math.PI / 2).translate(0.32, -0.25, 0), gold));
+      vane.position.y = 1.55;
+      g.add(vane);
+      shadowAll(g);
+      g.userData.tick = (t) => { g.position.y = Math.max(1.5, (entry?.roofTop ?? 3) - 0.2); vane.rotation.y = Math.sin(t * 0.3) * 1.2 + Math.sin(t * 1.7) * 0.15; };
+      g.userData.tick(0);
+      return g;
+    },
+
+    /** A giant pizza slice sitting on the roof (@geniuly_2020). */
+    'roof-pizza'(entry) {
+      const g = new THREE.Group();
+      const s = new THREE.Shape();
+      s.moveTo(0, -1.5); s.lineTo(-1.2, 1.0); s.quadraticCurveTo(0, 1.4, 1.2, 1.0); s.lineTo(0, -1.5);
+      const layer = (d, y, c) => { const geo = new THREE.ExtrudeGeometry(s, { depth: d, bevelEnabled: false }); geo.rotateX(-Math.PI / 2); geo.translate(0, y, 0); g.add(mesh(geo, M(c))); };
+      layer(0.18, 0, '#e9c58f');
+      layer(0.06, 0.18, '#e63946');
+      layer(0.08, 0.24, '#ffd23f');
+      const crust = new THREE.CatmullRomCurve3([[-1.2, 1.0], [0, 1.3], [1.2, 1.0]].map(([x, z]) => new THREE.Vector3(x, 0.2, z)));
+      g.add(mesh(new THREE.TubeGeometry(crust, 16, 0.17, 8, false), M('#c98a4b')));
+      for (const [x, z] of [[0, -0.6], [-0.4, 0.3], [0.45, 0.4], [0, 0.9]]) g.add(mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.04, 14).translate(x, 0.34, z), M('#b5302a')));
+      shadowAll(g);
+      g.rotation.x = -0.25;
+      g.userData.tick = () => { g.position.y = Math.max(1.5, (entry?.roofTop ?? 3) - 0.1); };
+      g.userData.tick(0);
+      return g;
+    },
+
+    /** A wooden yard sign on a post with the owner's words on it, e.g. "GET OFF MY LAWN" (@Eastonfortniteeee). */
+    'yard-sign'(entry, up) {
+      const text = String(up?.text || 'KEEP OFF THE GRASS').toUpperCase().slice(0, 20);
+      const g = new THREE.Group();
+      const wood = M('#8a5a3a');
+      for (const x of [-0.55, 0.55]) g.add(mesh(box(0.1, 1.2, 0.1, x, 0, 0), wood));
+      const face = textBoard(text, 1.6, 0.8, '#fff3c4', '#b5302a', '#5b3d22');
+      g.add(mesh(new THREE.BoxGeometry(1.6, 0.8, 0.08).translate(0, 1.15, 0), [wood, wood, wood, wood, face, wood]));
+      shadowAll(g);
+      g.position.set(-1.6, 0.27, 2.6);
+      g.rotation.y = 0.15;
+      return g;
+    },
+
+    /** A blocky zombie standing on top of the giant grass block, arms out (@Oliverzinn-k7i). */
+    'roof-zombie'(entry) {
+      const g = new THREE.Group();
+      const skin = M('#5a9e47'), shirt = M('#2fa6a0'), pants = M('#3b3a9e');
+      for (const x of [-0.13, 0.13]) g.add(mesh(box(0.24, 0.7, 0.24, x, 0, 0), pants));
+      g.add(mesh(box(0.52, 0.7, 0.28, 0, 0.7, 0), shirt));
+      for (const x of [-0.38, 0.38]) g.add(mesh(box(0.22, 0.22, 0.65, x, 1.2, 0.25), skin)); // arms reaching forward
+      g.add(mesh(box(0.5, 0.5, 0.5, 0, 1.4, 0), skin));
+      for (const x of [-0.12, 0.12]) g.add(mesh(box(0.1, 0.08, 0.02, x, 1.62, 0.26), M('#14161c')));
+      g.add(mesh(box(0.18, 0.06, 0.02, 0, 1.5, 0.26), M('#2f5a26')));
+      shadowAll(g);
+      g.userData.tick = (t) => {
+        const onBlock = entry?.upgrades?.has('giant-block') ? 1.42 : 0;
+        g.position.y = Math.max(1.5, (entry?.roofTop ?? 3) - 0.05) + onBlock;
+        g.rotation.y = Math.sin(t * 0.5) * 0.4;
+      };
+      g.userData.tick(0);
+      return g;
+    },
+
+    /** A 3D printer in the yard: a frame, a print head moving over a little model it's printing (@ShashankShekhar-o3i). */
+    '3d-printer'() {
+      const g = new THREE.Group();
+      const frame = M('#2b2d42', { metalness: 0.4 });
+      g.add(mesh(box(1.1, 0.12, 1.1, 0, 0, 0), frame), mesh(box(0.9, 0.04, 0.9, 0, 0.12, 0), M('#5c6670', { metalness: 0.6 })));
+      for (const [x, z] of [[-0.5, -0.5], [0.5, -0.5], [-0.5, 0.5], [0.5, 0.5]]) g.add(mesh(box(0.06, 1.3, 0.06, x, 0, z), frame));
+      g.add(mesh(box(1.1, 0.06, 0.06, 0, 1.3, -0.5), frame), mesh(box(1.1, 0.06, 0.06, 0, 1.3, 0.5), frame));
+      const model = mesh(box(0.35, 0.3, 0.35, 0, 0.16, 0), M('#ff7a45')); // the thing being printed
+      g.add(model);
+      const bridge = new THREE.Group();
+      bridge.add(mesh(box(0.06, 0.06, 1.05, 0, 1.18, 0), frame));
+      const head = mesh(box(0.18, 0.18, 0.18, 0, 1.0, 0), M('#ff7a45'));
+      bridge.add(head, mesh(new THREE.ConeGeometry(0.05, 0.12, 8).rotateX(Math.PI).translate(0, 0.94, 0), M('#c9ccd1', { metalness: 0.7 })));
+      g.add(bridge);
+      g.add(mesh(new THREE.TorusGeometry(0.2, 0.07, 8, 16).rotateY(Math.PI / 2).translate(0.62, 0.5, 0), M('#3a86ff')));
+      shadowAll(g);
+      g.position.set(-2.4, 0.27, -2.3);
+      g.userData.tick = (t) => {
+        bridge.position.x = Math.sin(t * 1.1) * 0.3;
+        head.position.z = Math.sin(t * 1.9) * 0.3;
+        model.scale.y = 0.3 + ((((t * 0.1) % 1) + 1) % 1) * 1.4;
+      };
+      g.userData.tick(0);
+      return g;
+    },
+
+    /** A toy train going round and round the house on its own little track (@atrainjourney). */
+    'toy-train'() {
+      const g = new THREE.Group();
+      const R = 2.75;
+      g.add(mesh(new THREE.TorusGeometry(R, 0.04, 4, 64).rotateX(Math.PI / 2).translate(0, 0.08, 0), M('#8d96a3', { metalness: 0.6 })));
+      g.add(mesh(new THREE.TorusGeometry(R - 0.22, 0.04, 4, 64).rotateX(Math.PI / 2).translate(0, 0.08, 0), M('#8d96a3', { metalness: 0.6 })));
+      const cols = ['#e63946', '#3a86ff', '#ffd23f', '#5cc55a'];
+      const cars = cols.map((c, i) => {
+        const car = new THREE.Group();
+        car.add(mesh(box(0.3, 0.26, 0.45, 0, 0.1, 0), M(c)));
+        if (i === 0) car.add(mesh(new THREE.CylinderGeometry(0.06, 0.07, 0.2, 8).translate(0, 0.45, 0.12), DARK), mesh(box(0.3, 0.12, 0.2, 0, 0.36, -0.1), M('#2b2d42')));
+        g.add(car);
+        return car;
+      });
+      shadowAll(g);
+      g.position.y = 0.27;
+      g.userData.tick = (t) => cars.forEach((car, i) => {
+        const a = t * 0.6 - i * 0.2, rr = R - 0.11;
+        car.position.set(Math.cos(a) * rr, 0.08, Math.sin(a) * rr);
+        car.rotation.y = -a;
+      });
+      g.userData.tick(0);
+      return g;
+    },
+  });
+
+  /** Pet rock factory: a grey factory with a giant googly-eyed pet rock on the roof, a belt of little rocks getting their eyes, a chimney (@AI-content-stealer). */
+  function petRockFactory(def, floors = 1) {
+    const g = new THREE.Group();
+    g.add(mesh(box(11.4, 0.05, 11.4), M('#bdb6ac')));
+    const H = 3.0 + dy(floors) * 0.5;
+    const body = mesh(box(8.6, H, 5.2, -0.6, 0, -2.6), M(def.color || '#8f969e'));
+    g.add(body, mesh(box(8.8, 0.3, 5.4, -0.6, H, -2.6), M('#5c6670')));
+    for (let i = 0; i < 5; i++) g.add(mesh(box(0.9, 0.9, 0.06, -4.0 + i * 1.6, 1.3, 0.02), glow('#ffd58a', 0.35, 2)));
+    g.add(mesh(box(1.6, 1.8, 0.08, 2.6, 0, 0.02), M('#ff7a45')));
+    g.add(mesh(new THREE.CylinderGeometry(0.4, 0.55, H + 3, 12).translate(3.4, (H + 3) / 2, -4.4), M('#5c6670')));
+    // the giant pet rock on the roof, with googly eyes and a little bow
+    const rock = new THREE.Group();
+    rock.add(mesh(new THREE.DodecahedronGeometry(1.6, 1).scale(1.3, 0.9, 1.0), M('#9a948c', { flatShading: true, roughness: 1 })));
+    for (const s of [-1, 1]) {
+      rock.add(mesh(new THREE.SphereGeometry(0.42, 14, 10).scale(1, 1, 0.5).translate(s * 0.55, 0.45, 1.3), M('#ffffff')));
+      rock.add(mesh(new THREE.SphereGeometry(0.18, 10, 8).scale(1, 1, 0.5).translate(s * 0.55 + 0.08, 0.38, 1.47), M('#14161c')));
+    }
+    rock.add(mesh(new THREE.TorusGeometry(0.25, 0.08, 6, 12).translate(-0.35, 1.35, 0.2), M('#e63946')), mesh(new THREE.TorusGeometry(0.25, 0.08, 6, 12).translate(0.15, 1.35, 0.2), M('#e63946')));
+    rock.position.set(-1.0, H + 1.6, -2.6);
+    g.add(rock);
+    // the conveyor belt of little pet rocks coming out to the yard
+    g.add(mesh(box(8.0, 0.4, 0.8, -0.6, 0.2, 2.6), DARK));
+    const pebbles = [];
+    for (let i = 0; i < 8; i++) {
+      const p = new THREE.Group();
+      p.add(mesh(new THREE.DodecahedronGeometry(0.25, 0).scale(1.2, 0.8, 1), M('#9a948c', { flatShading: true })));
+      for (const s of [-1, 1]) p.add(mesh(new THREE.SphereGeometry(0.07, 8, 6).translate(s * 0.09, 0.1, 0.22), M('#ffffff')));
+      g.add(p);
+      pebbles.push(p);
+    }
+    shadowAll(g);
+    g.userData.tick = (t) => {
+      rock.rotation.y = Math.sin(t * 0.4) * 0.2;
+      pebbles.forEach((p, i) => { const k = ((t * 0.08 + i / 8) % 1 + 1) % 1; p.position.set(-4.4 + k * 7.6, 0.75, 2.6); });
+    };
+    g.userData.tick(0);
+    return { group: g, body, height: H + 3.2 };
+  }
+
+  const day11Landmarks = { 'pet-rock-factory': petRockFactory };
+
   return {
     upgrades,
     landmarks: {
@@ -3139,6 +3329,7 @@ export function createExtraModels({ THREE, M, mat, FLOOR_H, glow, shadowAll }) {
       ...day8Landmarks,
       ...day9Landmarks,
       ...day10Landmarks,
+      ...day11Landmarks,
     },
   };
 }
