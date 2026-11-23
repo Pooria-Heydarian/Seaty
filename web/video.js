@@ -365,7 +365,7 @@ function buildTimeline(city, ch) {
     'dark-portal': (n) => [`${n}'s backyard now leads to another dimension. Enter at your own risk.`, 'Got a dark portal!'],
     'lava-portal': (n) => [`Careful, it's hot! ${n} has a portal to the lava dimension.`, 'Got a lava portal!'],
     tesseract: (n) => [`${n} lives in a normal house... with a door to the fourth dimension.`, 'Got a tesseract!'],
-    'giant-flag': (n) => [`A giant flag of Malaysia now flies over ${n}'s mansion.`, 'Got a giant flag!'],
+    'giant-flag': (n, sp) => [`A giant flag of ${({ IN: 'India' })[String(sp?.text || '').toUpperCase()] || 'Malaysia'} now flies over ${n}'s house.`, 'Got a giant flag!'],
     'capybara-boxing': (n) => [`Ding ding! Capybara boxing has started at ${n}'s place.`, 'Got a capybara boxing ring!'],
     helicopter: (n) => [`Hear that? ${n}'s helicopter is circling the mansion.`, 'Got a helicopter!'],
     'giant-block': (n) => [`One giant grass block, placed right on top of ${n}'s roof.`, 'Got a giant grass block!'],
@@ -377,10 +377,15 @@ function buildTimeline(city, ch) {
     'roof-zombie': (n) => [`Something is standing on ${n}'s roof... and it's not a snowman.`, 'Got a roof zombie!'],
     '3d-printer': (n) => [`${n}'s yard has a 3D printer now. What is it printing?`, 'Got a 3D printer!'],
     'toy-train': (n) => [`All aboard! A toy train now circles ${n}'s house.`, 'Got a toy train!'],
+    'roof-dragon': (n) => [`A real dragon now guards ${n}'s castle.`, 'Got a dragon on the roof!'],
+    'capy-ice-cream': (n) => [`${n} opened a capybara ice cream stand!`, 'Got a capybara ice cream stand!'],
+    'capy-tree': (n) => [`${n}'s new tree came with capybaras in it.`, 'Got a capybara tree!'],
+    cave: (n) => [`${n} dug a secret cave in the yard.`, 'Got a cave!'],
+    'shepherd-cat': (n) => [`${n} adopted a German shepherd and a little grey cat.`, 'Got a dog and a cat!'],
     'big-cats': (n) => [`${n} adopted a lion and a tiger!`, 'Got a lion and a tiger!'],
     trophy: (n) => [`${n} won the weekly challenge! A golden trophy now stands in the front yard.`, 'Won the weekly challenge trophy!'],
   };
-  const upLine = (sp) => (UPGRADE_LINE[sp.type] || ((n) => [`${n} got a house upgrade!`, 'Got a house upgrade!']))(say(sp.name));
+  const upLine = (sp) => (UPGRADE_LINE[sp.type] || ((n) => [`${n} got a house upgrade!`, 'Got a house upgrade!']))(say(sp.name), sp);
   const upNoun = (sp) => upLine(sp)[1].replace(/^(Got|Won) /, '').replace(/!$/, '');
 
   // ---- what happened today ----

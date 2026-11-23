@@ -2673,12 +2673,22 @@ export function createExtraModels({ THREE, M, mat, FLOOR_H, glow, shadowAll }) {
     },
 
     /** A giant flag of Malaysia on a tall pole on the roof, waving (@AverageHuman67). */
-    'giant-flag'(entry) {
+    'giant-flag'(entry, up) {
       const g = new THREE.Group();
       const cv = document.createElement('canvas');
       cv.width = 560; cv.height = 280;
       const c = cv.getContext('2d');
-      for (let i = 0; i < 14; i++) { c.fillStyle = i % 2 ? '#ffffff' : '#cc0001'; c.fillRect(0, (i * 280) / 14, 560, 280 / 14 + 1); }
+      const country = String(up?.text || 'MY').toUpperCase();
+      if (country === 'IN') {
+        // India: saffron, white and green with the navy Ashoka chakra (24 spokes) (Day 12, @ShashankShekhar-o3i)
+        [['#ff9933', 0], ['#ffffff', 1], ['#138808', 2]].forEach(([col, i]) => { c.fillStyle = col; c.fillRect(0, (i * 280) / 3, 560, 280 / 3 + 1); });
+        c.strokeStyle = '#000080'; c.lineWidth = 5;
+        c.beginPath(); c.arc(280, 140, 38, 0, Math.PI * 2); c.stroke();
+        c.lineWidth = 2;
+        for (let i = 0; i < 24; i++) { const a = (i / 24) * Math.PI * 2; c.beginPath(); c.moveTo(280, 140); c.lineTo(280 + Math.cos(a) * 38, 140 + Math.sin(a) * 38); c.stroke(); }
+        c.fillStyle = '#000080'; c.beginPath(); c.arc(280, 140, 7, 0, Math.PI * 2); c.fill();
+      } else for (let i = 0; i < 14; i++) { c.fillStyle = i % 2 ? '#ffffff' : '#cc0001'; c.fillRect(0, (i * 280) / 14, 560, 280 / 14 + 1); }
+      if (country !== 'IN') {
       c.fillStyle = '#010066'; c.fillRect(0, 0, 280, 160);
       // crescent and 14-point star
       c.fillStyle = '#ffcc00';
@@ -2689,6 +2699,7 @@ export function createExtraModels({ THREE, M, mat, FLOOR_H, glow, shadowAll }) {
       c.beginPath();
       for (let i = 0; i < 28; i++) { const a = (i / 28) * Math.PI * 2 - Math.PI / 2, rr = i % 2 ? 22 : 52; c.lineTo(200 + Math.cos(a) * rr, 80 + Math.sin(a) * rr); }
       c.closePath(); c.fill();
+      }
       const tex = new THREE.CanvasTexture(cv);
       tex.colorSpace = THREE.SRGBColorSpace;
       g.add(mesh(new THREE.CylinderGeometry(0.06, 0.08, 4.2, 8).translate(0, 2.1, 0), M('#c9ccd1', { metalness: 0.7 })));
@@ -3317,6 +3328,338 @@ export function createExtraModels({ THREE, M, mat, FLOOR_H, glow, shadowAll }) {
 
   const day11Landmarks = { 'pet-rock-factory': petRockFactory };
 
+
+  // ---------------- Day 12 (2026-11-24) requests ----------------
+
+  /** A capybara: body, head, ears, eyes (shared by the capybara ice cream and the capybara tree). */
+  const capyFigure = (s = 1, fur = '#a0703f') => {
+    const c = new THREE.Group();
+    const m = M(fur), dark = M('#3b2a1f');
+    c.add(mesh(new THREE.CapsuleGeometry(0.22 * s, 0.32 * s, 4, 10).rotateX(Math.PI / 2).translate(0, 0.24 * s, 0), m));
+    c.add(mesh(new THREE.BoxGeometry(0.3 * s, 0.26 * s, 0.32 * s).translate(0, 0.38 * s, 0.34 * s), m));
+    for (const sx of [-1, 1]) {
+      c.add(mesh(new THREE.SphereGeometry(0.035 * s, 6, 4).translate(sx * 0.1 * s, 0.44 * s, 0.5 * s), dark));
+      c.add(mesh(new THREE.SphereGeometry(0.05 * s, 6, 4).translate(sx * 0.12 * s, 0.53 * s, 0.24 * s), dark));
+    }
+    c.add(mesh(new THREE.BoxGeometry(0.12 * s, 0.06 * s, 0.04 * s).translate(0, 0.36 * s, 0.51 * s), dark));
+    return c;
+  };
+
+  Object.assign(upgrades, {
+    /** A dragon perched on the roof, wings slowly flapping, a glow of fire in its mouth (@Get_jin_in_use). */
+    'roof-dragon'(entry) {
+      const g = new THREE.Group();
+      const scale = M('#9b1c1c', { flatShading: true, roughness: 0.6 });
+      const belly = M('#e9a23b', { flatShading: true });
+      const horn = M('#f1e6c8');
+      // body, neck, head
+      g.add(mesh(new THREE.SphereGeometry(0.7, 10, 8).scale(0.8, 0.75, 1.3).translate(0, 0.75, 0), scale));
+      g.add(mesh(new THREE.SphereGeometry(0.5, 8, 6).scale(0.75, 0.6, 1.1).translate(0, 0.6, 0.15), belly));
+      const neck = mesh(new THREE.CylinderGeometry(0.2, 0.32, 1.1, 8).translate(0, 0.55, 0), scale);
+      neck.position.set(0, 1.0, 0.75);
+      neck.rotation.x = 0.6;
+      g.add(neck);
+      const head = new THREE.Group();
+      head.add(mesh(new THREE.BoxGeometry(0.5, 0.4, 0.75).translate(0, 0, 0.15), scale));
+      head.add(mesh(new THREE.BoxGeometry(0.42, 0.14, 0.4).translate(0, -0.16, 0.6), scale)); // jaw
+      for (const s of [-1, 1]) {
+        head.add(mesh(new THREE.ConeGeometry(0.07, 0.45, 6).rotateX(-0.9).translate(s * 0.17, 0.3, -0.2), horn));
+        head.add(mesh(new THREE.SphereGeometry(0.06, 6, 4).translate(s * 0.2, 0.1, 0.35), glow('#ffd23f', 1.2, 3)));
+      }
+      const fire = mesh(new THREE.ConeGeometry(0.14, 0.6, 8).rotateX(Math.PI / 2).translate(0, -0.08, 1.05), glow('#ff7a1a', 1.4, 4));
+      head.add(fire);
+      head.position.set(0, 1.95, 1.35);
+      g.add(head);
+      // spikes down the back, the tail curling round
+      for (let i = 0; i < 5; i++) g.add(mesh(new THREE.ConeGeometry(0.08, 0.28, 4).translate(0, 1.27 - i * 0.04, 0.5 - i * 0.3), horn));
+      const tail = new THREE.CatmullRomCurve3([[0, 0.6, -0.8], [0.3, 0.4, -1.4], [0.9, 0.35, -1.6], [1.2, 0.5, -1.1]].map(([x, y, z]) => new THREE.Vector3(x, y, z)));
+      g.add(mesh(new THREE.TubeGeometry(tail, 16, 0.13, 6, false), scale));
+      g.add(mesh(new THREE.ConeGeometry(0.16, 0.35, 4).rotateZ(-Math.PI / 2).translate(1.35, 0.55, -1.05), scale));
+      for (const s of [-1, 1]) for (const z of [-0.4, 0.4]) g.add(mesh(new THREE.CylinderGeometry(0.11, 0.13, 0.5, 6).translate(s * 0.35, 0.25, z), scale));
+      // the wings: a bony arm and a membrane, flapping
+      const wings = [-1, 1].map((s) => {
+        const w = new THREE.Group();
+        const sh = new THREE.Shape();
+        sh.moveTo(0, 0); sh.lineTo(1.9, 0.9); sh.lineTo(1.6, 0.2); sh.lineTo(2.1, -0.1); sh.lineTo(1.3, -0.35); sh.lineTo(1.4, -0.8); sh.lineTo(0, -0.5); sh.lineTo(0, 0);
+        const mem = mesh(new THREE.ShapeGeometry(sh), M('#c23b22', { side: THREE.DoubleSide, flatShading: true }));
+        mem.rotation.x = -Math.PI / 2;
+        w.add(mem);
+        w.add(mesh(new THREE.CylinderGeometry(0.05, 0.05, 2.1, 5).rotateZ(Math.PI / 2).translate(1.0, 0.02, -0.4), scale));
+        w.position.set(s * 0.35, 1.25, 0.2);
+        w.scale.x = s;
+        g.add(w);
+        return w;
+      });
+      shadowAll(g);
+      g.scale.setScalar(1.7);
+      g.userData.tick = (t) => {
+        g.position.y = Math.max(1.5, entry?.height ?? (entry?.roofTop ?? 3) - 1);
+        const f = Math.sin(t * 2.2);
+        wings.forEach((w) => { w.rotation.z = 0.35 + f * 0.35; });
+        head.rotation.y = Math.sin(t * 0.5) * 0.35;
+        fire.scale.setScalar(0.7 + 0.3 * Math.abs(Math.sin(t * 5)));
+      };
+      g.userData.tick(0);
+      return g;
+    },
+
+    /** A capybara ice cream stand: a little cart with a striped umbrella and a giant cone topped with a capybara scoop (@ChristinneeeXD). */
+    'capy-ice-cream'() {
+      const g = new THREE.Group();
+      g.add(mesh(box(0.8, 0.55, 0.5, 0, 0.12, 0), M('#ffb3c6')), mesh(box(0.84, 0.06, 0.54, 0, 0.67, 0), WHITE));
+      for (const x of [-0.3, 0.3]) g.add(mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.06, 12).rotateX(Math.PI / 2).translate(x, 0.12, 0.27), DARK));
+      g.add(mesh(new THREE.CylinderGeometry(0.025, 0.025, 1.1, 6).translate(-0.3, 1.2, 0), M('#c9ccd1')));
+      for (let i = 0; i < 8; i++) {
+        const seg = mesh(new THREE.ConeGeometry(0.75, 0.32, 8, 1, true, (i / 8) * Math.PI * 2, Math.PI / 4).translate(-0.3, 1.85, 0), M(i % 2 ? '#ffffff' : '#ff7a45', { side: THREE.DoubleSide }));
+        g.add(seg);
+      }
+      // the giant cone with a capybara scoop on the counter
+      g.add(mesh(new THREE.ConeGeometry(0.22, 0.6, 12).rotateX(Math.PI).translate(0.2, 1.0, 0), M('#d9a066')));
+      g.add(mesh(new THREE.SphereGeometry(0.26, 12, 10).translate(0.2, 1.36, 0), M('#c8996a')));
+      const capy = capyFigure(0.7, '#b07a45');
+      capy.position.set(0.2, 1.45, 0);
+      capy.rotation.y = 0.4;
+      g.add(capy);
+      shadowAll(g);
+      g.position.set(2.5, 0.27, -0.3);
+      g.rotation.y = -Math.PI / 2;
+      return g;
+    },
+
+    /** A capybara tree: a round tree with three capybaras sitting on its branches (@ChristinneeeXD). */
+    'capy-tree'() {
+      const g = new THREE.Group();
+      g.add(mesh(new THREE.CylinderGeometry(0.16, 0.24, 1.6, 8).translate(0, 0.8, 0), TRUNK));
+      for (const [x, y, z, ry] of [[0.45, 1.35, 0.1, 0.3], [-0.4, 1.55, -0.2, -0.5], [0.05, 1.8, 0.45, 2.6]]) {
+        const br = mesh(new THREE.CylinderGeometry(0.06, 0.09, 0.8, 6).translate(0, 0.4, 0), TRUNK);
+        br.position.set(0, y - 0.45, 0);
+        br.rotation.set(0, ry, 0.9);
+        g.add(br);
+      }
+      g.add(mesh(new THREE.IcosahedronGeometry(1.0, 1).translate(0, 2.45, 0), M('#4f9a45', { flatShading: true })));
+      g.add(mesh(new THREE.IcosahedronGeometry(0.6, 1).translate(0.55, 2.2, 0.4), M('#5cae4a', { flatShading: true })));
+      [[0.55, 1.55, 0.55, 0.4], [-0.6, 1.75, 0.35, -0.6], [0.1, 3.25, 0.2, 0.2]].forEach(([x, y, z, ry]) => {
+        const c = capyFigure(0.8);
+        c.position.set(x, y, z);
+        c.rotation.y = ry;
+        g.add(c);
+      });
+      shadowAll(g);
+      g.position.set(-2.5, 0.27, -0.4);
+      return g;
+    },
+
+    /** A rocky cave in the yard: a boulder mound with a dark mouth, stalactites, glowing crystals and a lantern (@Eastonfortniteeee). */
+    cave() {
+      const g = new THREE.Group();
+      const rock = M('#7d7770', { flatShading: true, roughness: 1 });
+      g.add(mesh(new THREE.DodecahedronGeometry(1.0, 1).scale(1.0, 0.75, 0.95).translate(0, 0.55, 0), rock));
+      for (const [x, z, s] of [[-0.75, 0.2, 0.5], [0.8, -0.1, 0.55], [0.3, -0.7, 0.5], [-0.4, -0.6, 0.45]]) g.add(mesh(new THREE.DodecahedronGeometry(s, 0).translate(x, s * 0.6, z), rock));
+      // the dark mouth (an arch) with teeth of stone
+      const arch = new THREE.Shape();
+      arch.moveTo(-0.4, 0); arch.lineTo(-0.4, 0.35); arch.absarc(0, 0.35, 0.4, Math.PI, 0, true); arch.lineTo(0.4, 0); arch.lineTo(-0.4, 0);
+      g.add(mesh(new THREE.ShapeGeometry(arch).translate(0, 0.02, 0.93), M('#120e0b')));
+      for (const x of [-0.22, 0, 0.22]) g.add(mesh(new THREE.ConeGeometry(0.06, 0.2, 5).rotateX(Math.PI).translate(x, 0.66, 0.92), rock));
+      // crystals glowing in the dark and a lantern by the entrance
+      for (const [x, c] of [[-0.18, '#7bdff2'], [0.15, '#b388ff']]) g.add(mesh(new THREE.OctahedronGeometry(0.1, 0).scale(1, 1.8, 1).translate(x, 0.12, 0.88), glow(c, 1.2, 3.5)));
+      g.add(mesh(box(0.05, 0.6, 0.05, 0.6, 0, 1.0), DARK), mesh(box(0.16, 0.18, 0.16, 0.6, 0.6, 1.0), glow('#ffcf7a', 0.8, 3)));
+      shadowAll(g);
+      g.position.set(2.35, 0.27, -2.35);
+      g.rotation.y = 2.36; // the mouth faces out from the back corner
+      return g;
+    },
+
+    /** A German shepherd and a small grey cat in the front yard (@user-yq5uw9bn4x). */
+    'shepherd-cat'() {
+      const g = new THREE.Group();
+      const tan = M('#c98b45'), black = M('#1f1a17'), dark = M('#14161c');
+      const dog = new THREE.Group();
+      dog.add(mesh(new THREE.CapsuleGeometry(0.21, 0.55, 4, 10).rotateZ(Math.PI / 2).translate(0, 0.48, 0), tan));
+      dog.add(mesh(new THREE.CapsuleGeometry(0.17, 0.4, 4, 10).rotateZ(Math.PI / 2).translate(-0.05, 0.6, 0), black)); // the black saddle
+      dog.add(mesh(new THREE.SphereGeometry(0.18, 12, 10).translate(0.5, 0.78, 0), tan));
+      dog.add(mesh(new THREE.BoxGeometry(0.24, 0.12, 0.13).translate(0.7, 0.72, 0), black)); // dark muzzle
+      for (const z of [-0.08, 0.08]) {
+        dog.add(mesh(new THREE.ConeGeometry(0.06, 0.2, 4).translate(0.47, 0.98, z), black)); // pointy ears
+        dog.add(mesh(new THREE.SphereGeometry(0.03, 6, 4).translate(0.65, 0.84, z * 0.9), dark));
+        for (const x of [-0.27, 0.27]) dog.add(mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.38, 6).translate(x, 0.19, z * 1.4), tan));
+      }
+      const tail = mesh(new THREE.CylinderGeometry(0.04, 0.07, 0.45, 6).translate(0, -0.22, 0), black);
+      tail.position.set(-0.5, 0.55, 0);
+      tail.rotation.z = -0.6;
+      dog.add(tail);
+      dog.position.set(1.1, 0, 2.55);
+      dog.rotation.y = -0.35;
+      const cat = new THREE.Group();
+      const grey = M('#8d96a3');
+      cat.add(mesh(new THREE.SphereGeometry(0.17, 12, 10).scale(1, 1.1, 1.2).translate(0, 0.19, 0), grey));
+      cat.add(mesh(new THREE.SphereGeometry(0.12, 12, 10).translate(0, 0.42, 0.1), grey));
+      for (const x of [-0.06, 0.06]) {
+        cat.add(mesh(new THREE.ConeGeometry(0.04, 0.08, 4).translate(x, 0.54, 0.08), grey));
+        cat.add(mesh(new THREE.SphereGeometry(0.022, 6, 4).translate(x, 0.44, 0.21), M('#7bd36b')));
+      }
+      const ctail = mesh(new THREE.TorusGeometry(0.14, 0.025, 6, 12, Math.PI), grey);
+      ctail.position.set(0, 0.1, -0.2);
+      ctail.rotation.y = Math.PI / 2;
+      cat.add(ctail);
+      cat.position.set(-1.0, 0, 2.7);
+      g.add(dog, cat);
+      shadowAll(g);
+      g.position.y = 0.27;
+      g.userData.tick = (t) => { tail.rotation.x = Math.sin(t * 8) * 0.5; ctail.rotation.z = Math.sin(t * 1.5) * 0.2; };
+      g.userData.tick(0);
+      return g;
+    },
+  });
+
+  /** Croissant factory: a cream factory with a giant golden croissant on the roof, a belt of croissants coming out, a chimney puffing warm steam (@JakeMarx-k1w). */
+  function croissantFactory(def, floors = 1) {
+    const g = new THREE.Group();
+    g.add(mesh(box(11.4, 0.05, 11.4), M('#cdbfa8')));
+    const H = 3.2 + dy(floors) * 0.5;
+    const body = mesh(box(8.4, H, 5.0, -0.5, 0, -2.6), M(def.color || '#f3e3c3'));
+    g.add(body, mesh(box(8.6, 0.3, 5.2, -0.5, H, -2.6), M('#b5651d')));
+    // a striped awning and windows along the front, the big doors
+    for (let i = 0; i < 8; i++) g.add(mesh(box(1.05, 0.12, 0.7, -4.2 + i * 1.05, 2.2, 0.25), M(i % 2 ? '#ffffff' : '#d9963a')));
+    for (let i = 0; i < 4; i++) g.add(mesh(box(0.9, 0.9, 0.06, -4.0 + i * 1.4, 1.0, 0.02), glow('#ffd58a', 0.35, 2)));
+    g.add(mesh(box(1.8, 1.9, 0.08, 2.6, 0, 0.02), M('#8a4b2f')));
+    const chimney = mesh(new THREE.CylinderGeometry(0.4, 0.55, H + 3, 12).translate(3.2, (H + 3) / 2, -4.4), M('#b5651d'));
+    g.add(chimney);
+    const steam = [0, 1, 2].map(() => { const p = mesh(new THREE.SphereGeometry(0.45, 8, 6), M('#ffffff', { transparent: true, opacity: 0.7 })); g.add(p); return p; });
+    // the giant croissant on the roof: rolls along a crescent
+    const cro = new THREE.Group();
+    const pastry = M('#d9963a', { roughness: 0.55 }), ridge = M('#a8661f');
+    // five rolls along a crescent, the tips curling forward, each roll turned along the curve
+    for (const [x, z, s, ry] of [[-2.0, 1.7, 0.42, -0.9], [-1.2, 0.6, 0.72, -0.5], [0, 0, 1.0, 0], [1.2, 0.6, 0.72, 0.5], [2.0, 1.7, 0.42, 0.9]]) {
+      const roll = new THREE.Group();
+      roll.add(mesh(new THREE.SphereGeometry(1, 18, 12).scale(0.7 * s, 0.85 * s, 0.95 * s), pastry));
+      roll.add(mesh(new THREE.TorusGeometry(0.9 * s, 0.06, 6, 18).rotateY(Math.PI / 2).translate(0.3 * s, 0, 0), ridge));
+      roll.position.set(x, 0.85 * s, z);
+      roll.rotation.y = ry;
+      cro.add(roll);
+    }
+    cro.scale.setScalar(1.15);
+    cro.position.set(-1.2, H + 0.3, -1.8);
+    g.add(cro);
+    // the conveyor belt of fresh croissants in the yard
+    g.add(mesh(box(8.0, 0.4, 0.8, -0.5, 0.2, 2.6), DARK));
+    const minis = [];
+    for (let i = 0; i < 8; i++) {
+      const c = new THREE.Group();
+      for (const [x, s] of [[-0.18, 0.6], [0, 1], [0.18, 0.6]]) c.add(mesh(new THREE.SphereGeometry(0.16 * s, 10, 8).scale(0.8, 0.8, 1).translate(x, 0.12 * s, -Math.abs(x) * 0.6), pastry));
+      g.add(c);
+      minis.push(c);
+    }
+    shadowAll(g);
+    g.userData.tick = (t) => {
+      minis.forEach((c, i) => { const k = ((t * 0.08 + i / 8) % 1 + 1) % 1; c.position.set(-4.3 + k * 7.6, 0.45, 2.6); });
+      steam.forEach((p, i) => { const k = ((t * 0.3 + i / 3) % 1 + 1) % 1; p.position.set(3.2 + k * 0.6, H + 3.2 + k * 2.4, -4.4); p.scale.setScalar(0.6 + k); p.material.opacity = 0.7 * (1 - k); });
+    };
+    g.userData.tick(0);
+    return { group: g, body, height: H + 2.6 };
+  }
+
+  /** Auto body shop: a workshop with two roll-up bays, a car up on a lift, a car being painted, tyres and a big sign (@nitrobilder12). */
+  function autoBodyShop(def, floors = 1) {
+    const g = new THREE.Group();
+    g.add(mesh(box(11.4, 0.05, 11.4), M('#8d939a')));
+    const H = 3.4 + dy(floors) * 0.5;
+    const body = mesh(box(9.0, H, 5.2, 0, 0, -2.8), M(def.color || '#d9dde2'));
+    g.add(body, mesh(box(9.2, 0.3, 5.4, 0, H, -2.8), M('#3b4552')));
+    g.add(mesh(box(9.04, 0.5, 5.24, 0, H - 0.9, -2.8), M(def.accent || '#e63946')));
+    // two bays (one open with a car on a lift, one half shut), an office door
+    g.add(mesh(box(2.8, 2.4, 0.06, -2.6, 0, -0.16), M('#2b2f36')), mesh(box(2.8, 1.2, 0.08, 1.0, 1.2, -0.15), M('#c9ccd1', { metalness: 0.4 })));
+    for (let i = 0; i < 6; i++) g.add(mesh(box(2.8, 0.03, 0.1, 1.0, 1.25 + i * 0.2, -0.1), M('#9aa0a6')));
+    g.add(mesh(box(2.8, 1.2, 0.06, 1.0, 0, -0.16), M('#2b2f36')));
+    g.add(mesh(box(0.9, 1.9, 0.08, 3.7, 0, -0.15), M('#3a86ff')));
+    const car = (color) => {
+      const c = new THREE.Group();
+      c.add(mesh(box(1.9, 0.45, 0.95, 0, 0.18, 0), M(color, { metalness: 0.3, roughness: 0.35 })), mesh(box(1.0, 0.38, 0.85, -0.1, 0.63, 0), M(color, { metalness: 0.3 })));
+      c.add(mesh(box(1.02, 0.28, 0.87, -0.1, 0.68, 0), GLASS));
+      for (const x of [-0.6, 0.6]) for (const z of [-0.48, 0.48]) c.add(mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.14, 12).rotateX(Math.PI / 2).translate(x, 0.2, z), DARK));
+      return c;
+    };
+    // the lift: two posts and a car raised up, in front of the open bay
+    for (const x of [-3.9, -1.3]) g.add(mesh(box(0.15, 2.4, 0.15, x, 0, 1.0), M('#ffd23f')));
+    const lifted = car('#3a86ff');
+    lifted.position.set(-2.6, 1.3, 1.0);
+    g.add(lifted, mesh(box(2.4, 0.08, 1.1, -2.6, 1.22, 1.0), M('#5c6670')));
+    // a car with a fresh half-done paint job and a paint gun, a tyre stack, a toolbox
+    const painted = car('#e63946');
+    painted.position.set(1.6, 0, 2.6);
+    painted.rotation.y = 0.3;
+    g.add(painted, mesh(box(1.0, 0.3, 0.96, 1.3, 0.2, 2.5), M('#9aa0a6')));
+    for (let i = 0; i < 4; i++) g.add(mesh(new THREE.TorusGeometry(0.3, 0.12, 8, 14).rotateX(Math.PI / 2).translate(4.2, 0.12 + i * 0.24, 1.8), DARK));
+    g.add(mesh(box(0.8, 0.7, 0.45, 3.3, 0, 1.0), M('#e63946')));
+    // the roof sign
+    const signCv = document.createElement('canvas');
+    signCv.width = 512; signCv.height = 128;
+    const c = signCv.getContext('2d');
+    c.fillStyle = '#14202f'; c.fillRect(0, 0, 512, 128);
+    c.fillStyle = '#ffd23f'; c.font = '900 72px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('AUTO BODY', 256, 68);
+    const tex = new THREE.CanvasTexture(signCv);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    const sm = new THREE.MeshStandardMaterial({ map: tex, emissive: '#ffffff', emissiveMap: tex, emissiveIntensity: 0.35 });
+    g.add(mesh(box(4.4, 1.1, 0.2, 0, H + 0.3, -1.0), M('#14202f')), mesh(new THREE.PlaneGeometry(4.2, 1.0).translate(0, H + 0.85, -0.89), sm));
+    shadowAll(g);
+    g.userData.tick = (t) => { lifted.position.y = 1.3 + Math.max(0, Math.sin(t * 0.3)) * 0.4; };
+    return { group: g, body, height: H + 1.4 };
+  }
+
+  /** Classic 50s diner with an arcade: a chrome diner car with a red stripe, neon DINER and ARCADE signs, booths in the windows,
+   *  arcade cabinets glowing inside the side room, a checkered patio and a giant milkshake on the roof (@nitrobilder12). */
+  function classicDiner(def, floors = 1) {
+    const root = new THREE.Group();
+    const g = new THREE.Group(); // drawn at half size, scaled up (small landmarks are shown at half scale)
+    g.scale.setScalar(2);
+    root.add(g);
+    g.add(mesh(box(5.6, 0.05, 5.6), M('#e9e4da')));
+    const H = 2.4 + dy(floors) * 0.4;
+    const chrome = M('#e6ebf0', { metalness: 0.3, roughness: 0.3 });
+    // the diner car: a long rounded body
+    const body = mesh(new THREE.CapsuleGeometry(1.15, 2.6, 6, 16).rotateZ(Math.PI / 2).scale(1, H / 2.3, 1).translate(-0.4, H / 2, -0.6), chrome);
+    g.add(body);
+    g.add(mesh(new THREE.CylinderGeometry(1.17, 1.17, 3.6, 24, 1, true).rotateZ(Math.PI / 2).scale(1, 0.12, 1).translate(-0.4, H * 0.32, -0.6), M(def.color || '#d62828')));
+    for (let i = 0; i < 5; i++) g.add(mesh(box(0.5, 0.45, 0.05, -1.6 + i * 0.6, H * 0.45, 0.52), glow('#fff3c4', 0.4, 2.4)));
+    g.add(mesh(box(0.7, 1.4, 0.06, 1.3, 0.05, 0.42), M('#14202f')));
+    // the arcade room next to it with glowing cabinets in its window
+    g.add(mesh(box(1.8, 2.0, 2.0, 1.9, 0, -1.3), M('#2b2d42')));
+    g.add(mesh(box(1.4, 1.1, 0.05, 1.9, 0.4, -0.28), M('#120e24')));
+    ['#ff4fd8', '#3fe0ff', '#ffd23f'].forEach((c, i) => g.add(mesh(box(0.32, 0.8, 0.05, 1.45 + i * 0.45, 0.45, -0.24), glow(c, 0.9, 3))));
+    const neon = (text, color, w) => {
+      const cv = document.createElement('canvas');
+      cv.width = 512; cv.height = 160;
+      const c = cv.getContext('2d');
+      c.fillStyle = '#14202f'; c.fillRect(0, 0, 512, 160);
+      c.shadowColor = color; c.shadowBlur = 24; c.fillStyle = color;
+      c.font = 'italic 900 104px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(text, 256, 84);
+      const tex = new THREE.CanvasTexture(cv);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return mesh(new THREE.PlaneGeometry(w, w * 0.31), new THREE.MeshStandardMaterial({ map: tex, emissive: '#ffffff', emissiveMap: tex, emissiveIntensity: 0.6 }));
+    };
+    const diner = neon('DINER', '#ff3b5c', 2.4);
+    diner.position.set(-0.4, H + 0.55, -0.3);
+    g.add(diner, mesh(box(0.08, 0.5, 0.08, -1.3, H - 0.1, -0.35), DARK), mesh(box(0.08, 0.5, 0.08, 0.5, H - 0.1, -0.35), DARK));
+    const arcade = neon('ARCADE', '#3fe0ff', 1.6);
+    arcade.position.set(1.9, 2.3, -0.27);
+    g.add(arcade);
+    // a giant milkshake on the roof
+    g.add(mesh(new THREE.CylinderGeometry(0.4, 0.28, 0.9, 16).translate(-1.6, H + 0.45, -0.9), M('#ffb3c6')));
+    g.add(mesh(new THREE.SphereGeometry(0.42, 14, 10).scale(1, 0.6, 1).translate(-1.6, H + 0.95, -0.9), WHITE));
+    g.add(mesh(new THREE.SphereGeometry(0.12, 10, 8).translate(-1.6, H + 1.25, -0.9), M('#d62828')));
+    g.add(mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.9, 6).translate(-1.45, H + 1.3, -0.9).rotateZ(0), M('#ff4fd8')));
+    // the checkered patio with two little tables
+    for (let i = 0; i < 10; i++) for (let j = 0; j < 3; j++) if ((i + j) % 2) g.add(mesh(box(0.42, 0.02, 0.42, -2.1 + i * 0.42, 0.05, 1.2 + j * 0.42), M('#14202f')));
+    for (const x of [-1.4, 0.3]) {
+      g.add(mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.05, 14).translate(x, 0.75, 1.6), M('#d62828')), mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.72, 6).translate(x, 0.38, 1.6), chrome));
+    }
+    shadowAll(root);
+    root.userData.tick = (t) => { arcade.material.emissiveIntensity = 0.45 + 0.25 * Math.abs(Math.sin(t * 3)); };
+    return { group: root, body, height: (H + 1.4) * 2 };
+  }
+
+  const day12Landmarks = { 'croissant-factory': croissantFactory, 'auto-body-shop': autoBodyShop, 'classic-diner': classicDiner };
+
+
   return {
     upgrades,
     landmarks: {
@@ -3330,6 +3673,7 @@ export function createExtraModels({ THREE, M, mat, FLOOR_H, glow, shadowAll }) {
       ...day9Landmarks,
       ...day10Landmarks,
       ...day11Landmarks,
+      ...day12Landmarks,
     },
   };
 }

@@ -637,6 +637,37 @@
       "story": "A new citizen had a business idea. A very serious business idea. About rocks.",
       "top": 3,
       "added": "2026-11-22"
+    },
+    {
+      "id": "croissant-factory",
+      "type": "croissant-factory",
+      "kind": "croissant-factory",
+      "name": "Croissant Factory",
+      "requestedBy": "@JakeMarx-k1w",
+      "requestedById": "UCBfk8wxWrYurdlZW3WxooiQ",
+      "requestedIn": "UgxbnDibYpuMScLM2RN4AaABAg",
+      "story": "Jake already lives inside a croissant. Now Jake wants to make more of them.",
+      "added": "2026-11-24"
+    },
+    {
+      "id": "auto-body-shop",
+      "type": "auto-body-shop",
+      "kind": "auto-body-shop",
+      "name": "Auto Body Shop",
+      "requestedBy": "@nitrobilder12",
+      "requestedById": "UCzGfF6H-bPGT63fattPomww",
+      "requestedIn": "Ugzaowa4wsbimfG9ZUt4AaABAg",
+      "added": "2026-11-24"
+    },
+    {
+      "id": "classic-diner",
+      "type": "classic-diner",
+      "kind": "diner",
+      "name": "Classic Diner",
+      "requestedBy": "@nitrobilder12",
+      "requestedById": "UCzGfF6H-bPGT63fattPomww",
+      "requestedIn": "Ugzaowa4wsbimfG9ZUt4AaABAg",
+      "added": "2026-11-24"
     }
   ],
   "upgrades": [
@@ -1216,6 +1247,60 @@
       "requestedIn": "Ugxc39DxbSvteewnPzN4AaABAg",
       "story": "A new citizen joined, and had one wish for the garden. Choo choo.",
       "added": "2026-11-22"
+    },
+    {
+      "resident": "UCVNoIdSeaoW2eEnaZ61pAEQ",
+      "name": "@Get_jin_in_use",
+      "type": "roof-dragon",
+      "requestedIn": "UgwTtM7ORhCcACWLy6J4AaABAg",
+      "story": "Get Jin's black castle looked strong. But every castle needs a guard. A big one. With wings.",
+      "top": 2,
+      "added": "2026-11-24"
+    },
+    {
+      "resident": "UCKXWTyD95c9W96Co4VMbD4A",
+      "name": "@TheplantWorker",
+      "type": "rooftop-sign",
+      "text": "HOTEL",
+      "requestedIn": "UgyzAf1q97R4-uKFxtN4AaABAg",
+      "added": "2026-11-24"
+    },
+    {
+      "resident": "UCX6wVTHYXPiW7mS_UD_leoQ",
+      "name": "@ChristinneeeXD",
+      "type": "capy-ice-cream",
+      "requestedIn": "UgylRbWwjDeSbFNReSd4AaABAg",
+      "story": "Christinneee already has a capybara, a capybara pen and a capybara boxing ring. Somehow... it still wasn't enough.",
+      "added": "2026-11-24"
+    },
+    {
+      "resident": "UCX6wVTHYXPiW7mS_UD_leoQ",
+      "name": "@ChristinneeeXD",
+      "type": "capy-tree",
+      "requestedIn": "UgylRbWwjDeSbFNReSd4AaABAg",
+      "added": "2026-11-24"
+    },
+    {
+      "resident": "UCZYD9tjWBaJgrwaKK6DXp7g",
+      "name": "@Eastonfortniteeee",
+      "type": "cave",
+      "requestedIn": "UgxxmOeZ9hTYOaR7A-t4AaABAg",
+      "added": "2026-11-24"
+    },
+    {
+      "resident": "UCv-a0knslevzeV3tfAHRhFg",
+      "name": "@ShashankShekhar-o3i",
+      "type": "giant-flag",
+      "text": "IN",
+      "requestedIn": "Ugx4Pb1E0mzGtH7MtJh4AaABAg",
+      "added": "2026-11-24"
+    },
+    {
+      "resident": "UC9EhFzcf99pPbAJbtxYmh5Q",
+      "name": "@user-yq5uw9bn4x",
+      "type": "shepherd-cat",
+      "requestedIn": "UgzPjCGvJ0VUM1bv_9l4AaABAg",
+      "added": "2026-11-24"
     }
   ],
   "houses": [
@@ -1598,22 +1683,6 @@
       },
       "requestedIn": "Ugws00p9egpbTdDDTn94AaABAg",
       "added": "2026-11-17"
-    },
-    {
-      "resident": "UCDgiH80X9SHLgHukBy-XzkQ",
-      "name": "@JacksonGross-q4b",
-      "title": "White House",
-      "recipe": {
-        "shape": "white-house",
-        "roof": "pointed",
-        "wall": "#f7f5ef",
-        "roofColor": "#c9ccd1",
-        "door": "#3b2a1f",
-        "accent": "#e63946",
-        "extras": []
-      },
-      "requestedIn": "UgxDaTVIT82t7ozMbIV4AaABAg",
-      "added": "2026-11-18"
     },
     {
       "resident": "UCJKwj1uw3QlueW6K3N-U2gw",
@@ -2291,25 +2360,6 @@
       "added": "2026-11-22"
     },
     {
-      "resident": "UCKXWTyD95c9W96Co4VMbD4A",
-      "name": "@TheplantWorker",
-      "title": "Christmas Hotel",
-      "recipe": {
-        "shape": "chalet-hotel",
-        "roof": "gable",
-        "wall": "#8a5a3a",
-        "roofColor": "#6b2e22",
-        "door": "#3b2a1f",
-        "accent": "#ffd23f",
-        "extras": [
-          "smoke"
-        ]
-      },
-      "requestedIn": "Ugwzdy5BEh0Fp-zilNV4AaABAg",
-      "story": "The Plant Worker wanted somewhere cozy for Christmas. Somewhere with lots of rooms.",
-      "added": "2026-11-22"
-    },
-    {
       "resident": "UCerCGZ_mQ83Z5qN2dSBhXag",
       "name": "@Süßer_Fisch",
       "title": "Paper House",
@@ -2568,6 +2618,127 @@
       "requestedIn": "UgykTr0uZ7cZrREkCi54AaABAg",
       "story": "Jasmine just moved in. Jasmine's family is very, very big. And very, very small.",
       "added": "2026-11-22"
+    },
+    {
+      "resident": "UCoWRQSdP0zeu1OLMBZzdqvg",
+      "name": "@LuminosityYouTube",
+      "title": "Upside-Down House",
+      "recipe": {
+        "shape": "upside-down",
+        "roof": "gable",
+        "wall": "#f2e8d5",
+        "roofColor": "#b5302a",
+        "door": "#3a86ff",
+        "accent": "#ff7a45",
+        "extras": []
+      },
+      "requestedIn": "Ugz4kclGmpM3gIuX2tV4AaABAg",
+      "story": "Luminosity asked for a normal house. Well... almost normal. Just one small detail.",
+      "top": 1,
+      "added": "2026-11-24"
+    },
+    {
+      "resident": "UCq6H3em2-nBQjN5T7ItRNAg",
+      "name": "@agafvaagaba",
+      "title": "Sausage House",
+      "recipe": {
+        "shape": "sausage-house",
+        "roof": "gable",
+        "wall": "#b5523b",
+        "roofColor": "#93402c",
+        "door": "#5b3a24",
+        "accent": "#ffd23f",
+        "extras": []
+      },
+      "requestedIn": "UgwceRh0tYhOP2zhd_R4AaABAg",
+      "story": "A new citizen had one rule for their house. Every single piece... had to be made of the same thing.",
+      "top": 3,
+      "added": "2026-11-24"
+    },
+    {
+      "resident": "UC_EL-oo7ibzaIXyhI5SPIGQ",
+      "name": "@bricraft1",
+      "title": "Log Cabin",
+      "recipe": {
+        "shape": "christmas-cabin",
+        "roof": "gable",
+        "wall": "#a0703f",
+        "roofColor": "#7a4a2a",
+        "door": "#3b2a1f",
+        "accent": "#e63946",
+        "extras": [
+          "smoke"
+        ]
+      },
+      "requestedIn": "Ugz1lcN8BID_szkHD6x4AaABAg",
+      "added": "2026-11-24"
+    },
+    {
+      "resident": "UCAJV40S_jEBAyKZxIkT-ncA",
+      "name": "@nadjaperepyolkina7795",
+      "title": "Ginger Cat House",
+      "recipe": {
+        "shape": "cat-house",
+        "roof": "flat",
+        "wall": "#e3893b",
+        "roofColor": "#b8642a",
+        "door": "#5b3a24",
+        "accent": "#7bd36b",
+        "extras": []
+      },
+      "requestedIn": "UgyxnQ1zblf6pn2QLuJ4AaABAg",
+      "added": "2026-11-24"
+    },
+    {
+      "resident": "UCq8WjKKE1_L8xSv0yp2ryRg",
+      "name": "@Levitra86",
+      "title": "Giant Dog House",
+      "recipe": {
+        "shape": "dog-house",
+        "roof": "gable",
+        "wall": "#c98b45",
+        "roofColor": "#b5302a",
+        "door": "#3b2a1f",
+        "accent": "#f7f4ee",
+        "extras": []
+      },
+      "requestedIn": "UgzXCh6pBasU2ZZFIkZ4AaABAg",
+      "story": "Levitra asked for a dog house. Not for a dog. For Levitra.",
+      "added": "2026-11-24"
+    },
+    {
+      "resident": "UCDgiH80X9SHLgHukBy-XzkQ",
+      "name": "@JacksonGross-q4b",
+      "title": "Purple House",
+      "recipe": {
+        "shape": "white-house",
+        "roof": "pointed",
+        "wall": "#9b6bd6",
+        "roofColor": "#4b2a7b",
+        "door": "#3b2a1f",
+        "accent": "#ffd23f",
+        "extras": []
+      },
+      "requestedIn": "UgzX_2_eB3eqqqgANqZ4AaABAg",
+      "added": "2026-11-24"
+    },
+    {
+      "resident": "UCKXWTyD95c9W96Co4VMbD4A",
+      "name": "@TheplantWorker",
+      "title": "Christmas Hotel",
+      "recipe": {
+        "shape": "chalet-hotel",
+        "roof": "gable",
+        "wall": "#8a5a3a",
+        "roofColor": "#5b3a24",
+        "door": "#3b2a1f",
+        "accent": "#ffd23f",
+        "extras": [
+          "smoke"
+        ]
+      },
+      "requestedIn": "UgyzAf1q97R4-uKFxtN4AaABAg",
+      "added": "2026-11-24"
     }
   ],
   "invites": [

@@ -43,7 +43,7 @@ export const UPGRADE_TYPES = {
   'dark-portal': 'a standing portal of dark stone blocks with a swirling purple glow',
   'lava-portal': 'a stone portal to the lava dimension with an orange swirl and lava drips',
   tesseract: 'a glowing hypercube floating over the yard (a door to the 4th dimension)',
-  'giant-flag': 'a giant national flag on a tall pole on the roof (Malaysia for now; tell the session which flag)',
+  'giant-flag': 'a giant national flag on a tall pole on the roof (--text MY = Malaysia, IN = India)',
   'capybara-boxing': 'a capybara boxing ring: two capybaras in boxing gloves',
   helicopter: 'a helicopter circling round the house above the roof',
   'giant-block': 'a giant grass block (dirt with a grass top) sitting on the roof',
@@ -54,7 +54,12 @@ export const UPGRADE_TYPES = {
   'yard-sign': 'a wooden yard sign with their words on it (--text, up to 20 letters)',
   'roof-zombie': 'a blocky zombie standing on the roof (on top of a giant block if they have one)',
   '3d-printer': 'a 3D printer in the yard printing a little model',
-  'toy-train': 'a toy train going round and round the house on its own track'
+  'toy-train': 'a toy train going round and round the house on its own track',
+  'roof-dragon': 'a red dragon perched on the roof, wings flapping, fire glowing in its mouth',
+  'capy-ice-cream': 'a capybara ice cream cart with a striped umbrella and a capybara on the cone',
+  'capy-tree': 'a tree with three capybaras sitting in its branches',
+  cave: 'a rocky cave in the yard with glowing crystals and a lantern',
+  'shepherd-cat': 'a German shepherd and a small grey cat in the front yard'
 };
 
 /** Landmarks with their own 3D model. Any other landmark is built as a generic gold-domed hall with a name sign. */
@@ -89,6 +94,9 @@ export const LANDMARK_TYPES = {
   'chocolate-factory': 'a chocolate factory: sawtooth roof, cocoa smoke, a chocolate river with a waterfall, a giant bar on the roof',
   'taco-bar': 'a taco bar: a street-food stand with a striped awning, stools and a giant taco on the roof',
   'pet-rock-factory': 'a pet rock factory: a giant googly-eyed rock on the roof, a belt of little pet rocks',
+  'croissant-factory': 'a croissant factory: a giant croissant on the roof, a belt of fresh croissants, warm steam',
+  'auto-body-shop': 'an auto body shop: two bays, a car on a lift, a car being painted, tyres, an AUTO BODY sign',
+  'classic-diner': 'a classic 50s chrome diner with neon DINER and ARCADE signs, arcade cabinets and a milkshake on the roof',
   boutique: 'a clothing boutique with mannequins in dresses and a giant gold hanger sign',
   dojo: 'a Japanese martial-arts dojo with a two-tier roof, training dummy and bamboo',
   cinema: 'a movie theater with a glowing marquee, film reel and popcorn bucket',
@@ -147,7 +155,7 @@ const SHAPE_STYLE = {
   mushroom: 'fantasy', rocket: 'fantasy', igloo: 'fantasy', treehouse: 'fantasy', pyramid: 'fantasy', lighthouse: 'fantasy',
   'gem-head': 'fantasy', 'chess-knight': 'fantasy', bunker: 'fantasy', caravan: 'fantasy',
   'white-house': 'villa', rainbow: 'fantasy', 'space-station': 'fantasy', 'glass-spire': 'tower', donut: 'fantasy', airplane: 'fantasy', 'capybara-head': 'fantasy', roach: 'fantasy', 'lake-house': 'old',
-  'chalet-hotel': 'old', 'paper-house': 'fantasy', 'bakery-house': 'old', 'hero-tower': 'tower', greenhouse: 'villa', croissant: 'fantasy', 'train-house': 'fantasy', jenga: 'fantasy', 'cat-house': 'fantasy', 'toy-house': 'fantasy', 'pickle-jar': 'fantasy', 'ant-hill': 'fantasy',
+  'chalet-hotel': 'old', 'paper-house': 'fantasy', 'bakery-house': 'old', 'hero-tower': 'tower', greenhouse: 'villa', croissant: 'fantasy', 'train-house': 'fantasy', jenga: 'fantasy', 'cat-house': 'fantasy', 'toy-house': 'fantasy', 'pickle-jar': 'fantasy', 'upside-down': 'fantasy', 'sausage-house': 'fantasy', 'dog-house': 'classic', 'ant-hill': 'fantasy',
   'plane-stack': 'fantasy', 'printer-house': 'fantasy', 'chocolate-house': 'fantasy', 'pizza-house': 'fantasy', 'christmas-cabin': 'old',
   'block-house': 'fantasy', 'donut-tower': 'tower', strawberry: 'fantasy', taco: 'fantasy', 'coaster-house': 'fantasy', 'double-airplane': 'fantasy', vinyl: 'tower', 'cannon-fort': 'fantasy', mountain: 'villa',
 };
@@ -178,13 +186,13 @@ const LANDMARK_PLAN = {
   museum: ['civic', 'M'], school: ['civic', 'M'], hospital: ['civic', 'M'], 'fire-station': ['civic', 'M'], mosque: ['civic', 'M'],
   library: ['civic', 'M'], university: ['civic', 'M'], 'gothic-church': ['civic', 'M'], 'police-station': ['civic', 'M'], church: ['civic', 'M'], temple: ['civic', 'M'], 'post-office': ['civic', 'M'], 'art-school': ['civic', 'M'],
   'jewelry-store': ['main', 'M'], 'pet-store': ['main', 'M'], 'mma-gym': ['main', 'M'], skyscraper: ['main', 'M'], boutique: ['main', 'M'], cinema: ['main', 'M'], 'construction-site': ['main', 'M'], 'game-store': ['main', 'M'], motel: ['main', 'M'], gym: ['main', 'M'], 'car-show': ['main', 'M'], mall: ['main', 'M'],
-  bakery: ['local', 'S'], 'taco-bar': ['local', 'S'], 'corner-shop': ['local', 'S'], market: ['local', 'S'], cafe: ['local', 'S'], 'hot-dog-stand': ['local', 'S'], pizzeria: ['local', 'S'], dojo: ['local', 'S'], pharmacy: ['local', 'S'], florist: ['local', 'S'],
+  bakery: ['local', 'S'], 'taco-bar': ['local', 'S'], 'classic-diner': ['local', 'S'], 'corner-shop': ['local', 'S'], market: ['local', 'S'], cafe: ['local', 'S'], 'hot-dog-stand': ['local', 'S'], pizzeria: ['local', 'S'], dojo: ['local', 'S'], pharmacy: ['local', 'S'], florist: ['local', 'S'],
   statue: ['plaza', 'M'], 'baguette-statue': ['plaza', 'M'], 'samurai-statue': ['plaza', 'M'], fountain: ['plaza', 'M'], monument: ['plaza', 'M'],
   park: ['leisure', 'L'], 'theme-park': ['leisure', 'L'], zoo: ['hill', 'L'], aquarium: ['leisure', 'M'], circus: ['leisure', 'M'], 'capybara-adoption': ['hill', 'M'],
   stadium: ['sports', 'L'], ballpark: ['sports', 'L'], 'race-track': ['sports', 'L'],
   farm: ['country', 'L'], 'lemon-farm': ['country', 'L'], castle: ['country', 'L'], dam: ['country', 'L'],
   'power-plant': ['industry', 'L'], 'spaghetti-factory': ['industry', 'L'], 'watermelon-factory': ['industry', 'L'], 'toy-factory': ['industry', 'L'],
-  'black-hole-reactor': ['industry', 'L'], 'bus-depot': ['industry', 'M'], 'logistics-depot': ['industry', 'M'], 'logistics-hub': ['industry', 'L'], 'chocolate-factory': ['industry', 'L'], 'pet-rock-factory': ['industry', 'L'],
+  'black-hole-reactor': ['industry', 'L'], 'bus-depot': ['industry', 'M'], 'logistics-depot': ['industry', 'M'], 'logistics-hub': ['industry', 'L'], 'chocolate-factory': ['industry', 'L'], 'pet-rock-factory': ['industry', 'L'], 'croissant-factory': ['industry', 'L'], 'auto-body-shop': ['industry', 'M'],
   airport: ['transport', 'L'], 'space-center': ['transport', 'L'],
   rail: ['station', 'L'], railway: ['station', 'L'],
 };
@@ -220,6 +228,9 @@ export const HOUSE_SHAPES = {
   'toy-house': 'a toy factory house: toy blocks, a rainbow sawtooth roof, rainbow smoke, a belt of gift boxes',
   'pickle-jar': 'a giant jar of pickles with a metal lid and a cat sitting on top',
   'ant-hill': 'an ant hill: an earth mound with tunnel holes and ants marching up and down',
+  'upside-down': 'an upside-down house half sunk into the ground: roof buried, the lawn and a tree on top',
+  'sausage-house': 'a house made of sausages: sausage-log walls and roof, mustard zigzag, a sausage chimney',
+  'dog-house': 'a giant dog kennel: arched opening, WOOF sign, a bone on the roof, a food bowl',
   'plane-stack': 'a tower of airplanes: one plane stacked on the next for every floor, round a mast',
   'printer-house': 'a 3D printer printing the house: frame, gantry, moving print head, filament spool',
   'chocolate-house': 'a chocolate house: chocolate-bar walls, an iced roof, candy canes and gumdrops',

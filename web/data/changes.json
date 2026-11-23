@@ -1,263 +1,207 @@
 {
-  "date": "2026-11-23",
-  "day": 11,
+  "date": "2026-11-24",
+  "day": 12,
   "firstReport": false,
-  "residentCount": 137,
-  "totalFloors": 381,
-  "videoCount": 13,
-  "floorsAdded": 37,
+  "residentCount": 145,
+  "totalFloors": 419,
+  "videoCount": 15,
+  "floorsAdded": 38,
   "newResidents": [
     {
-      "id": "UCxnHxvZQPlF0LDMtG22ZYLg",
-      "name": "@mrsramyaramki",
-      "comment": "Give Ketchuppac 10 floors",
-      "plot": 122,
+      "id": "UC_EL-oo7ibzaIXyhI5SPIGQ",
+      "name": "@bricraft1",
+      "comment": "I want to live in a log cabin",
+      "plot": 138,
+      "floors": 2
+    },
+    {
+      "id": "UC4wOmOibyGqOpg6UWUwdIBw",
+      "name": "@NoahBynum-h4l",
+      "comment": "“Sir, a second tower has hit the planes”",
+      "plot": 139,
       "floors": 1
     },
     {
-      "id": "UCerCGZ_mQ83Z5qN2dSBhXag",
-      "name": "@Süßer_Fisch",
-      "comment": "I want pls A Paper House",
-      "plot": 123,
+      "id": "UC9EhFzcf99pPbAJbtxYmh5Q",
+      "name": "@user-yq5uw9bn4x",
+      "comment": "Could you give me a house that has a little german shepherd and a small Grey cat",
+      "plot": 140,
       "floors": 1
     },
     {
-      "id": "UCokDX41I395Q2_gelfohECw",
-      "name": "@geniuly_2020",
-      "comment": "Can i live in a tree house whit a pizza slice on top",
-      "plot": 124,
+      "id": "UCoWRQSdP0zeu1OLMBZzdqvg",
+      "name": "@LuminosityYouTube",
+      "comment": "give me a house thats upside down but partially in the floor too",
+      "plot": 141,
       "floors": 1
     },
     {
-      "id": "UCoUznR_Fas_BHuFpO_7pwdg",
-      "name": "@Graysonart4321",
-      "comment": "I want a apartment other people also live in. 30 floors",
-      "plot": 125,
+      "id": "UCAJV40S_jEBAyKZxIkT-ncA",
+      "name": "@nadjaperepyolkina7795",
+      "comment": "Can i have a Cat shaped House",
+      "plot": 142,
       "floors": 1
     },
     {
-      "id": "UCO1sS7PfSbpOBkCxaRRnwFA",
-      "name": "@mateosadventure",
-      "comment": "Can I be the gamer of the city?",
-      "plot": 126,
+      "id": "UCq8WjKKE1_L8xSv0yp2ryRg",
+      "name": "@Levitra86",
+      "comment": "Can I have a dog house",
+      "plot": 143,
       "floors": 1
     },
     {
-      "id": "UCeccx1l21T7xZdwW8RmH3WA",
-      "name": "@Karso-official2",
-      "comment": "Can I have a blue house that's also a small bakary",
-      "plot": 127,
+      "id": "UCq6H3em2-nBQjN5T7ItRNAg",
+      "name": "@agafvaagaba",
+      "comment": "Hey can you make me a house made entirely out of sausage",
+      "plot": 144,
       "floors": 1
     },
     {
-      "id": "UCSSPppscUWaFnc90xWV1Zqg",
-      "name": "@IronProductions-forever",
-      "comment": "Pls",
-      "plot": 128,
-      "floors": 1
-    },
-    {
-      "id": "UCiEp7Ix6OW1PPOCcvuRU-Ng",
-      "name": "@EliBenjamin-f1b",
-      "comment": "Can you give me a greenhouse house?",
-      "plot": 129,
-      "floors": 1
-    },
-    {
-      "id": "UCBfk8wxWrYurdlZW3WxooiQ",
-      "name": "@JakeMarx-k1w",
-      "comment": "Hi I'm new. Can I live in a croissant",
-      "plot": 130,
-      "floors": 1
-    },
-    {
-      "id": "UCrbpSlXxFZI5AHSJMjy65fg",
-      "name": "@Miniancur",
-      "comment": "I Want a train house. \nThe house move around like train",
-      "plot": 131,
-      "floors": 1
-    },
-    {
-      "id": "UCglB7sCkQ7DCj6jHrnSEtJA",
-      "name": "@FawazJamal-b7y",
-      "comment": "Brown cat orange eyes pls liek a but big like 15 floors",
-      "plot": 132,
-      "floors": 1
-    },
-    {
-      "id": "UCw3JB39VniYr70sdG953TeA",
-      "name": "@CollettePrice-o5d",
-      "comment": "Can I have playtime co",
-      "plot": 133,
-      "floors": 1
-    },
-    {
-      "id": "UCqWkjwCxSpY8fB05rN-eEWQ",
-      "name": "@mesdake",
-      "comment": "Could I live in a massive pickle jar with a cat on top? Thank you!",
-      "plot": 134,
-      "floors": 1
-    },
-    {
-      "id": "UCDlXlce48pr-UNcVpkrAt-A",
-      "name": "@JasmineSanchez-e9m",
-      "comment": "A ant hill",
-      "plot": 135,
-      "floors": 1
-    },
-    {
-      "id": "UCHE8xiyg7V_fhFetyu2OF5w",
-      "name": "@atrainjourney",
-      "comment": "Hello, I would Like to join in And i Want My House to Have a Toy Train Around the house.",
-      "plot": 136,
-      "floors": 1
-    },
-    {
-      "id": "UCQukfRTtmIA8xjTrkX4YZ0A",
-      "name": "@AI-content-stealer",
-      "comment": "Can you make it so there’s a big building with a pet rock on it and it’s a factory where people are making pet rocks?",
-      "plot": 137,
+      "id": "UCzGfF6H-bPGT63fattPomww",
+      "name": "@nitrobilder12",
+      "comment": "And auto body shop with an arcade and clasic diner",
+      "plot": 145,
       "floors": 1
     }
   ],
   "grew": [
     {
-      "id": "UCKgB0kce7yRwStaUsMl_nZQ",
-      "name": "@AverageHuman67",
-      "comment": "I AM NOW TOP 1\n\natleast later, sorry i was sick i couldent comment",
-      "from": 11,
-      "to": 13
+      "id": "UCgDf7IYRCZ9MXVMjPXnZkEw",
+      "name": "@ConnorLukach",
+      "comment": "Hi",
+      "from": 7,
+      "to": 11
+    },
+    {
+      "id": "UCX6wVTHYXPiW7mS_UD_leoQ",
+      "name": "@ChristinneeeXD",
+      "comment": "BOO! IM 1ST can you pin me and add an capybara tree, a capybara ice cream near my house",
+      "from": 8,
+      "to": 11
+    },
+    {
+      "id": "UCFKlbA0mu0HMUyWG3orzc7g",
+      "name": "@moisescaicedolover",
+      "comment": "Stamford zbridge plz",
+      "from": 7,
+      "to": 10
+    },
+    {
+      "id": "UC72l66Gfc4bCEQEASVG6oPQ",
+      "name": "@Fly4Ever777",
+      "comment": "Wow!",
+      "from": 10,
+      "to": 12
+    },
+    {
+      "id": "UCZm0diFKnMvsNQ--CtXCsNA",
+      "name": "@Kirupa_49",
+      "comment": "Another day 😊😁😁😜",
+      "from": 10,
+      "to": 12
     },
     {
       "id": "UCUh2iTRVNp77G29R_R6sM4A",
       "name": "@TwoToThePowerOf999ImSmart",
-      "comment": "Add me a garage, for the second time because you didn't add last time.\n\nEdit: KEEP MY LEAD! >:(",
-      "from": 12,
-      "to": 13
+      "comment": "Day 3 asking for a garage",
+      "from": 13,
+      "to": 14
     },
     {
       "id": "UCJ8vLkrMd5einlvr_L_Bpfw",
       "name": "@ЕленаИзюмова-у7ц",
-      "comment": "Woo!!",
-      "from": 11,
-      "to": 12
+      "comment": "Hi",
+      "from": 12,
+      "to": 13
     },
     {
       "id": "UCv-a0knslevzeV3tfAHRhFg",
       "name": "@ShashankShekhar-o3i",
-      "comment": "Give me a 3d printer",
-      "from": 11,
-      "to": 12
+      "comment": "Make me india flag at top of my house please",
+      "from": 12,
+      "to": 13
     },
     {
       "id": "UCVNoIdSeaoW2eEnaZ61pAEQ",
       "name": "@Get_jin_in_use",
-      "comment": "I want revenge to you ever burn my house give me a new house that is castle black for game of thrones",
-      "from": 10,
-      "to": 11
-    },
-    {
-      "id": "UCpD3u7o7qCaDE5Hui4Xo1bQ",
-      "name": "@prabhasishbhattacharya9226",
-      "comment": "fvv",
-      "from": 10,
-      "to": 11
+      "comment": "and you give in a dragon \non top of my house",
+      "from": 11,
+      "to": 12
     },
     {
       "id": "UCZYD9tjWBaJgrwaKK6DXp7g",
       "name": "@Eastonfortniteeee",
-      "comment": "Hi can have a sign that says get off my lawn",
-      "from": 8,
-      "to": 9
-    },
-    {
-      "id": "UC3EbWVsoRRZmwM2zz7bbkgA",
-      "name": "@immortal_snaiI",
-      "comment": "+1floor",
-      "from": 8,
-      "to": 9
+      "comment": "Make a cave",
+      "from": 9,
+      "to": 10
     },
     {
       "id": "UC1nwHOUj7poip83gnhJ46BQ",
       "name": "@KetchupPac",
       "comment": "Can I have more floors",
-      "from": 7,
-      "to": 8
+      "from": 8,
+      "to": 9
+    },
+    {
+      "id": "UCn-3PuoTEOwyWSCo-89yj0A",
+      "name": "@POUSALI2412",
+      "comment": "Hey",
+      "from": 8,
+      "to": 9
     },
     {
       "id": "UCKXWTyD95c9W96Co4VMbD4A",
       "name": "@TheplantWorker",
-      "comment": "give me a new floor again and build a cozy chrismas style hotel out of stone and wood",
-      "from": 7,
-      "to": 8
+      "comment": "I cant find my Hotel but add a floor and make every Thing Wood and some Stone pillars and can u make it More visible",
+      "from": 8,
+      "to": 9
     },
     {
-      "id": "UConyzasmuGpqcUUKsdwutJA",
-      "name": "@karanchhabra6434",
-      "comment": "We need an airport",
-      "from": 7,
-      "to": 8
+      "id": "UCDgiH80X9SHLgHukBy-XzkQ",
+      "name": "@JacksonGross-q4b",
+      "comment": "Make my house purple",
+      "from": 5,
+      "to": 6
     },
     {
-      "id": "UC_GtnlGVIQfvWpnr-nZvefQ",
-      "name": "@MrTauntyFace",
-      "comment": "Add a chicken weathervane on my roof!",
-      "from": 6,
-      "to": 7
-    },
-    {
-      "id": "UCrBakTMMz8PQAn8oIW1hp-g",
-      "name": "@GamerGuy67x",
-      "comment": "Can I pretty please be a resident?",
-      "from": 4,
-      "to": 5
-    },
-    {
-      "id": "UCSPBwDEWtAP6dMdwOAE94uQ",
-      "name": "@AURABLOX-HQ",
-      "comment": "Y I'm not in video",
-      "from": 2,
-      "to": 3
-    },
-    {
-      "id": "UCTFf6UXQXcMuslCJiH2uTOQ",
-      "name": "@hasmask9103",
-      "comment": "Can you give me a house with swimming pool and a giant apple tree please.",
-      "from": 2,
-      "to": 3
+      "id": "UC4sdae2OIEfYQ4PyEEbHn9A",
+      "name": "@Nooni1024",
+      "comment": "Ok can u pls put the palestinian flag",
+      "from": 3,
+      "to": 4
     },
     {
       "id": "UChmmX8BKeuQHDkOJR3OYX_g",
       "name": "@Oliverzinn-k7i",
-      "comment": "Make me a giant zombie on top of my Minecraft symbol",
-      "from": 2,
-      "to": 3
+      "comment": "Also please make it so you spend more time on my",
+      "from": 3,
+      "to": 4
     },
     {
-      "id": "UC215ZVSVNB0MmcqcvSUtAPw",
-      "name": "@theguy-e4x",
-      "comment": "can u also add a garden for his hotel",
+      "id": "UCcam_YVgiCASrKdeczJ5KHQ",
+      "name": "@ThatFury325Guy",
+      "comment": "Make an indoor amusement park for the city",
       "from": 2,
       "to": 3
-    },
-    {
-      "id": "UCb9VhnHBBHozOxWA-Bhnazg",
-      "name": "@WaffleHousefunny",
-      "comment": "Can I have a house that that that looks like the Burj Khalifa and as a tall at Burj Khalifa?",
-      "from": 1,
-      "to": 2
     },
     {
       "id": "UCfWk05rrCaL7AcglbQPAneA",
       "name": "@EvanWR",
-      "comment": "Im back for another floor!!",
+      "comment": "Im back for another floor!!!!",
+      "from": 2,
+      "to": 3
+    },
+    {
+      "id": "UCBfk8wxWrYurdlZW3WxooiQ",
+      "name": "@JakeMarx-k1w",
+      "comment": "Could you make a factory with a croissant on top and it makes croissants",
       "from": 1,
       "to": 2
     },
     {
-      "id": "UCy9dEl3MN3X7d3yPj5QYL_Q",
-      "name": "@sportyzbak",
-      "comment": "Can you stack 4 more pizzas on my house so I can have a five story pizza house?",
+      "id": "UCqWkjwCxSpY8fB05rN-eEWQ",
+      "name": "@mesdake",
+      "comment": "Omg tysm i love it sm <3",
       "from": 1,
       "to": 2
     }
@@ -266,230 +210,147 @@
     {
       "id": "UCUh2iTRVNp77G29R_R6sM4A",
       "name": "@TwoToThePowerOf999ImSmart",
+      "floors": 14
+    },
+    {
+      "id": "UCJ8vLkrMd5einlvr_L_Bpfw",
+      "name": "@ЕленаИзюмова-у7ц",
       "floors": 13
     },
     {
       "id": "UCKgB0kce7yRwStaUsMl_nZQ",
       "name": "@AverageHuman67",
       "floors": 13
-    },
-    {
-      "id": "UCJ8vLkrMd5einlvr_L_Bpfw",
-      "name": "@ЕленаИзюмова-у7ц",
-      "floors": 12
     }
   ],
   "newSpecials": [
     {
       "kind": "landmark",
-      "id": "pet-rock-factory",
-      "name": "Pet Rock Factory",
-      "requestedBy": "@AI-content-stealer",
-      "comment": "Can you make it so there’s a big building with a pet rock on it and it’s a factory where people are making pet rocks?",
-      "story": "A new citizen had a business idea. A very serious business idea. About rocks.",
-      "top": 3
+      "id": "croissant-factory",
+      "name": "Croissant Factory",
+      "requestedBy": "@JakeMarx-k1w",
+      "comment": "Could you make a factory with a croissant on top and it makes croissants",
+      "story": "Jake already lives inside a croissant. Now Jake wants to make more of them."
+    },
+    {
+      "kind": "landmark",
+      "id": "auto-body-shop",
+      "name": "Auto Body Shop",
+      "requestedBy": "@nitrobilder12",
+      "comment": "And auto body shop with an arcade and clasic diner"
+    },
+    {
+      "kind": "landmark",
+      "id": "classic-diner",
+      "name": "Classic Diner",
+      "requestedBy": "@nitrobilder12",
+      "comment": "And auto body shop with an arcade and clasic diner"
     },
     {
       "kind": "upgrade",
-      "id": "UCokDX41I395Q2_gelfohECw",
-      "name": "@geniuly_2020",
-      "type": "roof-pizza",
-      "comment": "Can i live in a tree house whit a pizza slice on top"
+      "id": "UCVNoIdSeaoW2eEnaZ61pAEQ",
+      "name": "@Get_jin_in_use",
+      "type": "roof-dragon",
+      "comment": "and you give in a dragon on top of my house",
+      "story": "Get Jin's black castle looked strong. But every castle needs a guard. A big one. With wings.",
+      "top": 2
     },
     {
       "kind": "upgrade",
-      "id": "UCO1sS7PfSbpOBkCxaRRnwFA",
-      "name": "@mateosadventure",
+      "id": "UCKXWTyD95c9W96Co4VMbD4A",
+      "name": "@TheplantWorker",
       "type": "rooftop-sign",
-      "comment": "Can I be the gamer of the city?"
+      "comment": "I cant find my Hotel but add a floor and make every Thing Wood and some Stone pillars and can u make it More visible"
     },
     {
       "kind": "upgrade",
-      "id": "UC_GtnlGVIQfvWpnr-nZvefQ",
-      "name": "@MrTauntyFace",
-      "type": "weathervane",
-      "comment": "Add a chicken weathervane on my roof!",
-      "story": "Mr Taunty Face asked for a new friend on the roof. A golden one."
+      "id": "UCX6wVTHYXPiW7mS_UD_leoQ",
+      "name": "@ChristinneeeXD",
+      "type": "capy-ice-cream",
+      "comment": "BOO! IM 1ST can you pin me and add an capybara tree, a capybara ice cream near my house",
+      "story": "Christinneee already has a capybara, a capybara pen and a capybara boxing ring. Somehow... it still wasn't enough."
+    },
+    {
+      "kind": "upgrade",
+      "id": "UCX6wVTHYXPiW7mS_UD_leoQ",
+      "name": "@ChristinneeeXD",
+      "type": "capy-tree",
+      "comment": "BOO! IM 1ST can you pin me and add an capybara tree, a capybara ice cream near my house"
     },
     {
       "kind": "upgrade",
       "id": "UCZYD9tjWBaJgrwaKK6DXp7g",
       "name": "@Eastonfortniteeee",
-      "type": "yard-sign",
-      "comment": "Hi can have a sign that says get off my lawn",
-      "story": "Easton has had enough of people walking on the grass."
-    },
-    {
-      "kind": "upgrade",
-      "id": "UCTFf6UXQXcMuslCJiH2uTOQ",
-      "name": "@hasmask9103",
-      "type": "pool",
-      "comment": "Can you give me a house with swimming pool and a giant apple tree please."
-    },
-    {
-      "kind": "upgrade",
-      "id": "UCTFf6UXQXcMuslCJiH2uTOQ",
-      "name": "@hasmask9103",
-      "type": "giant-apple-tree",
-      "comment": "Can you give me a house with swimming pool and a giant apple tree please."
-    },
-    {
-      "kind": "upgrade",
-      "id": "UChmmX8BKeuQHDkOJR3OYX_g",
-      "name": "@Oliverzinn-k7i",
-      "type": "roof-zombie",
-      "comment": "Make me a giant zombie on top of my Minecraft symbol",
-      "story": "Oliver's giant grass block looked a little lonely up there."
+      "type": "cave",
+      "comment": "Make a cave"
     },
     {
       "kind": "upgrade",
       "id": "UCv-a0knslevzeV3tfAHRhFg",
       "name": "@ShashankShekhar-o3i",
-      "type": "3d-printer",
-      "comment": "Give me a 3d printer"
+      "type": "giant-flag",
+      "comment": "Make me india flag at top of my house please"
     },
     {
       "kind": "upgrade",
-      "id": "UCHE8xiyg7V_fhFetyu2OF5w",
-      "name": "@atrainjourney",
-      "type": "toy-train",
-      "comment": "Hello, I would Like to join in And i Want My House to Have a Toy Train Around the house.",
-      "story": "A new citizen joined, and had one wish for the garden. Choo choo."
+      "id": "UC9EhFzcf99pPbAJbtxYmh5Q",
+      "name": "@user-yq5uw9bn4x",
+      "type": "shepherd-cat",
+      "comment": "Could you give me a house that has a little german shepherd and a small Grey cat"
     },
     {
       "kind": "house",
-      "id": "UCqWkjwCxSpY8fB05rN-eEWQ",
-      "name": "@mesdake",
-      "title": "Pickle Jar House",
-      "comment": "Could I live in a massive pickle jar with a cat on top? Thank you!",
-      "story": "Mesdake just moved in, with a very specific dream. It involves pickles. And a cat.",
+      "id": "UCoWRQSdP0zeu1OLMBZzdqvg",
+      "name": "@LuminosityYouTube",
+      "title": "Upside-Down House",
+      "comment": "give me a house thats upside down but partially in the floor too",
+      "story": "Luminosity asked for a normal house. Well... almost normal. Just one small detail.",
       "top": 1
     },
     {
       "kind": "house",
-      "id": "UCrbpSlXxFZI5AHSJMjy65fg",
-      "name": "@Miniancur",
-      "title": "Train House",
-      "comment": "I Want a train house. The house move around like train",
-      "story": "Miniancur wanted a house that doesn't stay still.",
-      "top": 2
+      "id": "UCq6H3em2-nBQjN5T7ItRNAg",
+      "name": "@agafvaagaba",
+      "title": "Sausage House",
+      "comment": "Hey can you make me a house made entirely out of sausage",
+      "story": "A new citizen had one rule for their house. Every single piece... had to be made of the same thing.",
+      "top": 3
+    },
+    {
+      "kind": "house",
+      "id": "UC_EL-oo7ibzaIXyhI5SPIGQ",
+      "name": "@bricraft1",
+      "title": "Log Cabin",
+      "comment": "Can i live in a log cabin"
+    },
+    {
+      "kind": "house",
+      "id": "UCAJV40S_jEBAyKZxIkT-ncA",
+      "name": "@nadjaperepyolkina7795",
+      "title": "Ginger Cat House",
+      "comment": "Can i have a Cat shaped House"
+    },
+    {
+      "kind": "house",
+      "id": "UCq8WjKKE1_L8xSv0yp2ryRg",
+      "name": "@Levitra86",
+      "title": "Giant Dog House",
+      "comment": "Can I have a dog house",
+      "story": "Levitra asked for a dog house. Not for a dog. For Levitra."
+    },
+    {
+      "kind": "house",
+      "id": "UCDgiH80X9SHLgHukBy-XzkQ",
+      "name": "@JacksonGross-q4b",
+      "title": "Purple House",
+      "comment": "Make my house purple"
     },
     {
       "kind": "house",
       "id": "UCKXWTyD95c9W96Co4VMbD4A",
       "name": "@TheplantWorker",
       "title": "Christmas Hotel",
-      "comment": "give me a new floor again and build a cozy chrismas style hotel out of stone and wood",
-      "story": "The Plant Worker wanted somewhere cozy for Christmas. Somewhere with lots of rooms."
-    },
-    {
-      "kind": "house",
-      "id": "UCerCGZ_mQ83Z5qN2dSBhXag",
-      "name": "@Süßer_Fisch",
-      "title": "Paper House",
-      "comment": "I want pls A Paper House",
-      "story": "Sweet Fish just moved in, and asked for a house you could fold."
-    },
-    {
-      "kind": "house",
-      "id": "UCokDX41I395Q2_gelfohECw",
-      "name": "@geniuly_2020",
-      "title": "Pizza Treehouse",
-      "comment": "Can i live in a tree house whit a pizza slice on top",
-      "story": "Geniuly wanted to live up in a tree. With a snack on top."
-    },
-    {
-      "kind": "house",
-      "id": "UCoUznR_Fas_BHuFpO_7pwdg",
-      "name": "@Graysonart4321",
-      "title": "Apartment Block",
-      "comment": "I want a apartment other people also live in. 30 floors"
-    },
-    {
-      "kind": "house",
-      "id": "UCO1sS7PfSbpOBkCxaRRnwFA",
-      "name": "@mateosadventure",
-      "title": "Gamer House",
-      "comment": "Can I be the gamer of the city?",
-      "story": "Mateo wanted to be the city's number one gamer. Everyone should know it."
-    },
-    {
-      "kind": "house",
-      "id": "UCeccx1l21T7xZdwW8RmH3WA",
-      "name": "@Karso-official2",
-      "title": "Blue Bakery House",
-      "comment": "Can I have a blue house that's also a small bakary",
-      "story": "Karso wanted a blue house. One that smells like fresh bread."
-    },
-    {
-      "kind": "house",
-      "id": "UCSSPppscUWaFnc90xWV1Zqg",
-      "name": "@IronProductions-forever",
-      "title": "Hero Tower",
-      "comment": "Can Live In the avengers tower",
-      "story": "Iron Productions just moved in, and wanted a tower fit for heroes."
-    },
-    {
-      "kind": "house",
-      "id": "UCiEp7Ix6OW1PPOCcvuRU-Ng",
-      "name": "@EliBenjamin-f1b",
-      "title": "Greenhouse Home",
-      "comment": "Can you give me a greenhouse house?",
-      "story": "Eli wanted a home where the plants come first."
-    },
-    {
-      "kind": "house",
-      "id": "UCBfk8wxWrYurdlZW3WxooiQ",
-      "name": "@JakeMarx-k1w",
-      "title": "Croissant House",
-      "comment": "Hi I'm new. Can I live in a croissant",
-      "story": "Jake is new here, and Jake's dream home is... flaky."
-    },
-    {
-      "kind": "house",
-      "id": "UCVNoIdSeaoW2eEnaZ61pAEQ",
-      "name": "@Get_jin_in_use",
-      "title": "Black Castle",
-      "comment": "I want revenge to you ever burn my house give me a new house that is castle black for game of thrones",
-      "story": "Get Jin is still upset about the fire. Get Jin wants a fortress now."
-    },
-    {
-      "kind": "house",
-      "id": "UCfWk05rrCaL7AcglbQPAneA",
-      "name": "@EvanWR",
-      "title": "Jenga Tower",
-      "comment": "day 2 of requesting to be put , i changed my mind , just put me in a house jenga house ( basically each floor is 3 blocks / 3 rooms )",
-      "story": "Evan asked two days in a row. This time Evan wanted a house you should never pull a block from."
-    },
-    {
-      "kind": "house",
-      "id": "UCglB7sCkQ7DCj6jHrnSEtJA",
-      "name": "@FawazJamal-b7y",
-      "title": "Cat House",
-      "comment": "Brown cat orange eyes pls liek a but big like 15 floors",
-      "story": "Fawaz just moved in and described a brown cat with orange eyes. A very big one."
-    },
-    {
-      "kind": "house",
-      "id": "UCw3JB39VniYr70sdG953TeA",
-      "name": "@CollettePrice-o5d",
-      "title": "Toy Factory House",
-      "comment": "Can I have playtime co"
-    },
-    {
-      "kind": "house",
-      "id": "UCb9VhnHBBHozOxWA-Bhnazg",
-      "name": "@WaffleHousefunny",
-      "title": "Desert Spire",
-      "comment": "Can I have a house that that that looks like the Burj Khalifa and as a tall at Burj Khalifa?"
-    },
-    {
-      "kind": "house",
-      "id": "UCDlXlce48pr-UNcVpkrAt-A",
-      "name": "@JasmineSanchez-e9m",
-      "title": "Ant Hill",
-      "comment": "A ant hill",
-      "story": "Jasmine just moved in. Jasmine's family is very, very big. And very, very small."
+      "comment": "I cant find my Hotel but add a floor and make every Thing Wood and some Stone pillars and can u make it More visible"
     }
   ],
   "challenge": null,

@@ -1121,6 +1121,9 @@ export const HOUSE_MODELS = {
       for (const x of [-1.2, 0, 1.2]) g.add(new THREE.Mesh(k.box(0.6, 0.55, 0.05, y + 0.25).translate(x, 0, 1.11), glowing('#ffcf7a', 0.35, 2.2)));
       for (let i = 0; i < 12; i++) g.add(new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 4).translate(-1.75 + i * 0.32, y + 0.5, 1.6), glowing(bulbs[(i + f) % 3], 0.8, 2.6)));
     }
+    // stone pillars at the corners and up the front (Day 12: wood and stone, asked for by @TheplantWorker)
+    for (const x of [-2.15, 2.15]) for (const z of [-1.95, 1.15]) g.add(new THREE.Mesh(k.box(0.42, H, 0.42, 0).translate(x, 0, z), stone));
+    for (const x of [-0.45, 0.45]) g.add(new THREE.Mesh(k.box(0.28, H - 0.3, 0.28, 0).translate(x, 0, 1.3), stone));
     // the lit sign, the door with a wreath
     g.add(new THREE.Mesh(k.box(1.6, 0.35, 0.08, 0.95).translate(0, 0, 1.16), glowing('#ffd23f', 0.6, 2.4)));
     g.add(k.door(r.door, 1.12, 0.8, 0).translateX(-1.0), new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.06, 6, 12).translate(-1.0, 0.95, 1.2), plain('#2a9d5c')));
@@ -1460,6 +1463,172 @@ export const HOUSE_MODELS = {
     });
     tick(0);
     return { body, top: H + 0.3, eave: H * 0.6, front: 2.2, width: 4.8, tick };
+  },
+  /** An upside-down house half sunk into the ground: the roof buried, the walls on top, the lawn and a tree hanging from the sky side (Day 12, @LuminosityYouTube). */
+  'upside-down'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const H = 1.8 + h; // wall height
+    const flip = new THREE.Group(); // the house built the right way up, then turned over
+    const wall = plain(r.wall);
+    const body = new THREE.Mesh(k.box(4.0, H, 3.4, 0), wall);
+    flip.add(body);
+    // a gable roof (built as a prism) and a chimney
+    const tri = new THREE.Shape();
+    tri.moveTo(-2.3, 0); tri.lineTo(2.3, 0); tri.lineTo(0, 1.7); tri.lineTo(-2.3, 0);
+    const roofGeo = new THREE.ExtrudeGeometry(tri, { depth: 3.9, bevelEnabled: false }).translate(0, H, -1.95);
+    flip.add(new THREE.Mesh(roofGeo, plain(r.roofColor, { flatShading: true })));
+    flip.add(new THREE.Mesh(k.box(0.5, 1.2, 0.5, H + 0.8).translate(1.1, 0, -0.6), plain('#8a4b2f')));
+    // the front: door, windows on every floor, a flower box (all hanging upside down now)
+    flip.add(k.door(r.door, 1.71, 0.85, 0).translateX(-1.0));
+    for (let y = 0.5, f = 0; y < H - 0.6; y += k.FLOOR_H, f++) {
+      for (const x of f === 0 ? [0.9] : [-1.0, 0.9]) {
+        flip.add(new THREE.Mesh(k.box(0.75, 0.6, 0.06, y + 0.15).translate(x, 0, 1.72), glowing('#fff3c4', 0.3, 2.0)));
+        flip.add(new THREE.Mesh(k.box(0.85, 0.08, 0.12, y + 0.1).translate(x, 0, 1.76), plain(r.accent)));
+      }
+    }
+    for (const sd of [-1, 1]) {
+      const w = new THREE.Mesh(k.box(0.06, 0.6, 0.75, H * 0.55), glowing('#fff3c4', 0.3, 2.0));
+      w.position.x = sd * 2.02;
+      flip.add(w);
+    }
+    // the foundation and the lawn that used to be under it, with a little tree and a mailbox
+    flip.add(new THREE.Mesh(k.box(4.3, 0.25, 3.7, -0.25), plain('#9aa0a6', { flatShading: true })));
+    flip.add(new THREE.Mesh(k.box(5.0, 0.15, 4.6, -0.4), plain('#5cae4a')));
+    flip.add(new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.14, 0.9, 6).translate(-1.9, -0.85, 1.6), plain('#7b5a3c')));
+    flip.add(new THREE.Mesh(new THREE.IcosahedronGeometry(0.55, 0).translate(-1.9, -1.45, 1.6), plain('#4f8f3f', { flatShading: true })));
+    flip.add(new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.7, 6).translate(1.9, -0.75, 2.0), k.DARK));
+    flip.add(new THREE.Mesh(k.box(0.3, 0.22, 0.4, -1.2).translate(1.9, 0, 2.0), plain('#e63946')));
+    flip.rotation.z = Math.PI + 0.12; // upside down and a little tipped over
+    flip.position.y = H + 1.0;
+    g.add(flip);
+    // dirt and broken ground where the roof went in
+    const dirt = plain('#6b4a2f', { flatShading: true, roughness: 1 });
+    for (let i = 0; i < 9; i++) {
+      const a = (i / 9) * Math.PI * 2;
+      g.add(new THREE.Mesh(new THREE.DodecahedronGeometry(0.35 + (i % 3) * 0.12, 0).scale(1, 0.55, 1).translate(Math.cos(a) * 2.45, 0.2, Math.sin(a) * 2.0), dirt));
+    }
+    for (const [x, z, ry] of [[-2.6, 1.2, 0.4], [2.5, -1.4, -0.7], [0.4, 2.3, 1.2]]) {
+      const slab = new THREE.Mesh(k.box(0.7, 0.12, 0.5, 0.2), plain('#c9c2b4', { flatShading: true }));
+      slab.position.set(x, 0, z);
+      slab.rotation.set(0.3, ry, 0.25);
+      g.add(slab);
+    }
+    return { body, top: H + 1.55, eave: H + 1.0, front: 1.9, width: 5.0 };
+  },
+
+  /** A house made entirely of sausages: sausage-log walls, a roof of sausages, a mustard zigzag, a sausage chimney (Day 12, @agafvaagaba). */
+  'sausage-house'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const H = 1.6 + h;
+    const R = 0.19, STEP = 0.36;
+    const meat = plain(r.wall, { roughness: 0.45 });
+    const meat2 = plain(new THREE.Color(r.wall).multiplyScalar(0.82).getStyle(), { roughness: 0.45 });
+    const sausage = (len, m) => new THREE.Mesh(new THREE.CapsuleGeometry(R, len, 6, 12), m);
+    let body = null;
+    // log-cabin walls of sausages, front/back along x and sides along z, overlapping at the corners
+    const rows = Math.max(4, Math.round(H / STEP));
+    for (let i = 0; i < rows; i++) {
+      const y = R + i * STEP;
+      const m = i % 2 ? meat : meat2;
+      for (const z of [-1.5, 1.5]) {
+        const s = sausage(4.1, m);
+        s.rotation.z = Math.PI / 2;
+        s.position.set(0, y, z);
+        g.add(s);
+        if (!body) body = s;
+      }
+      for (const x of [-2.0, 2.0]) {
+        const s = sausage(3.0, m);
+        s.rotation.x = Math.PI / 2;
+        s.position.set(x, y + STEP / 2, 0);
+        g.add(s);
+      }
+    }
+    const top = R + rows * STEP;
+    // inside block so it never looks hollow, then the gable roof of sausages up each slope
+    g.add(new THREE.Mesh(k.box(3.8, top - 0.1, 2.8, 0), meat2));
+    const roofM = plain(r.roofColor, { roughness: 0.45 });
+    for (const sd of [-1, 1]) {
+      for (let j = 0; j < 6; j++) {
+        const s = sausage(4.6, roofM);
+        s.rotation.z = Math.PI / 2;
+        s.position.set(0, top + 0.1 + j * 0.27, sd * (1.85 - j * 0.33));
+        g.add(s);
+      }
+    }
+    // a gable end of sausage bits so the roof is closed, a mustard zigzag along the ridge, a ketchup drip
+    for (const x of [-2.1, 2.1]) {
+      for (let j = 0; j < 6; j++) {
+        const s = sausage(Math.max(0.05, 3.2 - j * 0.62), meat);
+        s.rotation.x = Math.PI / 2;
+        s.position.set(x, top + 0.1 + j * 0.27, 0);
+        g.add(s);
+      }
+    }
+    const pts = [];
+    for (let i = 0; i <= 16; i++) pts.push(new THREE.Vector3(-2.2 + i * 0.275, top + 1.85, i % 2 ? 0.18 : -0.18));
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 64, 0.07, 6, false), plain(r.accent || '#ffd23f', { roughness: 0.3 })));
+    const ketchup = [];
+    for (let i = 0; i <= 10; i++) ketchup.push(new THREE.Vector3(-1.8 + i * 0.36, top + 1.0 + Math.sin(i * 1.3) * 0.12, 1.25 - Math.sin(i * 0.9) * 0.1));
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(ketchup), 40, 0.06, 6, false), plain('#c1121f', { roughness: 0.3 })));
+    // a standing sausage chimney with smoke-coloured tip, the door and warm windows in the front logs
+    const chimney = sausage(1.3, meat);
+    chimney.position.set(1.2, top + 1.4, -0.6);
+    g.add(chimney);
+    g.add(k.door(r.door, 1.72, 0.8, 0));
+    for (const x of [-1.3, 1.3]) {
+      for (let y = 0.7; y < top - 0.5; y += k.FLOOR_H) g.add(new THREE.Mesh(k.box(0.6, 0.5, 0.06, y).translate(x, 0, 1.72), glowing('#fff3c4', 0.3, 2.0)));
+    }
+    // a string of sausage links hanging over the door
+    for (let i = 0; i < 7; i++) {
+      const s = sausage(0.22, meat);
+      s.scale.setScalar(0.6);
+      s.rotation.z = Math.PI / 2;
+      s.position.set(-0.9 + i * 0.3, 2.15 - Math.sin((i / 6) * Math.PI) * 0.25, 1.85);
+      g.add(s);
+    }
+    return { body, top: top + 2.1, eave: top, front: 1.9, width: 4.8 };
+  },
+
+  /** A giant dog house (kennel): a big gable kennel with an arched opening, a bone on the roof, a name sign and a food bowl (Day 12, @Levitra86). */
+  'dog-house'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const H = 1.8 + h;
+    const wood = plain(r.wall, { roughness: 0.85 });
+    const body = new THREE.Mesh(k.box(4.0, H, 3.6, 0).translate(0, 0, -0.3), wood);
+    g.add(body);
+    for (let y = 0.3; y < H; y += 0.3) g.add(new THREE.Mesh(k.box(4.04, 0.03, 3.64, y).translate(0, 0, -0.3), plain(new THREE.Color(r.wall).multiplyScalar(0.75).getStyle())));
+    for (const x of [-2.0, 2.0]) for (const z of [-2.1, 1.5]) g.add(new THREE.Mesh(k.box(0.3, H, 0.3, 0).translate(x, 0, z), plain(r.accent)));
+    // the big steep kennel roof
+    const tri = new THREE.Shape();
+    tri.moveTo(-2.5, 0); tri.lineTo(2.5, 0); tri.lineTo(0, 2.0); tri.lineTo(-2.5, 0);
+    g.add(new THREE.Mesh(new THREE.ExtrudeGeometry(tri, { depth: 4.3, bevelEnabled: false }).translate(0, H, -2.45), plain(r.roofColor, { flatShading: true })));
+    // the arched kennel opening (dark) with the real door inside it
+    const arch = new THREE.Shape();
+    arch.moveTo(-0.9, 0); arch.lineTo(-0.9, 1.4); arch.absarc(0, 1.4, 0.9, Math.PI, 0, true); arch.lineTo(0.9, 0); arch.lineTo(-0.9, 0);
+    g.add(new THREE.Mesh(new THREE.ShapeGeometry(arch).translate(0, 0.05, 1.52), plain('#1c1410')));
+    g.add(k.door(r.door, 1.53, 0.75, 0));
+    // the name sign over the arch, windows up the front for the floors
+    const cv = document.createElement('canvas');
+    cv.width = 256; cv.height = 96;
+    const c = cv.getContext('2d');
+    c.fillStyle = '#fff3c4'; c.fillRect(0, 0, 256, 96);
+    c.fillStyle = '#5b3a24'; c.font = '900 60px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('WOOF', 128, 52);
+    const tex = new THREE.CanvasTexture(cv);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    g.add(new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.5).translate(0, Math.min(H - 0.4, 2.65), 1.53), new THREE.MeshStandardMaterial({ map: tex })));
+    for (let y = 3.0; y < H - 0.4; y += k.FLOOR_H) for (const x of [-1.2, 1.2]) g.add(new THREE.Mesh(k.box(0.55, 0.5, 0.06, y).translate(x, 0, 1.52), glowing('#fff3c4', 0.3, 2.0)));
+    // a giant bone on the ridge, a food bowl and a ball in front
+    const bone = new THREE.Group();
+    const white = plain('#f7f4ee');
+    bone.add(new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 1.8, 10).rotateZ(Math.PI / 2), white));
+    for (const x of [-0.95, 0.95]) for (const z of [-0.17, 0.17]) bone.add(new THREE.Mesh(new THREE.SphereGeometry(0.24, 10, 8).translate(x, 0, z), white));
+    bone.position.set(0, H + 2.15, -0.3);
+    g.add(bone);
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.3, 0.22, 16).translate(1.5, 0.11, 2.2), plain('#e63946')));
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.33, 0.33, 0.05, 16).translate(1.5, 0.2, 2.2), plain('#8a5a2c')));
+    g.add(new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 8).translate(-1.6, 0.2, 2.3), plain('#ffd23f')));
+    return { body, top: H + 2.4, eave: H, front: 1.6, width: 5.0 };
   },
 };
 

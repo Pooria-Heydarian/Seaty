@@ -220,6 +220,23 @@
     "house:UCglB7sCkQ7DCj6jHrnSEtJA:2026-11-22:{\"shape\":\"cat-house\",\"roof\":\"flat\",\"wall\":\"#8b5a2b\",\"roofColor\":\"#6b4630\",\"door\":\"#3b2a1f\",\"accent\":\"#ff8c1a\",\"extras\":[]}": "2026-11-23",
     "house:UCw3JB39VniYr70sdG953TeA:2026-11-22:{\"shape\":\"toy-house\",\"roof\":\"flat\",\"wall\":\"#7fb8e6\",\"roofColor\":\"#e63946\",\"door\":\"#ffd23f\",\"accent\":\"#ffd23f\",\"extras\":[]}": "2026-11-23",
     "house:UCb9VhnHBBHozOxWA-Bhnazg:2026-11-22:{\"shape\":\"glass-spire\",\"roof\":\"flat\",\"wall\":\"#cfd8e3\",\"roofColor\":\"#8d96a3\",\"door\":\"#2b2d42\",\"accent\":\"#ffd23f\",\"extras\":[]}": "2026-11-23",
-    "house:UCDlXlce48pr-UNcVpkrAt-A:2026-11-22:{\"shape\":\"ant-hill\",\"roof\":\"flat\",\"wall\":\"#9a6a3a\",\"roofColor\":\"#7a4a2b\",\"door\":\"#3b2a1f\",\"accent\":\"#ffd23f\",\"extras\":[]}": "2026-11-23"
+    "house:UCDlXlce48pr-UNcVpkrAt-A:2026-11-22:{\"shape\":\"ant-hill\",\"roof\":\"flat\",\"wall\":\"#9a6a3a\",\"roofColor\":\"#7a4a2b\",\"door\":\"#3b2a1f\",\"accent\":\"#ffd23f\",\"extras\":[]}": "2026-11-23",
+    "landmark:croissant-factory": "2026-11-24",
+    "landmark:auto-body-shop": "2026-11-24",
+    "landmark:classic-diner": "2026-11-24",
+    "upgrade:UCVNoIdSeaoW2eEnaZ61pAEQ:roof-dragon": "2026-11-24",
+    "upgrade:UCKXWTyD95c9W96Co4VMbD4A:rooftop-sign": "2026-11-24",
+    "upgrade:UCX6wVTHYXPiW7mS_UD_leoQ:capy-ice-cream": "2026-11-24",
+    "upgrade:UCX6wVTHYXPiW7mS_UD_leoQ:capy-tree": "2026-11-24",
+    "upgrade:UCZYD9tjWBaJgrwaKK6DXp7g:cave": "2026-11-24",
+    "upgrade:UCv-a0knslevzeV3tfAHRhFg:giant-flag": "2026-11-24",
+    "upgrade:UC9EhFzcf99pPbAJbtxYmh5Q:shepherd-cat": "2026-11-24",
+    "house:UCoWRQSdP0zeu1OLMBZzdqvg:2026-11-24:{\"shape\":\"upside-down\",\"roof\":\"gable\",\"wall\":\"#f2e8d5\",\"roofColor\":\"#b5302a\",\"door\":\"#3a86ff\",\"accent\":\"#ff7a45\",\"extras\":[]}": "2026-11-24",
+    "house:UCq6H3em2-nBQjN5T7ItRNAg:2026-11-24:{\"shape\":\"sausage-house\",\"roof\":\"gable\",\"wall\":\"#b5523b\",\"roofColor\":\"#93402c\",\"door\":\"#5b3a24\",\"accent\":\"#ffd23f\",\"extras\":[]}": "2026-11-24",
+    "house:UC_EL-oo7ibzaIXyhI5SPIGQ:2026-11-24:{\"shape\":\"christmas-cabin\",\"roof\":\"gable\",\"wall\":\"#a0703f\",\"roofColor\":\"#7a4a2a\",\"door\":\"#3b2a1f\",\"accent\":\"#e63946\",\"extras\":[\"smoke\"]}": "2026-11-24",
+    "house:UCAJV40S_jEBAyKZxIkT-ncA:2026-11-24:{\"shape\":\"cat-house\",\"roof\":\"flat\",\"wall\":\"#e3893b\",\"roofColor\":\"#b8642a\",\"door\":\"#5b3a24\",\"accent\":\"#7bd36b\",\"extras\":[]}": "2026-11-24",
+    "house:UCq8WjKKE1_L8xSv0yp2ryRg:2026-11-24:{\"shape\":\"dog-house\",\"roof\":\"gable\",\"wall\":\"#c98b45\",\"roofColor\":\"#b5302a\",\"door\":\"#3b2a1f\",\"accent\":\"#f7f4ee\",\"extras\":[]}": "2026-11-24",
+    "house:UCDgiH80X9SHLgHukBy-XzkQ:2026-11-24:{\"shape\":\"white-house\",\"roof\":\"pointed\",\"wall\":\"#9b6bd6\",\"roofColor\":\"#4b2a7b\",\"door\":\"#3b2a1f\",\"accent\":\"#ffd23f\",\"extras\":[]}": "2026-11-24",
+    "house:UCKXWTyD95c9W96Co4VMbD4A:2026-11-24:{\"shape\":\"chalet-hotel\",\"roof\":\"gable\",\"wall\":\"#8a5a3a\",\"roofColor\":\"#5b3a24\",\"door\":\"#3b2a1f\",\"accent\":\"#ffd23f\",\"extras\":[\"smoke\"]}": "2026-11-24"
   }
 }
