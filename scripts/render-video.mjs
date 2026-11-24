@@ -113,7 +113,11 @@ console.log(`Scenes: ${info.scenes.map((s) => s.type).join(' → ')}`);
 // ---- music ----
 const changes = readJSON(CHANGES_FILE) || { day: 1 };
 const musicFile = path.join(VIDEO_DIR, `music-${baseName}.wav`);
-writeMusic(musicFile, duration, isDaily ? changes.day : 5);
+// a special day can ask for another music style in web/data/news.json ("music": "synthwave")
+const news = readJSON(path.join(ROOT, 'web', 'data', 'news.json'));
+const musicStyle = isDaily && news?.date === changes.date && news?.music ? news.music : 'pop';
+writeMusic(musicFile, duration, isDaily ? changes.day : 5, musicStyle);
+if (musicStyle !== 'pop') console.log(`Music: ${musicStyle}`);
 
 // Place every spoken line at its scene's time on one voice track.
 const voiceFile = path.join(VIDEO_DIR, `voice-${baseName}.wav`);

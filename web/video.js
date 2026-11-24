@@ -382,6 +382,20 @@ function buildTimeline(city, ch) {
     'capy-tree': (n) => [`${n}'s new tree came with capybaras in it.`, 'Got a capybara tree!'],
     cave: (n) => [`${n} dug a secret cave in the yard.`, 'Got a cave!'],
     'shepherd-cat': (n) => [`${n} adopted a German shepherd and a little grey cat.`, 'Got a dog and a cat!'],
+    'roof-tree': (n) => [`${n} put a Christmas tree on the roof!`, 'Got a rooftop Christmas tree!'],
+    'welcome-mat': (n) => [`${n}'s door now says welcome.`, 'Got a welcome mat!'],
+    'zombie-sword': (n) => [`${n}'s zombie got a sword. Be careful.`, 'The zombie got a sword!'],
+    'giant-katana': (n) => [`A giant katana now guards ${n}'s castle.`, 'Got a giant katana!'],
+    labrador: (n) => [`${n} adopted a chocolate Labrador.`, 'Got a Labrador!'],
+    'cat-guards': (n) => [`Eight cats are now guarding ${n}'s house.`, 'Got cat guards!'],
+    speakers: (n) => [`${n}'s house is playing music now.`, 'Got big speakers!'],
+    birthday: (n) => [`Happy birthday, ${n}!`, 'Happy birthday!'],
+    'roof-coaster': (n) => [`${n} has a roller coaster on the roof.`, 'Got a roof coaster!'],
+    billboard: (n) => [`${n} put up a billboard for the whole town to read.`, 'Got a billboard!'],
+    'santa-hat': (n) => [`${n}'s house is wearing a Santa hat.`, 'Got a Santa hat!'],
+    'giant-caramel': (n) => [`${n} got a giant caramel candy.`, 'Got a giant candy!'],
+    'roof-jet': (n) => [`${n} parked a jumbo jet on the roof.`, 'Got a jumbo jet on the roof!'],
+    'mini-pickle-jar': (n) => [`${n}'s pickle jar got a little sister, with a kitten.`, 'Got a mini pickle jar!'],
     'big-cats': (n) => [`${n} adopted a lion and a tiger!`, 'Got a lion and a tiger!'],
     trophy: (n) => [`${n} won the weekly challenge! A golden trophy now stands in the front yard.`, 'Won the weekly challenge trophy!'],
   };
@@ -438,6 +452,10 @@ function buildTimeline(city, ch) {
     add(kind, 3.4, { sp, entry, caption: kind === 'upgrade' ? upLine(sp)[1] : '' }, { text, at: 1.0 });
   };
 
+  // a special day can open with its news, before the hook (data/news.json, "start": true): e.g. the festival visitors
+  const newsOk = (n) => !(n.scene === 'tree' && !world.christmasTree) && !(n.scene === 'santa' && !world.sleigh)
+    && !(n.scene.startsWith('visitors') && !world.visitorsCar) && !(n.scene === 'festival' && !world.festivalSign);
+  for (const n of (ch.news || []).filter((n) => n.start && newsOk(n))) add(`news-${n.scene}`, 3.6, {}, { text: n.text, at: 0.3 });
   if (featured.length) story(featured[0], 0, true);
   add('intro', 2.8, {}, { text: introLine, at: 0.3 });
   featured.slice(1).forEach((sp, i) => story(sp, i + 1, false));
@@ -486,10 +504,8 @@ function buildTimeline(city, ch) {
     });
   }
   // the news of the day (new city plan, Christmas…), just before the outro; the Christmas scenes are at night
-  for (const n of ch.news || []) {
-    if (n.scene === 'tree' && !world.christmasTree) continue;
-    if (n.scene === 'santa' && !world.sleigh) continue;
-    add(`news-${n.scene}`, 3.6, { night: n.scene === 'tree' || n.scene === 'santa' }, { text: n.text, at: 0.3 });
+  for (const n of (ch.news || []).filter((n) => !n.start && newsOk(n))) {
+    add(`news-${n.scene}`, 3.6, { night: ['tree', 'santa', 'festival'].includes(n.scene) }, { text: n.text, at: 0.3 });
   }
   const outro = add('outro', 4.4, {}, { text: 'Want your own house? Just comment. Every new video you comment on adds a floor. See you tomorrow!', at: 0.4 });
   // the loop: after the voice, glide back to the opening shot
@@ -669,6 +685,28 @@ function buildTimeline(city, ch) {
         const p = world.christmasTree.position;
         return orbit(new THREE.Vector3(p.x, 11, p.z), 44 - 10 * easeOut(k), 0.5 + k * 0.55, 18);
       }
+      case 'news-visitors-arrive': {
+        // the visitors' convertible pulling away from the airport: behind it and above, the airport in the back
+        const r = world.visitorsRoute, d = Math.min(r.total, 4 + lt * 9);
+        const p = r.at(d);
+        const tgt = new THREE.Vector3(p.x, 1.5, p.z);
+        // in front of the car looking back at it, the airport behind it
+        return orbit(new THREE.Vector3(p.x, 3, p.z), 30 - 8 * easeOut(k), p.yaw + 0.45 - k * 0.25, 14 - 4 * k);
+      }
+      case 'news-visitors-drive': {
+        // cruising along the lake: a low chase shot from the side, the water behind
+        const r = world.visitorsRoute, d = Math.max(0, r.total - 110 + lt * 9);
+        const p = r.at(d);
+        const fwd = new THREE.Vector3(Math.sin(p.yaw), 0, Math.cos(p.yaw));
+        const side = new THREE.Vector3(Math.cos(p.yaw), 0, -Math.sin(p.yaw));
+        const tgt = new THREE.Vector3(p.x, 1.8, p.z).addScaledVector(side, 1.25);
+        return { pos: tgt.clone().addScaledVector(side, -20).addScaledVector(fwd, 10 - 5 * k).add(new THREE.Vector3(0, 7.5, 0)), target: tgt.clone().addScaledVector(fwd, 2).addScaledVector(side, 3) };
+      }
+      case 'news-festival': {
+        // from the city side: the golden 100 and its balloons, the fireworks over the lake behind
+        const c = world.festivalSign.localToWorld(new THREE.Vector3(-1.5, 2, 0)); // the middle of the "100"
+        return orbit(c, 125 - 20 * easeOut(k), Math.PI + 0.3 - k * 0.2, 8 + 4 * k);
+      }
       case 'news-santa': {
         // in front of the sleigh and a little above, looking back at it as it flies towards us over the city lights
         const { pos: target, heading } = world.sleighAt(s.start + lt);
@@ -808,6 +846,17 @@ function buildTimeline(city, ch) {
     if (night !== world.night) world.setNight(night);
     const flashAt = (c) => Math.max(0, 1 - Math.abs(time - c) / 0.18);
     $('flash').style.opacity = (0.85 * Math.max(flashAt(nightStart + 0.18), flashAt(total - 0.12))).toFixed(3);
+
+    // the festival visitors: their car follows the shot during their scenes, then drives on its own
+    if (world.visitorsCar) {
+      if (s.type === 'news-visitors-arrive') world.visitorsAt = Math.min(world.visitorsRoute.total, 4 + lt * 9);
+      else if (s.type === 'news-visitors-drive') world.visitorsAt = Math.max(0, world.visitorsRoute.total - 110 + lt * 9);
+      else world.visitorsAt = null;
+    }
+    const retro = s.type.startsWith('news-visitors');
+    $('retro').style.opacity = retro ? fade(lt, 0, s.dur + 10, 0.2).toFixed(3) : '0';
+    $('retro-title').style.opacity = s.type === 'news-visitors-arrive' ? fade(lt, 0.5, s.dur - 0.3, 0.4).toFixed(3) : '0';
+    $('retro-title').style.transform = `rotate(-6deg) scale(${(0.9 + 0.1 * clamp01((lt - 0.5) / 0.6)).toFixed(3)})`;
 
     // Camera
     const p = pose(i, lt);

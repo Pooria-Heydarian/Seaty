@@ -9,24 +9,25 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <meta name="theme-color" content="#ff7a45" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=block" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&family=Pacifico&display=block" rel="stylesheet" />
   <script type="importmap">
     {
       "imports": {
         "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
         "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/",
-        "./catalog.js": "./catalog.js?v=cac23bdc4f",
-        "./christmas.js": "./christmas.js?v=cac23bdc4f",
-        "./city.js": "./city.js?v=cac23bdc4f",
-        "./extra-models.js": "./extra-models.js?v=cac23bdc4f",
-        "./house-models.js": "./house-models.js?v=cac23bdc4f",
-        "./houses.js": "./houses.js?v=cac23bdc4f",
-        "./layout.js": "./layout.js?v=cac23bdc4f",
-        "./podcast.js": "./podcast.js?v=cac23bdc4f",
-        "./tour.js": "./tour.js?v=cac23bdc4f",
-        "./trailer.js": "./trailer.js?v=cac23bdc4f",
-        "./video.js": "./video.js?v=cac23bdc4f",
-        "./world.js": "./world.js?v=cac23bdc4f"
+        "./catalog.js": "./catalog.js?v=9f4b9c22b1",
+        "./christmas.js": "./christmas.js?v=9f4b9c22b1",
+        "./city.js": "./city.js?v=9f4b9c22b1",
+        "./extra-models.js": "./extra-models.js?v=9f4b9c22b1",
+        "./festival.js": "./festival.js?v=9f4b9c22b1",
+        "./house-models.js": "./house-models.js?v=9f4b9c22b1",
+        "./houses.js": "./houses.js?v=9f4b9c22b1",
+        "./layout.js": "./layout.js?v=9f4b9c22b1",
+        "./podcast.js": "./podcast.js?v=9f4b9c22b1",
+        "./tour.js": "./tour.js?v=9f4b9c22b1",
+        "./trailer.js": "./trailer.js?v=9f4b9c22b1",
+        "./video.js": "./video.js?v=9f4b9c22b1",
+        "./world.js": "./world.js?v=9f4b9c22b1"
       }
     }
   </script>
@@ -98,6 +99,15 @@
     #caption span.on { color: var(--gold); transform: scale(1.05); }
     #caption span.said { color: #fff; }
 
+    /* the retro sunset look for special visitors: warm tint, letterbox bars, a postcard title (no logos) */
+    #retro { position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0; }
+    #retro .tint { position: absolute; inset: 0; mix-blend-mode: soft-light; background: linear-gradient(180deg, rgba(255,60,150,.55) 0%, rgba(255,150,60,.4) 45%, rgba(120,40,200,.45) 100%); }
+    #retro .bar { position: absolute; left: 0; right: 0; height: 150px; background: #0b0710; }
+    #retro .bar.top { top: 0; } #retro .bar.bot { bottom: 0; }
+    #retro-title { position: absolute; left: 0; right: 0; top: 330px; text-align: center; opacity: 0; font-family: 'Pacifico', 'Brush Script MT', cursive; line-height: .95;
+      color: #ffe3f1; text-shadow: 0 0 18px #ff3d9a, 0 0 40px #ff3d9a, 6px 6px 0 #2bd9e8; }
+    #retro-title .s { display: block; font-size: 92px; }
+    #retro-title .b { display: block; font-size: 210px; background: linear-gradient(180deg, #ffd23f, #ff7a45 55%, #ff3d9a); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(6px 6px 0 #2bd9e8) drop-shadow(0 0 22px rgba(255,61,154,.8)); text-shadow: none; }
     #flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; z-index: 3; }
 
     /* 3D name tags */
@@ -153,6 +163,7 @@
     <div class="ov" id="badge"></div>
     <div class="ov" id="caption"></div>
 
+    <div id="retro"><div class="tint"></div><div class="bar top"></div><div class="bar bot"></div><div id="retro-title"><span class="s">Welcome to</span><span class="b">Seaty</span></div></div>
     <div id="flash"></div>
   </div>
 
@@ -162,6 +173,6 @@
     <span id="time">0.0s</span>
   </div>
 
-  <script type="module" src="video.js?v=cac23bdc4f"></script>
+  <script type="module" src="video.js?v=9f4b9c22b1"></script>
 </body>
 </html>

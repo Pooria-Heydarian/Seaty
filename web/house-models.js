@@ -748,16 +748,28 @@ export const HOUSE_MODELS = {
     const top = H + 2.2;
     // round the front, straight through the top floor (in one side, out the other), over the back and down
     const ty = H - 0.55; // the tunnel through the top floor
-    const pts = [
+    let raw = [
       [2.3, 0.6, 2.2], [0, 0.5, 2.5], [-2.3, 0.7, 2.2], [-2.7, ty * 0.6, 1.0], [-2.3, ty, 0],
       [0, ty, 0], [2.3, ty, 0], [2.7, top * 0.8, -1.0], [1.4, top + 0.5, -2.3], [-1.4, top * 0.7, -2.4],
       [-2.6, 1.4, -1.6], [-0.4, 0.8, -2.6], [2.2, 0.6, -2.3], [2.7, 0.6, 0.6],
-    ].map(([x, y, z]) => new THREE.Vector3(x, y, z));
+    ];
+    let tunnels = [ty];
+    if ((r.extras || []).includes('triple')) {
+      // Day 13 (@ThatFury325Guy): the track wraps through the house three times, climbing a level each lap
+      tunnels = [H * 0.25, H * 0.55, ty].map((y) => Math.max(0.9, y));
+      raw = [[2.4, 0.5, 2.4], [-2.4, 0.6, 2.4]];
+      tunnels.forEach((y, i) => {
+        const next = tunnels[i + 1] ?? top + 0.4;
+        raw.push([-2.7, y * 0.9, 0.8], [-2.3, y, 0], [0, y, 0], [2.3, y, 0], [2.8, (y + next) / 2, -1.2], [0, (y + next) / 2 + 0.3, -2.8], [-2.8, next * 0.95, -1.2]);
+      });
+      raw.push([-1.6, top + 0.5, -0.4], [0, top + 0.8, 0.3], [1.8, top * 0.6, 1.5], [2.8, 1.2, 2.0]);
+    }
+    const pts = raw.map(([x, y, z]) => new THREE.Vector3(x, y, z));
     // dark tunnel openings where the track goes in and out of the house
-    for (const sd of [-1, 1]) g.add(new THREE.Mesh(k.box(0.04, 0.6, 0.7, ty - 0.3).translate(sd * 1.22, 0, 0), plain('#14161c')));
+    for (const y of tunnels) for (const sd of [-1, 1]) g.add(new THREE.Mesh(k.box(0.04, 0.6, 0.7, y - 0.3).translate(sd * 1.22, 0, 0), plain('#14161c')));
     const curve = new THREE.CatmullRomCurve3(pts, true, 'catmullrom', 0.5);
     const rail = plain(r.accent || '#e63946', { metalness: 0.4, roughness: 0.4 });
-    g.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 160, 0.09, 6, true), rail));
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(curve, tunnels.length > 1 ? 360 : 160, 0.09, 6, true), rail));
     // supports down to the ground
     for (let i = 0; i < 14; i++) {
       const p = curve.getPointAt(i / 14);
@@ -1629,6 +1641,192 @@ export const HOUSE_MODELS = {
     g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.33, 0.33, 0.05, 16).translate(1.5, 0.2, 2.2), plain('#8a5a2c')));
     g.add(new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 8).translate(-1.6, 0.2, 2.3), plain('#ffd23f')));
     return { body, top: H + 2.4, eave: H, front: 1.6, width: 5.0 };
+  },
+  /** A house that is a huge hole in the ground: a round pit with lit windows going down its walls, a ladder, a hatch roof on a ring (Day 13, @Finbob4000). */
+  sinkhole(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const D = 1.2 + h; // the deeper, the more floors (windows down the pit wall)
+    const rim = plain(r.wall, { flatShading: true, roughness: 1 });
+    // the dark pit, seen from above: a black disc with a ring of earth and stone, and an inner wall (open cylinder, inside faces)
+    const body = new THREE.Mesh(new THREE.TorusGeometry(2.2, 0.35, 8, 28).rotateX(Math.PI / 2).translate(0, 0.3, 0), rim);
+    g.add(body);
+    g.add(new THREE.Mesh(new THREE.CircleGeometry(2.05, 28).rotateX(-Math.PI / 2).translate(0, 0.33, 0), plain('#0b0907')));
+    const wall = new THREE.Mesh(new THREE.CylinderGeometry(2.0, 2.0, 1.2, 28, 1, true).translate(0, -0.25, 0), plain('#3b2a1f', { side: THREE.BackSide }));
+    g.add(wall);
+    // little lit windows round the top of the pit, one ring per floor showing as glowing slits
+    const n = Math.max(1, Math.round(h / k.FLOOR_H));
+    for (let f = 0; f < Math.min(n, 3); f++) for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2 + f * 0.4;
+      const w = new THREE.Mesh(new THREE.PlaneGeometry(0.35, 0.22), glowing('#ffcf7a', 0.6, 2.4));
+      w.position.set(Math.cos(a) * 1.97, 0.15 - f * 0.3, Math.sin(a) * 1.97);
+      w.lookAt(0, w.position.y, 0);
+      g.add(w);
+    }
+    // a ladder going down, a hatch with a little roof over the pit on four posts, a sign "MIND THE HOLE"
+    for (const x of [-0.25, 0.25]) g.add(new THREE.Mesh(k.box(0.06, 1.6, 0.06, -0.9).translate(x, 0, 1.6), plain('#8a5a3a')));
+    for (let y = -0.8; y < 0.7; y += 0.25) g.add(new THREE.Mesh(k.box(0.5, 0.05, 0.05, y).translate(0, 0, 1.6), plain('#8a5a3a')));
+    for (const [x, z] of [[-1.9, -1.9], [1.9, -1.9], [1.9, 1.9], [-1.9, 1.9]]) g.add(new THREE.Mesh(k.box(0.14, 2.6, 0.14, 0).translate(x, 0, z), plain('#7b5a3c')));
+    k.roof(g, 'pointed', r.roofColor, 4.4, 4.4, 2.6);
+    g.add(k.door(r.door, 2.3, 0.6, 0).translateX(1.4));
+    // the depth shows as a tall rope-and-bucket winch, one floor more = a longer rope (and a number sign of the depth)
+    g.add(new THREE.Mesh(k.box(0.08, D * 0.3 + 0.6, 0.08, 2.6).translate(0, 0, 0), plain('#c9b28a')));
+    return { body, top: 4.6, eave: 2.6, front: 2.3, width: 5.0 };
+  },
+
+  /** A giant American football helmet house: a red shell, a face mask, a stripe, a door in the ear hole (Day 13, @KCNFLNEWS). */
+  'football-helmet'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const S = 1.0 + (h - k.FLOOR_H) * 0.12;
+    const shell = plain(r.wall, { metalness: 0.3, roughness: 0.25 });
+    const body = new THREE.Mesh(new THREE.SphereGeometry(2.1 * S, 24, 18, 0, Math.PI * 2, 0, Math.PI * 0.62).scale(1, 1.05, 1.15).translate(0, 0.4, 0), shell);
+    g.add(body);
+    g.add(new THREE.Mesh(new THREE.TorusGeometry(2.12 * S, 0.14, 6, 30, Math.PI * 0.62).rotateY(Math.PI / 2).rotateX(Math.PI * 0.19).scale(1, 1.05, 1.15).translate(0, 0.42, 0), plain(r.accent))); // the stripe over the top
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(2.1 * S, 2.1 * S, 0.4, 24).scale(1, 1, 1.15).translate(0, 0.2, 0), plain(r.roofColor)));
+    // the face mask: grey bars in front
+    const bar = plain('#d5dbe1', { metalness: 0.6, roughness: 0.3 });
+    for (const y of [0.9, 1.5]) g.add(new THREE.Mesh(new THREE.TorusGeometry(1.4 * S, 0.08, 6, 20, Math.PI).rotateX(Math.PI / 2).rotateY(0).translate(0, y * S, 1.55 * S), bar));
+    for (const x of [-0.5, 0, 0.5]) g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 1.0 * S, 6).translate(x * S, 1.2 * S, 2.95 * S - 0.1), bar));
+    // the ear hole is the front door, the windows round the shell
+    g.add(k.door(r.door, 2.35 * S, 0.8, 0.2));
+    for (const a of [-1.1, 1.1, -2.2, 2.2]) {
+      const w = new THREE.Mesh(new THREE.CircleGeometry(0.3, 14), glowing('#fff3c4', 0.3, 1.8));
+      w.position.set(Math.sin(a) * 2.25 * S, 1.6 * S, Math.cos(a) * 2.25 * S * 1.1);
+      w.lookAt(Math.sin(a) * 9, 1.6 * S, Math.cos(a) * 9);
+      g.add(w);
+    }
+    return { body, top: 2.6 * S + 0.4, eave: 1.8 * S, front: 3.0 * S, width: 4.6 * S };
+  },
+
+  /** A pure black cube: no windows, no doors, nothing (Day 13, @riku_taizaki_official). */
+  'black-cube'(g, r, h, k) {
+    const { THREE, plain } = k;
+    const H = 2.6 + h;
+    const body = new THREE.Mesh(k.box(3.6, H, 3.6, 0), plain(r.wall || '#050505', { roughness: 0.9 }));
+    g.add(body);
+    return { body, top: H, eave: H, front: 1.8, width: 3.6 };
+  },
+
+  /** An empty warehouse for no purpose at all: corrugated walls, a big roll-up door, a curved roof, an empty pallet (Day 13, @WalterHartwellWhite9-7-58). */
+  warehouse(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const H = 2.0 + h * 0.6;
+    const body = new THREE.Mesh(k.box(4.6, H, 4.0, 0).translate(0, 0, -0.3), plain(r.wall, { roughness: 0.7 }));
+    g.add(body);
+    for (let x = -2.2; x <= 2.21; x += 0.25) g.add(new THREE.Mesh(k.box(0.05, H, 0.04, 0).translate(x, 0, 1.72), plain(new THREE.Color(r.wall).multiplyScalar(0.8).getStyle())));
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(2.32, 2.32, 4.04, 24).rotateX(Math.PI / 2).scale(1, 0.4, 1).translate(0, H, -0.3), plain(r.roofColor))); // the curved roof (its lower half is inside)
+    g.add(new THREE.Mesh(k.box(2.4, Math.min(2.4, H - 0.4), 0.08, 0).translate(-0.6, 0, 1.75), plain('#9aa0a6', { metalness: 0.4 })));
+    for (let y = 0.2; y < Math.min(2.4, H - 0.4); y += 0.22) g.add(new THREE.Mesh(k.box(2.4, 0.03, 0.1, y).translate(-0.6, 0, 1.79), plain('#7d838a')));
+    g.add(k.door(r.door, 1.75, 0.7, 0).translateX(1.5));
+    g.add(new THREE.Mesh(k.box(0.5, 0.25, 0.06, H - 0.6).translate(1.5, 0, 1.75), glowing('#fff3c4', 0.4, 2)));
+    g.add(new THREE.Mesh(k.box(1.0, 0.15, 0.8, 0).translate(1.0, 0, 2.6), plain('#b08a5a'))); // one empty pallet
+    return { body, top: H + 0.95, eave: H, front: 1.8, width: 4.8 };
+  },
+
+  /** A mini replica of the city on a table: a little lake and river, tiny blocks of houses, a tiny Christmas tree, under a glass dome (Day 13, @thewindbro-x2n). */
+  'city-replica'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const T = 1.0 + h * 0.3; // the table gets taller with floors
+    const body = new THREE.Mesh(k.box(4.4, 0.25, 4.4, T), plain(r.wall));
+    g.add(body);
+    for (const [x, z] of [[-2, -2], [2, -2], [2, 2], [-2, 2]]) g.add(new THREE.Mesh(k.box(0.2, T, 0.2, 0).translate(x, 0, z), plain(r.roofColor)));
+    const top = T + 0.25;
+    g.add(new THREE.Mesh(k.box(4.1, 0.04, 4.1, top), plain('#e9eff3')));
+    // the lake and the river
+    const lake = new THREE.Shape();
+    lake.moveTo(-0.3, 0.6); lake.lineTo(1.9, 0.9); lake.lineTo(1.9, 2.0); lake.lineTo(0.2, 2.0); lake.lineTo(-0.5, 1.2);
+    g.add(new THREE.Mesh(new THREE.ShapeGeometry(lake).rotateX(Math.PI / 2).translate(0, top + 0.06, 0), plain('#3fb6e8', { side: THREE.DoubleSide })));
+    g.add(new THREE.Mesh(k.box(0.35, 0.02, 2.4, top + 0.05).translate(0.1, 0, -0.6).rotateY(0.25), plain('#3fb6e8')));
+    // tiny houses and towers in a grid
+    const cols = ['#e63946', '#3a86ff', '#ffd23f', '#5cc55a', '#f7f4ee', '#9b5de5'];
+    let n = 0;
+    for (let x = -1.7; x <= 1.71; x += 0.42) for (let z = -1.7; z <= 0.4; z += 0.42) {
+      if (Math.abs(x - 0.1) < 0.3) continue;
+      const hh = 0.1 + ((n * 37) % 7) * 0.05 + (n % 9 === 0 ? 0.35 : 0);
+      g.add(new THREE.Mesh(k.box(0.24, hh, 0.24, top + 0.04).translate(x, 0, z), plain(cols[n++ % cols.length])));
+    }
+    g.add(new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.45, 8).translate(-1.2, top + 0.27, 1.4), plain('#2a8a4a')));
+    g.add(new THREE.Mesh(new THREE.OctahedronGeometry(0.05, 0).translate(-1.2, top + 0.53, 1.4), glowing('#ffd34d', 1, 3)));
+    // the glass dome over it, and a little door under the table into the house
+    g.add(new THREE.Mesh(new THREE.SphereGeometry(2.2, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2).scale(1, 0.55, 1).translate(0, top, 0), plain('#bfe6ff', { transparent: true, opacity: 0.22, roughness: 0.05 })));
+    g.add(k.door(r.door, 0.6, 0.6, 0));
+    return { body, top: top + 1.3, eave: top, front: 2.2, width: 4.6 };
+  },
+
+  /** A house shaped like the letters W R C standing side by side, with windows in the letters (Day 13, @WRC_0029). */
+  'wrc-letters'(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const H = 2.4 + h; // letter height
+    const m = plain(r.wall), m2 = plain(r.accent);
+    const D = 1.0; // depth
+    const ext = (shape, x, mat) => {
+      const geo = new THREE.ExtrudeGeometry(shape, { depth: D, bevelEnabled: false });
+      geo.translate(x, 0, -D / 2);
+      const mesh = new THREE.Mesh(geo, mat);
+      g.add(mesh);
+      return mesh;
+    };
+    const w = 1.5, s = H / 4; // letter width, stroke
+    // W
+    const W = new THREE.Shape();
+    W.moveTo(0, H); W.lineTo(0.3, 0); W.lineTo(0.6, 0); W.lineTo(w / 2, H * 0.55); W.lineTo(w - 0.6, 0); W.lineTo(w - 0.3, 0); W.lineTo(w, H);
+    W.lineTo(w - 0.35, H); W.lineTo(w - 0.45, H * 0.35); W.lineTo(w / 2, H * 0.85); W.lineTo(0.45, H * 0.35); W.lineTo(0.35, H); W.lineTo(0, H);
+    const body = ext(W, -2.45, m);
+    // R
+    const R = new THREE.Shape();
+    R.moveTo(0, 0); R.lineTo(0.35, 0); R.lineTo(0.35, H * 0.45); R.lineTo(0.55, H * 0.45); R.lineTo(1.15, 0); R.lineTo(1.5, 0); R.lineTo(0.9, H * 0.47);
+    R.absarc(0.75, H * 0.73, H * 0.27, -Math.PI / 2, Math.PI / 2, false); R.lineTo(0, H); R.lineTo(0, 0);
+    const hole = new THREE.Path();
+    hole.moveTo(0.35, H * 0.58); hole.lineTo(0.7, H * 0.58); hole.absarc(0.72, H * 0.73, H * 0.14, -Math.PI / 2, Math.PI / 2, false); hole.lineTo(0.35, H * 0.88); hole.lineTo(0.35, H * 0.58);
+    R.holes.push(hole);
+    ext(R, -0.75, m2);
+    // C
+    const C = new THREE.Shape();
+    C.absellipse(0.75, H / 2, 0.75, H / 2, Math.PI * 0.3, Math.PI * 1.7, false);
+    C.absellipse(0.75, H / 2, 0.38, H / 2 - 0.38, Math.PI * 1.7, Math.PI * 0.3, true);
+    ext(C, 0.95, m);
+    // windows on each floor in the letters, a door in the R
+    for (let y = 0.6; y < H - 0.4; y += k.FLOOR_H) for (const x of [-2.3, -1.2, -0.6, 1.2]) g.add(new THREE.Mesh(k.box(0.22, 0.3, 0.04, y).translate(x, 0, D / 2 + 0.01), glowing('#fff3c4', 0.3, 2)));
+    g.add(k.door(r.door, D / 2 + 0.02, 0.6, 0).translateX(-0.57));
+    return { body, top: H, eave: H, front: D / 2, width: 5.0 };
+  },
+
+  /** A pentagon-shaped building: five wings round an inner courtyard, rows of windows, a flat roof (Day 13, @RedPanda-t2k). */
+  pentagon(g, r, h, k) {
+    const { THREE, plain, glowing } = k;
+    const H = 1.4 + h * 0.5;
+    const outer = new THREE.Shape(), inner = new THREE.Path();
+    for (let i = 0; i < 5; i++) {
+      const a = (i / 5) * Math.PI * 2 + Math.PI / 2;
+      const [ox, oz] = [Math.cos(a) * 2.5, Math.sin(a) * 2.5], [ix, iz] = [Math.cos(a) * 1.2, Math.sin(a) * 1.2];
+      i ? outer.lineTo(ox, oz) : outer.moveTo(ox, oz);
+      i ? inner.lineTo(ix, iz) : inner.moveTo(ix, iz);
+    }
+    outer.holes.push(inner);
+    const geo = new THREE.ExtrudeGeometry(outer, { depth: H, bevelEnabled: false });
+    geo.rotateX(-Math.PI / 2);
+    const body = new THREE.Mesh(geo, plain(r.wall));
+    body.rotation.y = Math.PI; // one flat side faces the street
+    g.add(body);
+    const roofGeo = new THREE.ShapeGeometry(outer);
+    roofGeo.rotateX(-Math.PI / 2);
+    const roof = new THREE.Mesh(roofGeo, plain(r.roofColor));
+    roof.position.y = H + 0.01;
+    roof.rotation.y = Math.PI;
+    g.add(roof);
+    g.add(new THREE.Mesh(new THREE.CircleGeometry(1.15, 5).rotateX(-Math.PI / 2).translate(0, 0.05, 0), plain('#5cae4a'))); // the courtyard lawn
+    // window rows on all five outer walls
+    for (let i = 0; i < 5; i++) {
+      const a = (i / 5) * Math.PI * 2 + Math.PI / 2 + Math.PI / 5 + Math.PI;
+      const nx = Math.cos(a), nz = Math.sin(a), dist = 2.5 * Math.cos(Math.PI / 5) + 0.02;
+      for (let y = 0.35; y < H - 0.2; y += 0.45) for (let s = -1; s <= 1; s += 0.5) {
+        const w = new THREE.Mesh(new THREE.PlaneGeometry(0.28, 0.2), glowing('#fff3c4', 0.25, 1.8));
+        w.position.set(nx * dist - nz * s, y, nz * dist + nx * s);
+        w.lookAt(nx * 9, y, nz * 9);
+        g.add(w);
+      }
+    }
+    g.add(k.door(r.door, 2.5 * Math.cos(Math.PI / 5) + 0.03, 0.7, 0));
+    return { body, top: H + 0.2, eave: H, front: 2.1, width: 5.0 };
   },
 };
 

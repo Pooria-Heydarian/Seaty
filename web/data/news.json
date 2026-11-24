@@ -1,8 +1,9 @@
 {
-  "date": "2026-11-21",
+  "date": "2026-11-25",
+  "music": "synthwave",
   "items": [
-    { "scene": "layout", "text": "Big news! Seaty has a brand-new city plan: a lake, a river with bridges, trams and trains, like a real city." },
-    { "scene": "tree", "text": "And Christmas is coming! A giant tree, a Christmas market and lights all over town. Visit Seaty at night on the website to see them glow." },
-    { "scene": "santa", "text": "Look up! Santa's sleigh is flying around the city. Can you spot it?" }
+    { "scene": "visitors-arrive", "start": true, "text": "Breaking news! Seaty just reached 100 subscribers, so the whole city is having a festival. And look who just landed at Fly For Ever's airport: two very famous visitors, staying for a whole week." },
+    { "scene": "visitors-drive", "start": true, "text": "They took the brightest car in town and cruised straight down to the lake. Welcome to Seaty!" },
+    { "scene": "festival", "text": "And tonight, the whole city celebrates. Fireworks over the lake, balloons, music, and a giant golden one hundred. Thank you, all one hundred of you!" }
   ]
 }

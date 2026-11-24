@@ -9,6 +9,7 @@ import { createHouseKit } from './houses.js';
 import { cleanHouseRecipe, NEIGHBOURHOODS } from './catalog.js';
 import { createExtraModels } from './extra-models.js';
 import { isChristmas, decorate, festiveIcon } from './christmas.js';
+import { isFestival, festival } from './festival.js';
 export { LOT, BLOCK, PITCH };
 
 // ---------- Layout constants ----------
@@ -1092,6 +1093,8 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     // Christmas decorations, from 20 November to 6 January (christmas.js)
     world.season = isChristmas() ? decorate(world, glow) : null;
     if (world.season) festiveIcon(); // the Christmas tab icon
+    // the 100-subscriber festival and the two visitors (festival.js)
+    world.festival = isFestival() ? festival(world, glow) : null;
   };
 
   /** Camera pose that shows the whole city. */
@@ -1119,6 +1122,7 @@ export function createWorld({ container, width, height, pixelRatio = Math.min(de
     world.cars?.update(seconds);
     world.transit?.(seconds);
     world.season?.(seconds);
+    world.festival?.(seconds);
     for (const l of world.landmarks.values()) l.tick?.(seconds);
     for (const e of world.customEntries) e.tick?.(seconds);
     for (const f of world.upgradeTicks) f(seconds);
